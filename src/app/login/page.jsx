@@ -137,12 +137,12 @@ export default function LoginPage() {
                   </div>
 
                   <div className="flex justify-end px-4 mb-3">
-                    <a
-                      onClick={() => setCurrent("recover")}
+                    <Link
+                      href="/forgot-password"
                       className="text-blue-400 cursor-pointer hover:underline"
                     >
                       Forgot password?
-                    </a>
+                    </Link>
                   </div>
 
                   <div className="flex flex-col">

@@ -14,7 +14,10 @@ export default async function LoginAction(state, formData) {
   // * Set state data from formData.
   state = { errors: [], message: "", data: Object.fromEntries(formData) };
 
-  const loginData = state.data;
+  const loginData = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+  };
 
   // * Will hold valid data.
   let validData;
