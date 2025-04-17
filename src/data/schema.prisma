@@ -11,7 +11,20 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  password String
+  id           String    @id @default(cuid())
+  name         String
+  email        String
+  password     String
+  businessCode String
+  businessName String
+  role         String    @default("user")
+  engraving    Json?
+  token        String?
+  code         Int?
+  isActive     Boolean   @default(false)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime?
+
+  @@unique([email, token])
+  @@index([id, email(sort: Asc)])
 }
