@@ -15,7 +15,7 @@ model User {
   name         String
   email        String
   password     String
-  businessCode String
+  businessCode String?
   businessName String
   role         String    @default("user")
   engraving    Json?
@@ -35,8 +35,9 @@ model Order {
   code         String         @unique
   client       User           @relation(fields: [clientId], references: [id])
   clientId     String
-  completedAt  DateTime
-  comment      String
+  completedAt  DateTime?
+  isCompleted  Boolean        @default(false)
+  comment      String?
   orderProduct OrderProduct[]
   createdAt    DateTime       @default(now()) @map("created_at")
   updatedAt    DateTime?
@@ -50,7 +51,7 @@ model OrderProduct {
   orderId  String
   products Product[]
   details  Json
-  request  String
+  request  String?
 }
 
 model Product {
@@ -65,7 +66,7 @@ model Product {
   thumbnail   Media?         @relation("ProductThumbnail", fields: [thumbnailId], references: [id])
   thumbnailId Int?           @unique
   sizes       Size[]
-  filters     String
+  filters     String?
   orders      OrderProduct[]
 
   @@index([id, name(sort: Asc)])
@@ -81,17 +82,17 @@ model Media {
   id           Int      @id @default(autoincrement())
   name         String
   url          String
-  product      Product  @relation("ProductMedia", fields: [productId], references: [id])
-  productId    String
+  product      Product? @relation("ProductMedia", fields: [productId], references: [id])
+  productId    String?
   thumbnailFor Product? @relation("ProductThumbnail")
 }
 
 model Size {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String
   size      Int
   price     Int
   stock     Int
-  product   Product @relation(fields: [productId], references: [id])
-  productId String
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?
 }
