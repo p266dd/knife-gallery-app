@@ -11,7 +11,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="w-full overflow-scroll">
-          <DashboardOrdersTable perPage={5} onlyNew />
+          <DashboardOrdersTable perPage={5} newOrders={true} />
         </div>
       </div>
 

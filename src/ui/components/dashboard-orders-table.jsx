@@ -2,26 +2,30 @@
 
 import useSWR from "swr";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { PrinterIcon } from "lucide-react";
-import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
+import { ArrowLeftCircle, ArrowRightCircle, Search } from "lucide-react";
 
 import Button from "@/ui/button";
-import { fetchOrders } from "@/actions/fetch-orders";
+import { fetchNewOrders, fetchOrders } from "@/actions/fetch-orders";
 
-export default function DashboardOrdersTable({ onlyNew = false, perPage }) {
+export default function DashboardOrdersTable({ newOrders, perPage }) {
   // * User's search input content.
-  const [searchQuery, setSearchQuery] = useState("all");
+  const [searchQuery, setSearchQuery] = useState(null);
+
+  // * Search input reference.
+  const inputRef = useRef(null);
 
   // * Pagination settings.
   const [page, setPage] = useState(1);
   const itemsPerPage = perPage || 10;
 
   const { data, error, isLoading } = useSWR(
-    searchQuery
-      ? { searchQuery, page, itemsPerPage, onlyNew }
-      : { searchQuery: "all", page, itemsPerPage, onlyNew },
-    (config) => fetchOrders(config)
+    { searchQuery, page, itemsPerPage },
+    (config) =>
+      newOrders
+        ? fetchNewOrders(config)
+        : fetchOrders({ ...config, full: true })
   );
 
   const previousPage = () => {
@@ -35,22 +39,34 @@ export default function DashboardOrdersTable({ onlyNew = false, perPage }) {
     }
   };
 
-  const handleSearch = (event) => {
-    const inputContent = event.target.value;
-
-    // * Reset searchQuery if user clear value.
-    if (inputContent.length === 0) setSearchQuery("");
-
-    // * Searches if length of value is 3 or more.
-    if (inputContent.length >= 3) setSearchQuery(inputContent);
-
-    // * Always reset page when searchQuery chnages.
+  // * Set the searchQuery state and set page to 1.
+  const handleSearch = () => {
+    const inputContent = inputRef.current.value;
+    setSearchQuery(inputContent);
     setPage(1);
   };
 
   return (
     <div>
-      {!onlyNew && <div className="my-4">Filter and search</div>}
+      {!newOrders && (
+        <div className="my-4 pr-2">
+          <div className="pl-2 py-[2px] pr-1 flex items-center gap-3 bg-white border border-slate-300 rounded-xl">
+            <input
+              type="text"
+              ref={inputRef}
+              placeholder="What are you looking for?"
+              className="flex-grow py-1 text-sm focus-visible:outline-0"
+            />
+            <button
+              onClick={handleSearch}
+              className="w-20 flex items-center gap-2 py-1 px-2 bg-slate-800 text-slate-300 text-xs rounded-md"
+            >
+              <Search size={16} />
+              <span>Search</span>
+            </button>
+          </div>
+        </div>
+      )}
       <table className="w-full text-left">
         <thead>
           <tr>
@@ -78,24 +94,30 @@ export default function DashboardOrdersTable({ onlyNew = false, perPage }) {
             data.data.map((order, i) => (
               <tr key={i}>
                 <td className="pr-2 mr-2 py-1">
-                  <div>02/30</div>
+                  <div className="text-xs">
+                    {new Date(order.createdAt)
+                      .toISOString()
+                      .split("T")[0]
+                      .replaceAll("-", "/")
+                      .substring(2, 7)}
+                  </div>
                 </td>
                 <td className="px-2 mr-2 py-1">
                   <Link href="#">
                     <div className="max-w-28 overflow-hidden overflow-ellipsis">
-                      Knotty
+                      {order.client.businessName}
                     </div>
                   </Link>
                 </td>
                 <td className="px-2 mr-2 py-1">
-                  <Link href="#">
-                    <div>#883674</div>
+                  <Link href={"/dashboard/products/edit?productId=" + order.id}>
+                    <div>{order.code}</div>
                   </Link>
                 </td>
                 <td className="pl-2 py-1">
                   <div>
                     <button
-                      className={`flex items-center gap-2 px-3 py-1 text-xs ${onlyNew ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-700"}  rounded-xl`}
+                      className={`flex items-center gap-2 px-3 py-1 text-xs ${newOrders ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-700"}  rounded-xl`}
                     >
                       <PrinterIcon
                         size={14}
@@ -117,11 +139,17 @@ export default function DashboardOrdersTable({ onlyNew = false, perPage }) {
           </div>
 
           <div className="flex items-center gap-4">
-            <Button size="sm" onClick={previousPage} disabled={page === 1}>
+            <Button
+              variant="flat"
+              size="sm"
+              onClick={previousPage}
+              disabled={page === 1}
+            >
               <ArrowLeftCircle size={14} className="inline-block mr-2" />
               Previous
             </Button>
             <Button
+              variant="flat"
               size="sm"
               onClick={nextPage}
               disabled={page === data.totalPages}
