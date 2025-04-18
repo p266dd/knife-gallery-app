@@ -1,3 +1,20 @@
-export default function AdminLayout({ children }) {
-  return <div>Admin Layout</div>;
+import { getSession } from "@/utils/session";
+import { redirect } from "next/navigation";
+
+import DashboardNavigation from "@/ui/components/dashboard-navigation.jsx";
+
+export default async function AdminLayout({ children }) {
+  const session = await getSession();
+
+  // * Redirect user back to previous page if not admin.
+  if (!session || session.role !== "admin") {
+    return redirect("/", "replace");
+  }
+
+  return (
+    <div>
+      <DashboardNavigation />
+      <main className="ml-12">{children}</main>
+    </div>
+  );
 }
