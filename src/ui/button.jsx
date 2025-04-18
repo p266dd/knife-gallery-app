@@ -1,3 +1,5 @@
+"use client";
+
 export default function Button({
   type = "button",
   variant = "primary",
