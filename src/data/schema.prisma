@@ -19,6 +19,7 @@ model User {
   businessName String
   role         String    @default("user")
   engraving    Json?
+  orders       Order[]
   token        String?
   code         Int?
   isActive     Boolean   @default(false)
@@ -27,4 +28,70 @@ model User {
 
   @@unique([email, token])
   @@index([id, email(sort: Asc)])
+}
+
+model Order {
+  id           String         @id @default(uuid())
+  code         String         @unique
+  client       User           @relation(fields: [clientId], references: [id])
+  clientId     String
+  completedAt  DateTime
+  comment      String
+  orderProduct OrderProduct[]
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime?
+
+  @@index([code, clientId])
+}
+
+model OrderProduct {
+  id       Int       @id @default(autoincrement())
+  order    Order     @relation(fields: [orderId], references: [id])
+  orderId  String
+  products Product[]
+  details  Json
+  request  String
+}
+
+model Product {
+  id          String         @id @default(cuid())
+  type        String
+  name        String         @unique
+  description String?
+  brand       Brand          @relation("ProductBrand", fields: [brandId], references: [id])
+  brandId     Int
+  handle      String
+  media       Media[]        @relation("ProductMedia")
+  thumbnail   Media?         @relation("ProductThumbnail", fields: [thumbnailId], references: [id])
+  thumbnailId Int?           @unique
+  sizes       Size[]
+  filters     String
+  orders      OrderProduct[]
+
+  @@index([id, name(sort: Asc)])
+}
+
+model Brand {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[] @relation("ProductBrand")
+}
+
+model Media {
+  id           Int      @id @default(autoincrement())
+  name         String
+  url          String
+  product      Product  @relation("ProductMedia", fields: [productId], references: [id])
+  productId    String
+  thumbnailFor Product? @relation("ProductThumbnail")
+}
+
+model Size {
+  id        Int     @id @default(autoincrement())
+  name      String
+  size      Int
+  price     Int
+  stock     Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
 }
