@@ -46,12 +46,13 @@ model Order {
 }
 
 model OrderProduct {
-  id       Int       @id @default(autoincrement())
-  order    Order     @relation(fields: [orderId], references: [id])
-  orderId  String
-  products Product[]
-  details  Json
-  request  String?
+  id        Int      @id @default(autoincrement())
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   String
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?
+  details   Json
+  request   String?
 }
 
 model Product {

@@ -66,7 +66,7 @@ export async function fetchOrders({
           select: {
             details: true,
             request: true,
-            products: {
+            product: {
               include: {
                 sizes: true,
                 brand: true,
