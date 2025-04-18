@@ -103,14 +103,14 @@ export default function DashboardOrdersTable({ newOrders, perPage }) {
                   </div>
                 </td>
                 <td className="px-2 mr-2 py-1">
-                  <Link href="#">
+                  <Link href={"/dashboard/orders/" + order.id}>
                     <div className="max-w-28 overflow-hidden overflow-ellipsis">
                       {order.client.businessName}
                     </div>
                   </Link>
                 </td>
                 <td className="px-2 mr-2 py-1">
-                  <Link href={"/dashboard/products/edit?productId=" + order.id}>
+                  <Link href={"/dashboard/orders/" + order.id}>
                     <div>{order.code}</div>
                   </Link>
                 </td>
