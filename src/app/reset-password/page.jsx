@@ -176,6 +176,7 @@ export default function ResetPassword() {
 
                   <div className="flex flex-col gap-2">
                     <Button
+                      size="lg"
                       type="submit"
                       variant={pending ? "loading" : "primary"}
                     >
@@ -194,7 +195,11 @@ export default function ResetPassword() {
                       )}
                     </Button>
 
-                    <Button variant="flat" onClick={() => router.back()}>
+                    <Button
+                      size="lg"
+                      variant="flat"
+                      onClick={() => router.back()}
+                    >
                       Cancel
                     </Button>
                   </div>

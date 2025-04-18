@@ -148,6 +148,7 @@ export default function LoginPage() {
                   <div className="flex flex-col">
                     <Button
                       type="submit"
+                      size="lg"
                       variant={pending ? "loading" : "primary"}
                     >
                       {pending ? (
