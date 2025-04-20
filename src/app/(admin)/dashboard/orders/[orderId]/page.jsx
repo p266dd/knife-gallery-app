@@ -36,8 +36,6 @@ export default async function OrderPage({ params }) {
     },
   });
 
-  console.log("full", order);
-
   return (
     <div className="py-12 pr-3 pl-4">
       <div className="mb-10 flex items-center justify-between">
