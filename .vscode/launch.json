@@ -2,19 +2,32 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug server-side",
+      "name": "Debug Server",
       "type": "node-terminal",
       "request": "launch",
       "command": "npm run dev"
     },
     {
-      "name": "Debug client-side",
+      "name": "Debug Client",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:3000"
     },
     {
-      "name": "Debug full stack",
+      "name": "Debug Client (Firefox)",
+      "type": "firefox",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "reAttach": true,
+      "pathMappings": [
+        {
+          "url": "webpack://_N_E",
+          "path": "${workspaceFolder}"
+        }
+      ]
+    },
+    {
+      "name": "Debug Fullstack",
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/node_modules/.bin/next",
