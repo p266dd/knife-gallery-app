@@ -15,13 +15,17 @@ export default async function OrderPage({ params }) {
     include: {
       client: {
         select: {
+          id: true,
           name: true,
           businessName: true,
         },
       },
       orderProduct: {
         select: {
+          id: true,
           details: true,
+          brand: true,
+          handle: true,
           request: true,
           product: {
             include: {
@@ -40,7 +44,7 @@ export default async function OrderPage({ params }) {
     <div className="py-12 pr-3 pl-4">
       <div className="mb-10 flex items-center justify-between">
         <h1 className="text-2xl text-slate-700">Order Details</h1>
-        <Link href={"/dashboard/orders/print/" + order.id}>
+        <Link href={"/dashboard/orders/" + order.id + "/print"}>
           <Button size="md">
             <Printer size={18} className="inline-block mr-3" />
             Print
