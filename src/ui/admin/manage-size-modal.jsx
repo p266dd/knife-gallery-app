@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import {
   JapaneseYen,
   Layers,
@@ -12,6 +12,8 @@ import {
   Trash2,
 } from "lucide-react";
 
+import { addToSizes, updateSize, deleteSize } from "@/actions/sizes";
+
 export default function ManageSizeModal({ data, setData }) {
   const [editSize, setEditSize] = useState(false);
   const [currentEdit, setCurrentEdit] = useState({});
@@ -19,56 +21,86 @@ export default function ManageSizeModal({ data, setData }) {
   const addSize = (e) => {
     e.preventDefault();
 
-    if (
-      currentEdit.name === "" ||
-      currentEdit.size === "" ||
-      currentEdit.price === "" ||
-      currentEdit.stock === ""
-    ) {
-      return;
-    }
+    if (!currentEdit.name) return;
 
-    if (data && data.sizes) {
-      setData({ ...data, sizes: [...data.sizes, currentEdit] });
-    }
+    const newSize = {
+      name: currentEdit.name,
+      size: Number(currentEdit.size),
+      price: Number(currentEdit.price),
+      stock: Number(currentEdit.stock),
+      productId: data.id,
+    };
 
-    setEditSize(false);
-    return setCurrentEdit({});
+    addToSizes(newSize)
+      .then((res) => {
+        if (data && data.sizes) {
+          setData({ ...data, sizes: [...data.sizes, currentEdit] });
+        }
+
+        setEditSize(false);
+        return setCurrentEdit({});
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const saveSize = (e) => {
     e.preventDefault();
 
-    if (currentEdit.price === "" || currentEdit.stock === "") {
+    if (!currentEdit.price || !currentEdit.stock) {
       return;
     }
 
-    const updatedSizes = data.sizes.map((size) => {
-      if (size.name === currentEdit.name && size.size === currentEdit.size) {
-        return {
-          ...size,
-          price: currentEdit.price,
-          stock: currentEdit.stock,
-        };
-      }
-      return size;
-    });
+    const updatedSize = {
+      name: currentEdit.name,
+      size: Number(currentEdit.size),
+      price: Number(currentEdit.price),
+      stock: Number(currentEdit.stock),
+      productId: data.id,
+    };
 
-    setData({ ...data, sizes: updatedSizes });
+    updateSize(updatedSize, currentEdit.sizeId)
+      .then((res) => {
+        const updatedSizes = data.sizes.map((size) => {
+          if (
+            size.name === currentEdit.name &&
+            size.size === currentEdit.size
+          ) {
+            return {
+              ...size,
+              price: currentEdit.price,
+              stock: currentEdit.stock,
+            };
+          }
+          return size;
+        });
 
-    setEditSize(false);
-    return setCurrentEdit({});
+        setData({ ...data, sizes: updatedSizes });
+
+        setEditSize(false);
+        return setCurrentEdit({});
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
-  const removeSize = (name, size) => {
+  const removeSize = (name, size, id) => {
     if (!data) return;
 
-    const updated = data?.sizes.filter((s) => {
-      if (s.name === name && s.size === size) return false;
-      return true;
-    });
+    deleteSize(id)
+      .then((res) => {
+        const updated = data?.sizes.filter((s) => {
+          if (s.name === name && s.size === size) return false;
+          return true;
+        });
 
-    return setData({ ...data, sizes: updated });
+        return setData({ ...data, sizes: updated });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -81,91 +113,89 @@ export default function ManageSizeModal({ data, setData }) {
         )}
 
         <div className="p-2 border border-slate-200 rounded-lg">
-          <form onSubmit={editSize ? saveSize : addSize}>
-            <div className="mb-2">
+          <div className="mb-2">
+            <input
+              type="text"
+              name="name"
+              placeholder="Size name"
+              value={currentEdit.name || ""}
+              disabled={editSize}
+              onChange={(e) =>
+                setCurrentEdit({ ...currentEdit, name: e.target.value })
+              }
+              className="w-full text-sm px-2 py-2 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white disabled:bg-slate-100"
+            />
+          </div>
+
+          <div className="relative w-full flex items-center gap-2 mb-2">
+            <div className="relative w-1/3">
               <input
-                type="text"
-                name="name"
-                placeholder="Size name"
-                value={currentEdit.name || ""}
+                type="number"
+                name="size"
+                placeholder="mm"
+                value={currentEdit.size || ""}
                 disabled={editSize}
                 onChange={(e) =>
-                  setCurrentEdit({ ...currentEdit, name: e.target.value })
+                  setCurrentEdit({ ...currentEdit, size: e.target.value })
                 }
-                className="w-full text-sm px-2 py-2 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white disabled:bg-slate-100"
+                className="w-full text-sm px-1 py-2 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white disabled:bg-slate-100"
               />
+              <span className="absolute top-3 right-3 z-50">
+                <Ruler size={12} />
+              </span>
             </div>
 
-            <div className="relative w-full flex items-center gap-2 mb-2">
-              <div className="relative w-1/3">
-                <input
-                  type="number"
-                  name="size"
-                  placeholder="mm"
-                  value={currentEdit.size || ""}
-                  disabled={editSize}
-                  onChange={(e) =>
-                    setCurrentEdit({ ...currentEdit, size: e.target.value })
-                  }
-                  className="w-full text-sm px-1 py-2 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white disabled:bg-slate-100"
-                />
-                <span className="absolute top-3 right-3 z-50">
-                  <Ruler size={12} />
-                </span>
-              </div>
-
-              <div className="relative w-1/3">
-                <input
-                  type="number"
-                  name="price"
-                  placeholder="¥ Price"
-                  value={currentEdit.price || ""}
-                  onChange={(e) =>
-                    setCurrentEdit({ ...currentEdit, price: e.target.value })
-                  }
-                  className="w-full text-sm px-1 py-2 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white"
-                />
-                <span className="absolute top-3 right-3 z-50">
-                  <JapaneseYen size={12} />
-                </span>
-              </div>
-
-              <div className="relative w-1/3">
-                <input
-                  type="number"
-                  placeholder="Stock"
-                  name="stock"
-                  value={currentEdit.stock || ""}
-                  onChange={(e) =>
-                    setCurrentEdit({ ...currentEdit, stock: e.target.value })
-                  }
-                  className="w-full text-sm px-1 py-2 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white"
-                />
-                <span className="absolute top-3 right-3 z-50">
-                  <Layers size={12} />
-                </span>
-              </div>
+            <div className="relative w-1/3">
+              <input
+                type="number"
+                name="price"
+                placeholder="¥ Price"
+                value={currentEdit.price || ""}
+                onChange={(e) =>
+                  setCurrentEdit({ ...currentEdit, price: e.target.value })
+                }
+                className="w-full text-sm px-1 py-2 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white"
+              />
+              <span className="absolute top-3 right-3 z-50">
+                <JapaneseYen size={12} />
+              </span>
             </div>
 
-            <div>
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                type="submit"
-                className={`w-full px-4 py-2 ${editSize ? "bg-green-700 text-white" : "bg-slate-700 text-white"} text-sm font-bold rounded-lg`}
-              >
-                {editSize ? (
-                  <span>
-                    <Save className="inline-block mr-3" size={16} /> Save
-                  </span>
-                ) : (
-                  <span>
-                    <PlusCircle className="inline-block mr-3" size={16} /> Add
-                    New Size
-                  </span>
-                )}
-              </motion.button>
+            <div className="relative w-1/3">
+              <input
+                type="number"
+                placeholder="Stock"
+                name="stock"
+                value={currentEdit.stock || ""}
+                onChange={(e) =>
+                  setCurrentEdit({ ...currentEdit, stock: e.target.value })
+                }
+                className="w-full text-sm px-1 py-2 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white"
+              />
+              <span className="absolute top-3 right-3 z-50">
+                <Layers size={12} />
+              </span>
             </div>
-          </form>
+          </div>
+
+          <div>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={editSize ? saveSize : addSize}
+              className={`w-full px-4 py-2 ${editSize ? "bg-green-700 text-white" : "bg-slate-700 text-white"} text-sm font-bold rounded-lg`}
+            >
+              {editSize ? (
+                <span>
+                  <Save className="inline-block mr-3" size={16} /> Save
+                </span>
+              ) : (
+                <span>
+                  <PlusCircle className="inline-block mr-3" size={16} /> Add New
+                  Size
+                </span>
+              )}
+            </motion.button>
+          </div>
         </div>
       </div>
 
@@ -206,7 +236,9 @@ export default function ManageSizeModal({ data, setData }) {
                       <button
                         type="button"
                         className="p-2 bg-red-600 text-white rounded-full"
-                        onClick={() => removeSize(size.name, size.size)}
+                        onClick={() =>
+                          removeSize(size.name, size.size, size.id)
+                        }
                       >
                         <Trash2 size={14} />
                       </button>
@@ -221,6 +253,7 @@ export default function ManageSizeModal({ data, setData }) {
                             size: size.size,
                             price: size.price,
                             stock: size.stock,
+                            sizeId: size.id,
                           });
                         }}
                       >

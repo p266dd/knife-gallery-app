@@ -19,7 +19,7 @@ export async function fetchSizes({ productId }) {
   return sizes;
 }
 
-export async function addSize(data) {
+export async function addToSizes(data) {
   // * Add a new size and return it.
   const newSize = await prisma.size.create({
     data: {
@@ -27,23 +27,42 @@ export async function addSize(data) {
       size: Number(data.size),
       price: Number(data.price),
       stock: Number(data.stock),
-      productId: data.productId,
+      product: {
+        connect: { id: data.productId },
+      },
     },
   });
-
-  console.log("Added size", newSize);
 
   return newSize;
 }
 
-// export async function removeSize({ handleName }) {
-//   // * Delete handle where name is handleName.
-//   // ** The name must be unique.
-//   const deletedHandle = await prisma.handle.delete({
-//     where: {
-//       name: handleName,
-//     },
-//   });
+export async function updateSize(data, sizeId) {
+  // * Add a new size and return it.
+  const updatedSize = await prisma.size.update({
+    where: {
+      id: sizeId,
+    },
+    data: {
+      name: data.name,
+      size: Number(data.size),
+      price: Number(data.price),
+      stock: Number(data.stock),
+      product: {
+        connect: { id: data.productId },
+      },
+    },
+  });
 
-//   return newHandle;
-// }
+  return updatedSize;
+}
+
+export async function deleteSize(sizeId) {
+  // * Delete size by Id
+  const deletedSize = await prisma.size.delete({
+    where: {
+      id: sizeId,
+    },
+  });
+
+  return deletedSize;
+}

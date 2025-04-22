@@ -12,6 +12,7 @@ import { fetchHandles } from "@/actions/handles";
 
 export default function ProductForm({ product }) {
   const [formData, setFormData] = useState({
+    id: (product && product.id) || "",
     type: (product && product.type) || "",
     name: (product && product.name) || "",
     brand: (product && product.brand.name) || "",
