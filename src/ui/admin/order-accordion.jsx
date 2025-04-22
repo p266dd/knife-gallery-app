@@ -23,12 +23,14 @@ export default function OrderAccordion({ orderProduct }) {
 
   // * Join product sizes and order details.
   const details = [];
-  orderDetails.map((d) => {
-    // d.id is from the JSON content.
-    // s.id is the product size id.
-    // d.id and s.id must always match.
-    const match = product.sizes.find((s) => s.id === d.id);
-    if (match) details.push({ ...match, ordered: d.ordered });
+  product.sizes.map((size) => {
+    // * detail.id and size.id must always match.
+    const match = orderDetails.find((detail) => detail.id === size.id);
+
+    // * Add ordered field to product size if ids match.
+    if (match) return details.push({ ...size, ordered: match.ordered });
+
+    return details.push(size);
   });
 
   const handleSave = () => {

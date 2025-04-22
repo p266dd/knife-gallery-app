@@ -10,12 +10,16 @@ export async function updateOrderProductDetailsRow({ docId, newData }) {
 
   const details = JSON.parse(orderProduct.details);
 
-  // * Create an object with the updated data.
-  const newObject = [];
-  details.map((d) => {
-    if (d.id === newData.id) return newObject.push(newData);
-    return newObject.push(d);
-  });
+  const newObject = [...details];
+
+  if (details.some((detail) => detail.id === newObject.id)) {
+    details.map((detail) => {
+      if (detail.id === newData.id) return newObject.push(newData);
+      return;
+    });
+  }
+
+  newObject.push(newData);
 
   const updatedDoc = await prisma.orderProduct.update({
     where: {
