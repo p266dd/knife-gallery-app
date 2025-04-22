@@ -99,3 +99,8 @@ model Size {
   product   Product? @relation(fields: [productId], references: [id])
   productId String?
 }
+
+model Handle {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+}
