@@ -10,6 +10,7 @@ export default async function SingleProductPage({ params }) {
     },
     include: {
       brand: true,
+      sizes: true,
     },
   });
 
