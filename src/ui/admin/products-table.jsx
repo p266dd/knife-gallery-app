@@ -81,7 +81,7 @@ export default function ProductsTable() {
         <div className="relative">
           <div
             onClick={() => setShowSearch((prev) => !prev)}
-            className="bg-white shadow-xs flex items-center gap-3 px-3 py-1 rounded-xl"
+            className={`${showSearch ? "bg-slate-800 text-white" : "bg-white"} shadow-xs flex items-center gap-3 px-3 py-1 rounded-xl`}
           >
             <Search size={18} />
             <span>Search</span>
@@ -91,6 +91,8 @@ export default function ProductsTable() {
               <input
                 ref={inputRef}
                 type="text"
+                name="searchQuery"
+                placeholder="Search by product name."
                 className="text-sm px-3 py-2 bg-white border border-slate-300 rounded-l-xl shadow-lg focus-visible:outline-0"
               />
               <button
@@ -98,7 +100,7 @@ export default function ProductsTable() {
                 onClick={handleSearch}
                 className="text-sm px-3 py-2 text-white bg-slate-800 rounded-r-xl shadow-lg"
               >
-                Search
+                Find
               </button>
             </div>
           )}

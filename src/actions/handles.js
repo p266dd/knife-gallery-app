@@ -34,5 +34,5 @@ export async function removeHandle({ handleName }) {
     },
   });
 
-  return newHandle;
+  return deletedHandle;
 }
