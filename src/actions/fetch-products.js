@@ -2,9 +2,9 @@
 
 import prisma from "@/data/prisma";
 
-export async function fetchProducts({ page, itemsPerPage }) {
+export async function fetchProducts({ searchQuery, page, itemsPerPage }) {
   // * return paginated results.
-  const products = await prisma.product.findMany({
+  let config = {
     select: {
       id: true,
       name: true,
@@ -15,7 +15,19 @@ export async function fetchProducts({ page, itemsPerPage }) {
         },
       },
     },
-  });
+  };
+
+  // * Handle the search query if user is searching for something.
+  if (searchQuery) {
+    config = {
+      ...config,
+      where: {
+        name: { contains: searchQuery },
+      },
+    };
+  }
+
+  const products = await prisma.product.findMany(config);
 
   const startIndex = (page - 1) * itemsPerPage;
   const paginatedData = products.slice(startIndex, startIndex + itemsPerPage);

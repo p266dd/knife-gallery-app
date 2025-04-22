@@ -6,7 +6,6 @@ import useSWR from "swr";
 import {
   Filter,
   Search,
-  CheckSquare,
   ChevronLeftCircle,
   ChevronRightCircle,
 } from "lucide-react";
@@ -14,6 +13,8 @@ import {
 import { fetchProducts } from "@/actions/fetch-products";
 
 export default function ProductsTable() {
+  const [showSearch, setShowSearch] = useState(false);
+
   const [perPage, setPerPage] = useState(20);
 
   // * User's search input content.
@@ -46,6 +47,7 @@ export default function ProductsTable() {
   const handleSearch = () => {
     const inputContent = inputRef.current.value;
     setSearchQuery(inputContent);
+    setShowSearch(false);
     setPage(1);
   };
 
@@ -76,11 +78,30 @@ export default function ProductsTable() {
           </div>
         </div>
 
-        <div>
-          <div className="bg-white shadow-xs flex items-center gap-3 px-3 py-1 rounded-xl">
+        <div className="relative">
+          <div
+            onClick={() => setShowSearch((prev) => !prev)}
+            className="bg-white shadow-xs flex items-center gap-3 px-3 py-1 rounded-xl"
+          >
             <Search size={18} />
             <span>Search</span>
           </div>
+          {showSearch && (
+            <div className="absolute top-10 right-0 z-50 flex items-center">
+              <input
+                ref={inputRef}
+                type="text"
+                className="text-sm px-3 py-2 bg-white border border-slate-300 rounded-l-xl shadow-lg focus-visible:outline-0"
+              />
+              <button
+                type="button"
+                onClick={handleSearch}
+                className="text-sm px-3 py-2 text-white bg-slate-800 rounded-r-xl shadow-lg"
+              >
+                Search
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -90,8 +111,6 @@ export default function ProductsTable() {
             <tr>
               <th>Product</th>
               <th>Type</th>
-              <th>Brand</th>
-              <th>Active</th>
             </tr>
           </thead>
           <tbody className="text-sm">
@@ -113,7 +132,7 @@ export default function ProductsTable() {
                   key={i}
                   className="border-b border-slate-200 last:border-b-transparent"
                 >
-                  <td className="py-2 w-4/12">
+                  <td className="py-2 w-9/12">
                     <div>
                       <h5>
                         <Link href={"/dashboard/products/" + product.id}>
@@ -126,14 +145,6 @@ export default function ProductsTable() {
                     <div>
                       <h5>{product.type}</h5>
                     </div>
-                  </td>
-                  <td className="py-2 w-3/12">
-                    <div>
-                      <h5>{product.brand.name}</h5>
-                    </div>
-                  </td>
-                  <td className="py-2 w-2/12">
-                    <CheckSquare size={20} className="text-slate-500" />
                   </td>
                 </tr>
               ))}
