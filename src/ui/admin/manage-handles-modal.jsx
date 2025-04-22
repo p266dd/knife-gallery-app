@@ -1,14 +1,14 @@
 import { useState } from "react";
 import useSWR from "swr";
 import { motion } from "motion/react";
-import { Trash2 } from "lucide-react";
+import { CirclePlus, Settings, Trash2 } from "lucide-react";
 
 import Modal from "../modal";
 
 import { addHandle, removeHandle } from "@/actions/handles";
 
 export default function ManageHandlesModal({ handles }) {
-  const [newHandle, setNewHandle] = useState(null);
+  const [newHandle, setNewHandle] = useState("");
 
   const addNewHandle = (e) => {
     e.preventDefault();
@@ -36,7 +36,8 @@ export default function ManageHandlesModal({ handles }) {
           type="button"
           className="p-3 flex items-center gap-2 text-xs font-semibold text-white bg-slate-700 rounded-xl"
         >
-          Manage Handles
+          <Settings size={16} />
+          Handles
         </motion.button>
       }
     >
@@ -53,10 +54,10 @@ export default function ManageHandlesModal({ handles }) {
         <motion.button
           whileTap={{ scale: 0.9 }}
           type="button"
-          className="w-full px-3 py-2 bg-slate-700 text-white text-sm font-semibold rounded-xl"
+          className="w-full px-3 py-2 flex items-center justify-center gap-3 bg-slate-700 text-white text-sm font-semibold rounded-xl"
           onClick={addNewHandle}
         >
-          Add Handle
+          <CirclePlus size={16} /> Add Handle
         </motion.button>
       </div>
       <div className="h-auto max-h-52 overflow-y-auto">
