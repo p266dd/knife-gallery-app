@@ -1,5 +1,5 @@
 import { ShoppingBag } from "lucide-react";
-import DashboardOrdersTable from "@/ui/components/dashboard-orders-table";
+import DashboardOrdersTable from "@/ui/admin/orders-table";
 
 export default async function DashboardPage() {
   return (

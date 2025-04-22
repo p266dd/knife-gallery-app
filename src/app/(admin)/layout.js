@@ -1,7 +1,7 @@
 import { getSession } from "@/utils/session";
 import { redirect } from "next/navigation";
 
-import DashboardNavigation from "@/ui/components/dashboard-navigation.jsx";
+import DashboardNavigation from "@/ui/admin/navigation";
 
 export default async function AdminLayout({ children }) {
   const session = await getSession();

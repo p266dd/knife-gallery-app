@@ -3,7 +3,7 @@ import prisma from "@/data/prisma";
 import Button from "@/ui/button";
 
 import { Printer } from "lucide-react";
-import OrderAccordion from "@/ui/components/order-accordion";
+import OrderAccordion from "@/ui/admin/order-accordion";
 
 export default async function OrderPage({ params }) {
   const { orderId } = await params;
