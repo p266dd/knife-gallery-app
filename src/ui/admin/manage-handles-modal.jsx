@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useSWR from "swr";
+import { mutate } from "swr";
 import { motion } from "motion/react";
 import { CirclePlus, Settings, Trash2 } from "lucide-react";
 
@@ -17,15 +17,21 @@ export default function ManageHandlesModal({ handles }) {
     if (newHandle === "") return;
 
     // * Add handle and clear newHandle input.
-    const addedHandle = useSWR({ handleName: newHandle }, addHandle);
-    return setNewHandle("");
+    addHandle({ handleName: newHandle })
+      .then((res) => {
+        setNewHandle("");
+        mutate("fetchHandles");
+      })
+      .catch((error) => console.log(error));
   };
 
   const deleteHandle = (e, handleName) => {
     e.preventDefault();
 
     // * Delete handle.
-    const removedHandle = useSWR({ handleName }, removeHandle);
+    removeHandle({ handleName })
+      .then((res) => mutate("fetchHandles"))
+      .catch((error) => console.log(error));
   };
 
   return (
