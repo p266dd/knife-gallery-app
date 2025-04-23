@@ -1,16 +1,26 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { motion, AnimatePresence } from "motion/react";
 
 import ManageHandlesModal from "./manage-handles-modal";
+import ManageBrandsModal from "./manage-brands-modal";
 import ImageUpload from "./image-uploader";
 import ManageSizeModal from "./manage-size-modal";
+import ManageFilters from "./manage-filters";
 
 import { fetchHandles } from "@/actions/handles";
+import { fetchFilters } from "@/actions/filters";
+import { fetchBrands } from "@/actions/brands";
 
-export default function ProductForm({ product }) {
+import addProduct from "@/actions/add-product";
+
+export default function ProductForm({ product, edit = false }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null);
   const [formData, setFormData] = useState({
     id: (product && product.id) || "",
     type: (product && product.type) || "",
@@ -19,14 +29,47 @@ export default function ProductForm({ product }) {
     handle: (product && product.handle) || "",
     description: (product && product.description) || "",
     sizes: (product && product.sizes) || "",
+    filters: (product && product.filters) || "",
   });
 
+  const router = useRouter();
+
+  // * Available properties SWR => handles.data, handles.error, handles.isLoading
   const handles = useSWR("fetchHandles", fetchHandles);
-  // * Available properties => handles.data, handles.error, handles.isLoading
+  const filters = useSWR("fetchFilters", fetchFilters);
+  const brands = useSWR("fetchBrands", fetchBrands);
+
+  // * Add a new product to database or save existing one.
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    setLoading(true);
+    setError(null);
+    setMessage(null);
+
+    addProduct(formData)
+      .then((res) => {
+        if (res.errors) {
+          setError(res.errors);
+          setLoading(false);
+          setMessage(null);
+          return;
+        }
+        setLoading(false);
+        setMessage(null);
+        setError(null);
+        router.push("/dashboard/products");
+      })
+      .catch((error) => {
+        setLoading(false);
+        setError([error.message]);
+        setMessage(null);
+      });
+  };
 
   return (
     <div>
-      <form onSubmit={(e) => e.preventDefault()} className="relative">
+      <form className="relative">
         <div className="mb-3 flex items-center gap-3">
           <div className="flex-grow flex items-center gap-3 px-3 py-2 bg-white border border-slate-300 rounded-xl">
             <input
@@ -72,7 +115,35 @@ export default function ProductForm({ product }) {
           />
         </div>
 
-        <div className="mb-3">
+        <div className="mb-3 flex items-center gap-3">
+          <div className="flex-grow">
+            <select
+              required
+              name="brand"
+              value={(formData && formData.brand) || ""}
+              disabled={brands.isLoading}
+              onChange={(e) =>
+                setFormData({ ...formData, brand: e.target.value })
+              }
+              className="w-full text-sm px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
+            >
+              <option value="" disabled>
+                {brands.isLoading ? "Loading..." : "Select a brand"}
+              </option>
+              {brands?.data &&
+                brands.data.map((brand, i) => (
+                  <option key={`brand-${i}`} value={brand.name}>
+                    {brand.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="flex-shrink-0">
+            <ManageBrandsModal brands={brands.data} />
+          </div>
+        </div>
+
+        {/* <div className="mb-3">
           <input
             required
             name="brand"
@@ -83,7 +154,7 @@ export default function ProductForm({ product }) {
             }
             className="w-full text-sm px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
           />
-        </div>
+        </div> */}
 
         <AnimatePresence>
           {formData.type === "knife" && (
@@ -142,36 +213,51 @@ export default function ProductForm({ product }) {
       </div>
 
       <div className="mb-5">
-        <ManageSizeModal data={formData} setData={setFormData} />
+        <ManageSizeModal data={formData} setData={setFormData} edit={edit} />
       </div>
 
-      {/* <ManageFiltersTable data={data} setData={setData} /> */}
+      <ManageFilters
+        data={formData}
+        setData={setFormData}
+        filters={filters?.data}
+      />
 
-      {/* <div>
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            type="submit"
-            className={`w-full px-3 py-2 ${loading ? "bg-slate-200 text-slate-700" : "bg-slate-700 text-white"} text-sm font-semibold rounded-xl`}
-          >
-            {loading ? <span> Adding...</span> : "Add New Item"}
-          </motion.button>
-        </div> */}
+      <div className="pt-4">
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          type="button"
+          onClick={handleSubmit}
+          className={`w-full px-3 py-2 ${loading ? "bg-slate-200 text-slate-700" : "bg-slate-700 text-white"} text-sm font-semibold rounded-xl`}
+        >
+          {loading ? (
+            edit ? (
+              <span>Saving...</span>
+            ) : (
+              <span>Adding...</span>
+            )
+          ) : edit ? (
+            "Save Changes"
+          ) : (
+            "Add New Product"
+          )}
+        </motion.button>
+      </div>
 
-      {/* {error && error.length > 0 && (
-          <div className="mt-3">
-            {error.map((err, i) => (
-              <p key={`error-${i}`} className="text-sm text-red-600">
-                {err}
-              </p>
-            ))}
-          </div>
-        )}
+      {error && error.length > 0 && (
+        <div className="mt-3">
+          {error.map((err, i) => (
+            <p key={`error-${i}`} className="text-sm text-red-600">
+              {err}
+            </p>
+          ))}
+        </div>
+      )}
 
-        {message && message.length > 0 && (
-          <div className="mt-3">
-            <p className="text-sm text-green-600">{message}</p>
-          </div>
-        )} */}
+      {message && message.length > 0 && (
+        <div className="mt-3">
+          <p className="text-sm text-green-600">{message}</p>
+        </div>
+      )}
     </div>
   );
 }

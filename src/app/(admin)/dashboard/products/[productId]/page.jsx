@@ -9,21 +9,26 @@ export default async function SingleProductPage({ params }) {
       id: productId,
     },
     include: {
-      brand: true,
+      media: true,
+      thumbnail: true,
       sizes: true,
+      filters: true,
     },
   });
+
+  console.log(product);
 
   return (
     <main className="py-7 px-3">
       <div className="mb-9 mt-8">
+        <span className="text-sm text-slate-500">Editing</span>
         <h1 className="text-2xl font-semibold text-slate-700">
           {product.name}
         </h1>
       </div>
 
       <div className="mb-9">
-        <ProductForm product={product} />
+        <ProductForm product={product} edit={true} />
       </div>
     </main>
   );

@@ -9,11 +9,6 @@ export async function fetchProducts({ searchQuery, page, itemsPerPage }) {
       id: true,
       name: true,
       type: true,
-      brand: {
-        select: {
-          name: true,
-        },
-      },
     },
   };
 
@@ -47,11 +42,6 @@ export async function fetchSingleProduct({ productId }) {
       id: true,
       name: true,
       type: true,
-      brand: {
-        select: {
-          name: true,
-        },
-      },
     },
   });
 

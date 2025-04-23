@@ -14,14 +14,20 @@ import {
 
 import { addToSizes, updateSize, deleteSize } from "@/actions/sizes";
 
-export default function ManageSizeModal({ data, setData }) {
+export default function ManageSizeModal({ data, setData, edit = false }) {
   const [editSize, setEditSize] = useState(false);
   const [currentEdit, setCurrentEdit] = useState({});
 
   const addSize = (e) => {
     e.preventDefault();
 
-    if (!currentEdit.name) return;
+    if (
+      !currentEdit.name ||
+      !currentEdit.size ||
+      !currentEdit.price ||
+      !currentEdit.stock
+    )
+      return;
 
     const newSize = {
       name: currentEdit.name,
@@ -31,18 +37,25 @@ export default function ManageSizeModal({ data, setData }) {
       productId: data.id,
     };
 
-    addToSizes(newSize)
-      .then((res) => {
-        if (data && data.sizes) {
-          setData({ ...data, sizes: [...data.sizes, currentEdit] });
-        }
+    if (edit) {
+      return addToSizes(newSize)
+        .then((res) => {
+          if (data && data.sizes) {
+            setData({ ...data, sizes: [...data.sizes, currentEdit] });
+          }
 
-        setEditSize(false);
-        return setCurrentEdit({});
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+          setEditSize(false);
+          return setCurrentEdit({});
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
+    setData((prev) => ({ ...prev, sizes: [...prev.sizes, newSize] }));
+
+    setEditSize(false);
+    return setCurrentEdit({});
   };
 
   const saveSize = (e) => {
@@ -60,47 +73,74 @@ export default function ManageSizeModal({ data, setData }) {
       productId: data.id,
     };
 
-    updateSize(updatedSize, currentEdit.sizeId)
-      .then((res) => {
-        const updatedSizes = data.sizes.map((size) => {
-          if (
-            size.name === currentEdit.name &&
-            size.size === currentEdit.size
-          ) {
-            return {
-              ...size,
-              price: currentEdit.price,
-              stock: currentEdit.stock,
-            };
-          }
-          return size;
+    if (edit) {
+      updateSize(updatedSize, currentEdit.sizeId)
+        .then((res) => {
+          const updatedSizes = data.sizes.map((size) => {
+            if (
+              size.name === currentEdit.name &&
+              size.size === currentEdit.size
+            ) {
+              return {
+                ...size,
+                price: currentEdit.price,
+                stock: currentEdit.stock,
+              };
+            }
+            return size;
+          });
+
+          setData({ ...data, sizes: updatedSizes });
+
+          setEditSize(false);
+          return setCurrentEdit({});
+        })
+        .catch((error) => {
+          console.log(error);
         });
+    }
 
-        setData({ ...data, sizes: updatedSizes });
+    const updatedSizes = data.sizes.map((size) => {
+      if (size.name === currentEdit.name && size.size === currentEdit.size) {
+        return {
+          ...size,
+          price: currentEdit.price,
+          stock: currentEdit.stock,
+        };
+      }
+      return size;
+    });
 
-        setEditSize(false);
-        return setCurrentEdit({});
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    setData({ ...data, sizes: updatedSizes });
+
+    setEditSize(false);
+    return setCurrentEdit({});
   };
 
   const removeSize = (name, size, id) => {
     if (!data) return;
 
-    deleteSize(id)
-      .then((res) => {
-        const updated = data?.sizes.filter((s) => {
-          if (s.name === name && s.size === size) return false;
-          return true;
-        });
+    if (edit) {
+      deleteSize(id)
+        .then((res) => {
+          const updated = data?.sizes.filter((s) => {
+            if (s.name === name && s.size === size) return false;
+            return true;
+          });
 
-        return setData({ ...data, sizes: updated });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+          return setData({ ...data, sizes: updated });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
+    const updated = data?.sizes.filter((s) => {
+      if (s.name === name && s.size === size) return false;
+      return true;
+    });
+
+    return setData({ ...data, sizes: updated });
   };
 
   return (
