@@ -62,23 +62,21 @@ model Product {
   type        String
   name        String         @unique
   description String?
-  brand       Brand          @relation("ProductBrand", fields: [brandId], references: [id])
-  brandId     Int
+  brand       String
   handle      String
   media       Media[]        @relation("ProductMedia")
   thumbnail   Media?         @relation("ProductThumbnail", fields: [thumbnailId], references: [id])
   thumbnailId Int?           @unique
   sizes       Size[]
-  filters     String?
+  filters     Filter[]
   orders      OrderProduct[]
 
   @@index([id, name(sort: Asc)])
 }
 
 model Brand {
-  id       Int       @id @default(autoincrement())
-  name     String
-  products Product[] @relation("ProductBrand")
+  id   Int    @id @default(autoincrement())
+  name String
 }
 
 model Media {
@@ -103,4 +101,10 @@ model Size {
 model Handle {
   id   Int    @id @default(autoincrement())
   name String @unique
+}
+
+model Filter {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  products Product[]
 }
