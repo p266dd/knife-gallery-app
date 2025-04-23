@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { encrypt, decrypt } from "./jwt";
 
 // * Creates a session cookie with users data.
@@ -34,5 +35,31 @@ export const getSession = async () => {
   if (!sessionCookie) return null;
 
   const session = await decrypt(sessionCookie);
+  return session;
+};
+
+// * Allow operation if user is logged in.
+export const verifyUserSession = async () => {
+  const session = await getSession();
+
+  if (!session.id) {
+    return redirect("/login");
+  }
+
+  return session;
+};
+
+// * only allow operation if user is an admin user.
+export const verifyAdminSession = async () => {
+  const session = await getSession();
+
+  if (session.role !== "admin" && session.id) {
+    return redirect("/");
+  }
+
+  if (!session.id) {
+    return redirect("/login");
+  }
+
   return session;
 };
