@@ -10,12 +10,11 @@ const firebaseConfig = {
   appId: process.env.FIREBASE_APP_ID,
 };
 
-let firebaseInstance, database, storage;
+let firebaseInstance, storage;
 
 if (!getApps().length) {
   firebaseInstance = initializeApp(firebaseConfig);
-  database = getFirestore(firebaseInstance);
   storage = getStorage(firebaseInstance);
 }
 
-export { database, storage };
+export { storage };
