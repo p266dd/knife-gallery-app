@@ -3,13 +3,18 @@
 import useSWR from "swr";
 import Link from "next/link";
 import { useState, useRef } from "react";
-import { PrinterIcon } from "lucide-react";
-import { ArrowLeftCircle, ArrowRightCircle, Search } from "lucide-react";
+import {
+  ArrowLeftCircle,
+  ArrowRightCircle,
+  Search,
+  PrinterIcon,
+} from "lucide-react";
 
 import Button from "@/ui/button";
-import { fetchNewOrders, fetchOrders } from "@/actions/fetch-orders";
 
-export default function DashboardOrdersTable({ newOrders, perPage }) {
+import { fetchOrders } from "@/actions/fetch-orders";
+
+export default function DashboardOrdersTable({ newOnly = false }) {
   // * User's search input content.
   const [searchQuery, setSearchQuery] = useState(null);
 
@@ -18,21 +23,17 @@ export default function DashboardOrdersTable({ newOrders, perPage }) {
 
   // * Pagination settings.
   const [page, setPage] = useState(1);
-  const itemsPerPage = perPage || 10;
+  const itemsPerPage = 15;
 
   const { data, error, isLoading } = useSWR(
-    { searchQuery, page, itemsPerPage },
-    (config) =>
-      newOrders
-        ? fetchNewOrders(config)
-        : fetchOrders({ ...config, full: true })
+    { searchQuery, page, itemsPerPage, newOnly },
+    (config) => fetchOrders(config)
   );
 
   const previousPage = () => {
     if (page > 1) setPage((prevPage) => prevPage - 1);
   };
 
-  // * Only change page if there is more content to show.
   const nextPage = () => {
     if (data && page < data.totalPages) {
       setPage((prevPage) => prevPage + 1);
@@ -48,7 +49,7 @@ export default function DashboardOrdersTable({ newOrders, perPage }) {
 
   return (
     <div>
-      {!newOrders && (
+      {!newOnly && (
         <div className="my-4 pr-2">
           <div className="pl-2 py-[2px] pr-1 flex items-center gap-3 bg-white border border-slate-300 rounded-xl">
             <input

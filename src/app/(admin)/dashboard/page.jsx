@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CirclePlus, ShoppingBag } from "lucide-react";
+
 import DashboardOrdersTable from "@/ui/admin/orders-table";
 
 export default async function DashboardPage() {
@@ -21,7 +22,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="w-full overflow-scroll">
-          <DashboardOrdersTable perPage={5} newOrders={true} />
+          <DashboardOrdersTable newOnly={true} />
         </div>
       </div>
 
