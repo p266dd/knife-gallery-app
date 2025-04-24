@@ -80,7 +80,7 @@ export default function ImageUpload({ data, setData }) {
 
   const makeThumbnail = (name) => {
     if (!data) return;
-    return setData({ ...data, thumbnail: name });
+    return setData({ ...data, thumbnail: { name } });
   };
 
   return (
@@ -130,7 +130,7 @@ export default function ImageUpload({ data, setData }) {
         data.media.map((image, i) => (
           <div key={`image-${i}`} className="relative h-32">
             <img
-              src={image.preview}
+              src={image.preview || image.url}
               alt={`preview-${i}`}
               className="w-full h-full object-cover border border-slate-300 rounded"
             />
@@ -142,9 +142,9 @@ export default function ImageUpload({ data, setData }) {
             </span>
             <span
               onClick={() => makeThumbnail(image.name)}
-              className={`absolute -bottom-2 -bg-conic-120 right-1/2 translate-x-1/2 ${data.thumbnail === image.name ? "bg-slate-800 text-white" : "bg-slate-200 text-slate-500"}  rounded-full p-1 cursor-pointer`}
+              className={`absolute -bottom-2 -bg-conic-120 right-1/2 translate-x-1/2 ${data.thumbnail?.name === image.name ? "bg-slate-800 text-white" : "bg-slate-200 text-slate-500"}  rounded-full p-1 cursor-pointer`}
             >
-              {data.thumbnail === image.name ? (
+              {data && data.thumbnail?.name === image.name ? (
                 <CircleCheck size={14} />
               ) : (
                 <Circle size={14} />

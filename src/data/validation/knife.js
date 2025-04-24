@@ -22,7 +22,6 @@ export const knifeSchema = object({
     .required("Please select at least one image.")
     .min(1, "Please select at least one image.")
     .max(8, "You can only upload 8 images."),
-  thumbnail: string().required("Please select a thumbnail.").trim(),
   sizes: array()
     .of(
       object({
