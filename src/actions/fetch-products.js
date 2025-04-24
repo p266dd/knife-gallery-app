@@ -2,7 +2,12 @@
 
 import prisma from "@/data/prisma";
 
-export async function fetchProducts({ searchQuery, page, itemsPerPage }) {
+export async function fetchProducts({
+  searchQuery,
+  filterType,
+  page,
+  itemsPerPage,
+}) {
   // * return paginated results.
   let config = {
     select: {
@@ -10,6 +15,7 @@ export async function fetchProducts({ searchQuery, page, itemsPerPage }) {
       name: true,
       type: true,
     },
+    where: {},
   };
 
   // * Handle the search query if user is searching for something.
@@ -17,7 +23,37 @@ export async function fetchProducts({ searchQuery, page, itemsPerPage }) {
     config = {
       ...config,
       where: {
-        name: { contains: searchQuery },
+        AND: [
+          {
+            name: {
+              contains: searchQuery,
+            },
+          },
+        ],
+      },
+    };
+  }
+
+  // * Handle the filter type if user has selected it.
+  if (filterType) {
+    config = {
+      ...config,
+      where: {
+        ...config.where,
+        OR: [
+          {
+            type: { equals: filterType },
+          },
+          {
+            filters: {
+              some: {
+                name: {
+                  contains: filterType,
+                },
+              },
+            },
+          },
+        ],
       },
     };
   }

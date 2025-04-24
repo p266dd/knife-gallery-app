@@ -50,39 +50,37 @@ export default async function updateProduct(productData, current) {
   let newImages = [];
 
   // * Handle the deleted, added and keept images.
-  if (productData?.media && productData?.media.length > 0) {
-    keptImages = productData.media.filter((m) =>
-      current.media.some((v) => v.name === m.name)
-    );
-    deletedImages = current.media.filter(
-      (m) => !productData.media.some((v) => v.name === m.name)
-    );
-    newImages = productData.media.filter(
-      (m) => !current.media.some((v) => v.name === m.name)
-    );
+  keptImages = productData.media.filter((m) =>
+    current.media.some((v) => v.name === m.name)
+  );
+  deletedImages = current.media.filter(
+    (m) => !productData.media.some((v) => v.name === m.name)
+  );
+  newImages = productData.media.filter(
+    (m) => !current.media.some((v) => v.name === m.name)
+  );
 
-    // * Delete unused images.
-    if (deletedImages.length > 0) {
-      deletedImages.map(async (image) => {
+  // * Delete unused images.
+  if (deletedImages.length > 0) {
+    deletedImages.map(async (image) => {
+      const storageRef = ref(storage, `products/${image.name}`);
+      return await deleteObject(storageRef);
+    });
+  }
+
+  // * Upload new images and add to object.
+  if (newImages.length > 0) {
+    newImages = await Promise.all(
+      newImages.map(async (image) => {
         const storageRef = ref(storage, `products/${image.name}`);
-        return await deleteObject(storageRef);
-      });
-    }
-
-    // * Upload new images and add to object.
-    if (newImages.length > 0) {
-      newImages = await Promise.all(
-        newImages.map(async (image) => {
-          const storageRef = ref(storage, `products/${image.name}`);
-          const snapshot = await uploadBytes(storageRef, image.blob);
-          const downloadURL = await getDownloadURL(snapshot.ref);
-          return {
-            name: image.name,
-            url: downloadURL,
-          };
-        })
-      );
-    }
+        const snapshot = await uploadBytes(storageRef, image.blob);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        return {
+          name: image.name,
+          url: downloadURL,
+        };
+      })
+    );
   }
 
   if (newImages.length > 0) {
@@ -112,39 +110,37 @@ export default async function updateProduct(productData, current) {
   let keptSizes, deletedSizes, newSizes;
   let newSizeObject = {};
 
-  if (updatedData.size && updatedData.sizes.length > 0) {
-    keptSizes = productData.sizes.filter((m) =>
-      current.sizes.some((v) => v.name === m.name)
-    );
-    deletedSizes = current.sizes.filter(
-      (m) => !productData.sizes.some((v) => v.name === m.name)
-    );
-    newSizes = productData.sizes.filter(
-      (m) => !current.sizes.some((v) => v.name === m.name)
+  keptSizes = productData.sizes.filter((m) =>
+    current.sizes.some((v) => v.name === m.name)
+  );
+  deletedSizes = current.sizes.filter(
+    (m) => !productData.sizes.some((v) => v.name === m.name)
+  );
+  newSizes = productData.sizes.filter(
+    (m) => !current.sizes.some((v) => v.name === m.name)
+  );
+
+  // * Delete unused sizes.
+  if (deletedSizes.length > 0) {
+    deletedSizes.map(
+      async (size) =>
+        await prisma.size.delete({
+          where: { id: size.id },
+        })
     );
 
-    // * Delete unused sizes.
-    if (deletedSizes.length > 0) {
-      deletedSizes.map(
-        async (size) =>
-          await prisma.size.delete({
-            where: { id: size.id },
-          })
-      );
+    newSizeObject = {
+      ...newSizeObject,
+      disconnect: deletedSizes.map((size) => ({ id: size.id })),
+    };
+  }
 
-      newSizeObject = {
-        ...newSizeObject,
-        disconnect: deletedSizes.map((size) => ({ id: size.id })),
-      };
-    }
-
-    // * Create new sizes
-    if (newSizes.length > 0) {
-      newSizeObject = {
-        ...newSizeObject,
-        create: newSizes,
-      };
-    }
+  // * Create new sizes
+  if (newSizes.length > 0) {
+    newSizeObject = {
+      ...newSizeObject,
+      create: newSizes,
+    };
   }
 
   // * Prepare the filters object to help create and connect filters to product.
@@ -152,35 +148,31 @@ export default async function updateProduct(productData, current) {
   let keptFilters, deletedFilters, newFilters;
   let newFilterObject = {};
 
-  if (updatedData.filters && updatedData.filters.length > 0) {
-    keptFilters = productData.filters.filter((m) =>
-      current.filters.some((v) => v.name === m.name)
-    );
-    deletedFilters = current.filters.filter(
-      (m) => !productData.filters.some((v) => v.name === m.name)
-    );
-    newFilters = productData.filters.filter(
-      (m) => !current.filters.some((v) => v.name === m.name)
-    );
+  keptFilters = productData.filters.filter((m) =>
+    current.filters.some((v) => v.name === m.name)
+  );
+  deletedFilters = current.filters.filter(
+    (m) => !productData.filters.some((v) => v.name === m.name)
+  );
+  newFilters = productData.filters.filter(
+    (m) => !current.filters.some((v) => v.name === m.name)
+  );
 
-    // * Unlink unused filters.
-    if (deletedFilters.length > 0) {
-      newFilterObject = {
-        ...newFilterObject,
-        disconnect: deletedFilters.map((filter) => ({ id: filter.id })),
-      };
-    }
-
-    // * Link new filters
-    if (newFilters.length > 0) {
-      newFilterObject = {
-        ...newFilterObject,
-        connect: newFilters,
-      };
-    }
+  // * Unlink unused filters.
+  if (deletedFilters.length > 0) {
+    newFilterObject = {
+      ...newFilterObject,
+      disconnect: deletedFilters.map((filter) => ({ id: filter.id })),
+    };
   }
 
-  console.log(newFilterObject);
+  // * Link new filters
+  if (newFilters.length > 0) {
+    newFilterObject = {
+      ...newFilterObject,
+      connect: newFilters,
+    };
+  }
 
   let product;
   try {
@@ -209,8 +201,6 @@ export default async function updateProduct(productData, current) {
 
   // * Now, we only need to connect the thumbail if [it has changed]
   // based on the media's id that matches the thumbnail name.
-  console.log(current.thumbnail);
-
   if (updatedData.thumbnail) {
     // Find the id of the media that matches the new thumbnail name
     let newThumbnail;

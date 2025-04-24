@@ -1,9 +1,12 @@
 import Link from "next/link";
+import prisma from "@/data/prisma";
 import { PlusCircle } from "lucide-react";
 
 import ProductsTable from "@/ui/admin/products-table";
 
 export default async function ProductsPage() {
+  const filters = await prisma.filter.findMany();
+
   return (
     <main className="py-7 px-3">
       <div className="mb-9 mt-8">
@@ -34,7 +37,7 @@ export default async function ProductsPage() {
       </div>
 
       <div>
-        <ProductsTable />
+        <ProductsTable filters={filters} />
       </div>
     </main>
   );
