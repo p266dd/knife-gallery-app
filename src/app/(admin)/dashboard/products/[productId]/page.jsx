@@ -16,8 +16,6 @@ export default async function SingleProductPage({ params }) {
     },
   });
 
-  console.log(product);
-
   return (
     <main className="py-7 px-3">
       <div className="mb-9 mt-8">

@@ -30,8 +30,6 @@ export default async function addProduct(productData) {
     return { errors: ["Validation failed"] };
   }
 
-  console.log(validatedData);
-
   // upload images to storage
   const imageUrls = await Promise.all(
     validatedData.media.map(async (image) => {
@@ -102,7 +100,9 @@ export default async function addProduct(productData) {
   try {
     thumbnailId = await prisma.media.findFirst({
       where: {
-        name: validatedData.thumbnail,
+        name: {
+          equals: validatedData.thumbnail.name,
+        },
       },
       select: {
         id: true,
