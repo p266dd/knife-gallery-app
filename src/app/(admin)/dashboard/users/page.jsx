@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { User, CirclePlus } from "lucide-react";
 
+import UsersTable from "@/ui/admin/users-table";
+
 export default async function UsersPage() {
   return (
     <main className="py-12 pr-6 pl-4">
@@ -19,7 +21,9 @@ export default async function UsersPage() {
           </Link>
         </div>
 
-        <div>Content</div>
+        <div>
+          <UsersTable />
+        </div>
       </div>
     </main>
   );
