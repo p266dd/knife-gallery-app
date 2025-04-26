@@ -19,7 +19,7 @@ export default function UserForm({ user, edit = false }) {
   return (
     <div>
       <form action={formAction} className="relative">
-        <input type="hidden" name="userId" value={user.id} />
+        {edit && user && <input type="hidden" name="userId" value={user.id} />}
         <div className="mb-3 flex items-center gap-3">
           <div className="flex-grow flex items-center gap-3 px-3 py-2 bg-white border border-slate-300 rounded-xl">
             <input
@@ -78,7 +78,7 @@ export default function UserForm({ user, edit = false }) {
             required
             name="password"
             type="password"
-            placeholder="Private"
+            placeholder={edit ? "Private" : "Auto-Generated"}
             disabled={true}
             className="w-full px-2 py-3 pl-7 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
           />
