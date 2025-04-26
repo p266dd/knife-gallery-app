@@ -97,7 +97,7 @@ export default function UsersTable({ filters }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 30 }}
-                className="absolute top-10 right-1/2 translate-x-1/2 z-50 flex flex-col justify-between gap-2 px-3 py-2 bg-white shadow-lg rounded-xl"
+                className="absolute w-32 top-10 right-1/2 translate-x-1/2 z-50 flex flex-col justify-between gap-2 px-3 py-2 bg-white shadow-lg rounded-xl"
               >
                 <button
                   onClick={() => {
@@ -119,7 +119,7 @@ export default function UsersTable({ filters }) {
                     id="active"
                     name="filterType"
                     value={1}
-                    defaultChecked={filterType === 1}
+                    defaultChecked={filterType === "1"}
                     onChange={handleFilterSelect}
                   />
                 </label>
@@ -134,7 +134,7 @@ export default function UsersTable({ filters }) {
                     id="notActive"
                     name="filterType"
                     value={0}
-                    defaultChecked={filterType === 0}
+                    defaultChecked={filterType === "0"}
                     onChange={handleFilterSelect}
                   />
                 </label>

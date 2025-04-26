@@ -44,7 +44,7 @@ export async function fetchUsers({
         ...config.where,
         OR: [
           {
-            isActive: { equals: filterType },
+            isActive: { equals: Boolean(Number(filterType)) },
           },
         ],
       },
