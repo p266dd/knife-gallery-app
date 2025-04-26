@@ -64,16 +64,14 @@ export async function fetchUsers({
 export async function fetchSingleUser({ userId }) {
   await verifyAdminSession();
   // * return a single user.
-  const user = await prisma.product.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
-      id: productId,
+      id: userId,
     },
-    select: {
-      id: true,
-      name: true,
-      type: true,
+    omit: {
+      password: true,
     },
   });
 
-  return product;
+  return user;
 }

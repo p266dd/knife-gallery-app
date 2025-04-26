@@ -110,54 +110,34 @@ export default function UsersTable({ filters }) {
                 </button>
 
                 <label
-                  htmlFor="knife"
+                  htmlFor="active"
                   className="w-full text-sm flex justify-between items-center gap-3"
                 >
-                  Knife
+                  Active
                   <input
                     type="radio"
-                    id="knife"
+                    id="active"
                     name="filterType"
-                    value="knife"
-                    defaultChecked={filterType === "knife"}
+                    value={1}
+                    defaultChecked={filterType === 1}
                     onChange={handleFilterSelect}
                   />
                 </label>
 
                 <label
-                  htmlFor="other"
+                  htmlFor="notActive"
                   className="w-full text-sm flex justify-between items-center gap-3"
                 >
-                  Other
+                  Not Active
                   <input
                     type="radio"
-                    id="other"
+                    id="notActive"
                     name="filterType"
-                    value="other"
-                    defaultChecked={filterType === "other"}
+                    value={0}
+                    defaultChecked={filterType === 0}
                     onChange={handleFilterSelect}
                   />
                 </label>
-                {filters &&
-                  filters.map((filter) => {
-                    return (
-                      <label
-                        key={filter + "-filter"}
-                        htmlFor={filter.id}
-                        className="w-full text-sm flex justify-between items-center gap-3"
-                      >
-                        {filter.name}
-                        <input
-                          type="radio"
-                          id={filter.id}
-                          name="filterType"
-                          value={filter.name}
-                          defaultChecked={filterType === filter.name}
-                          onChange={handleFilterSelect}
-                        />
-                      </label>
-                    );
-                  })}
               </motion.div>
             )}
           </AnimatePresence>
@@ -249,8 +229,8 @@ export default function UsersTable({ filters }) {
                     </div>
                   </td>
                   <td className="py-2 w-2/12">
-                    <div>
-                      <h5>{user.type}</h5>
+                    <div className="text-xs">
+                      <h5>{user.isActive ? "Active" : "No"}</h5>
                     </div>
                   </td>
                 </tr>

@@ -1,25 +1,32 @@
 "use client";
 
-import { useState, useActionState } from "react";
+import { useActionState } from "react";
 import { motion } from "motion/react";
+import { User, Mail, Key, Briefcase, FileDigit } from "lucide-react";
 
-import addProduct from "@/actions/add-product";
+import addUser from "@/actions/add-user";
+import updateUser from "@/actions/update-user";
 
 export default function UserForm({ user, edit = false }) {
-  const [state, formAction, isPending] = useActionState(addProduct, {
-    error: null,
-    message: null,
-  });
+  const [state, formAction, isPending] = useActionState(
+    edit ? updateUser : addUser,
+    {
+      error: null,
+      message: null,
+    }
+  );
 
   return (
     <div>
-      <form onSubmit={formAction} className="relative">
+      <form action={formAction} className="relative">
+        <input type="hidden" name="userId" value={user.id} />
         <div className="mb-3 flex items-center gap-3">
           <div className="flex-grow flex items-center gap-3 px-3 py-2 bg-white border border-slate-300 rounded-xl">
             <input
               name="role"
               id="user-role"
               type="radio"
+              value="user"
               defaultChecked={user && user.role === "user"}
             />
             <label className="flex-grow" htmlFor="user-role">
@@ -32,8 +39,8 @@ export default function UserForm({ user, edit = false }) {
               name="role"
               id="admin-role"
               type="radio"
+              value="admin"
               defaultChecked={user && user.role === "admin"}
-              disabled={edit && product.role === "admin"}
             />
             <label className="flex-grow" htmlFor="admin-role">
               Admin
@@ -41,59 +48,70 @@ export default function UserForm({ user, edit = false }) {
           </div>
         </div>
 
-        <div className="mb-3">
+        <div className="mb-3 relative">
           <input
             required
             name="name"
             type="text"
             placeholder="Full Name"
             defaultValue={(user && user.name) || ""}
-            className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
+            className="w-full px-2 py-3 pl-7 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
           />
+          <User size="14" className="absolute left-2 top-4 text-slate-500" />
         </div>
 
-        <div className="mb-3">
+        <div className="mb-3 relative">
           <input
             required
             name="email"
             type="email"
             placeholder="Email address"
             defaultValue={(user && user.email) || ""}
-            className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
+            className="w-full px-2 py-3 pl-7 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
           />
+          <Mail size="14" className="absolute left-2 top-4 text-slate-500" />
         </div>
 
-        <div className="mb-3">
+        <div className="mb-3 relative">
           {/* Auto generate password */}
           <input
             required
             name="password"
             type="password"
-            placeholder="Auto Generated"
+            placeholder="Private"
             disabled={true}
-            className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
+            className="w-full px-2 py-3 pl-7 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
           />
+          <Key size="14" className="absolute left-2 top-4 text-slate-500" />
         </div>
 
-        <div className="mb-3">
+        <div className="mb-3 relative">
           <input
             required
             name="businessName"
             type="text"
             placeholder="Business Name"
             defaultValue={(user && user.businessName) || ""}
-            className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
+            className="w-full px-2 py-3 pl-7 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
+          />
+          <Briefcase
+            size="14"
+            className="absolute left-2 top-4 text-slate-500"
           />
         </div>
 
-        <div className="mb-3">
+        <div className="mb-3 relative">
           <input
             required
             name="businessCode"
             type="text"
             placeholder="Business Code"
             defaultValue={(user && user.businessCode) || ""}
-            className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
+            className="w-full px-2 py-3 pl-7 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
+          />
+          <FileDigit
+            size="14"
+            className="absolute left-2 top-4 text-slate-500"
           />
         </div>
 
@@ -103,9 +121,10 @@ export default function UserForm({ user, edit = false }) {
               name="isActive"
               id="active"
               type="radio"
-              defaultChecked={user && user.isActive === "active"}
+              value={1}
+              defaultChecked={user && user.isActive}
             />
-            <label className="flex-grow" htmlFor="active">
+            <label className="flex-grow text-sm" htmlFor="active">
               Active
             </label>
           </div>
@@ -115,9 +134,10 @@ export default function UserForm({ user, edit = false }) {
               name="isActive"
               id="notActive"
               type="radio"
-              defaultChecked={user && user.isActive === "notActive"}
+              value={0}
+              defaultChecked={user && !user.isActive}
             />
-            <label className="flex-grow" htmlFor="notActive">
+            <label className="flex-grow text-sm" htmlFor="notActive">
               Not Active
             </label>
           </div>
