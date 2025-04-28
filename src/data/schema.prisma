@@ -70,6 +70,8 @@ model Product {
   sizes       Size[]
   filters     Filter[]
   orders      OrderProduct[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime?
 
   @@index([id, name(sort: Asc)])
 }
