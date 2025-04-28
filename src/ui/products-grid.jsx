@@ -27,12 +27,15 @@ export default function ProductsGrid() {
     fetchProductsInfinite
   );
 
+  // * Is there more data to be returned?
+  const hasMoreData = data && data[data.length - 1]?.length > 0;
+
   // * Concatenate data from all pages.
   const allProducts = data ? [].concat(...data) : [];
 
   return (
-    <div className="px-2 grid grid-cols-3 gap-1">
-      <AnimatePresence>
+    <AnimatePresence>
+      <div className="px-2 grid grid-cols-3 gap-1">
         {allProducts &&
           allProducts.map((product, i) => {
             return (
@@ -56,11 +59,14 @@ export default function ProductsGrid() {
               </motion.div>
             );
           })}
-      </AnimatePresence>
-      {/* 180 from bottom */}
-      <button onClick={() => setSize(size + 1)} disabled={isLoading}>
-        Load More
-      </button>
-    </div>
+      </div>
+      {hasMoreData && !isLoading && (
+        <div key="laodMore" className="flex items-center justify-center mt-6">
+          <button onClick={() => setSize(size + 1)} disabled={isLoading}>
+            Load More
+          </button>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }
