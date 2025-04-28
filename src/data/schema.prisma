@@ -21,6 +21,7 @@ model User {
   engraving    Json?
   orders       Order[]
   cart         Cart?
+  favorites    Favorite?
   token        String?
   code         Int?
   isActive     Boolean   @default(false)
@@ -59,20 +60,21 @@ model OrderProduct {
 }
 
 model Product {
-  id          String         @id @default(cuid())
+  id          String            @id @default(cuid())
   type        String
-  name        String         @unique
+  name        String            @unique
   description String?
   brand       String
   handle      String
-  media       Media[]        @relation("ProductMedia")
-  thumbnail   Media?         @relation("ProductThumbnail", fields: [thumbnailId], references: [id])
+  media       Media[]           @relation("ProductMedia")
+  thumbnail   Media?            @relation("ProductThumbnail", fields: [thumbnailId], references: [id])
   thumbnailId Int?
   sizes       Size[]
   filters     Filter[]
   orders      OrderProduct[]
   carts       CartProduct[]
-  createdAt   DateTime       @default(now())
+  favorites   FavoriteProduct[]
+  createdAt   DateTime          @default(now())
   updatedAt   DateTime?
 
   @@index([id, name(sort: Asc)])
@@ -130,4 +132,20 @@ model CartProduct {
   brand     String
   handle    String
   request   String?
+}
+
+model Favorite {
+  id       Int               @id @default(autoincrement())
+  client   User              @relation(fields: [clientId], references: [id])
+  clientId String            @unique
+  products FavoriteProduct[]
+}
+
+model FavoriteProduct {
+  favorite   Favorite @relation(fields: [favoriteId], references: [id])
+  favoriteId Int
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  String
+
+  @@id([favoriteId, productId])
 }

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import ProductGallery from "./product-gallery";
-// import FavoriteStar from "@/components/ui/FavoriteStar";
+import AddToFavortite from "./add-to-favorite";
 
 import { CircleX } from "lucide-react";
 
@@ -99,7 +99,7 @@ export default function ProductModal({ product, children }) {
                 </div>
 
                 <div className="relative h-[65vh]">
-                  {/* <FavoriteStar product={product} /> */}
+                  <AddToFavortite productId={product.id} />
                   <ProductGallery product={product} />
                 </div>
 

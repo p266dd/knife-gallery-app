@@ -3,11 +3,11 @@
 import prisma from "@/data/prisma";
 import { verifyUserSession } from "@/utils/session";
 
-export async function fetchCart() {
+export async function fetchFavorites() {
   const session = await verifyUserSession();
 
   // * Fetch cart details from dabatase and return cartCount and data.
-  const cart = await prisma.cart.findUnique({
+  const favorites = await prisma.favorite.findUnique({
     where: {
       clientId: session.id,
     },
@@ -18,7 +18,7 @@ export async function fetchCart() {
   });
 
   return {
-    cartCount: cart?.length || 0,
-    cata: cart || [],
+    favoritesCount: favorites?.length || 0,
+    favorites: favorites || [],
   };
 }
