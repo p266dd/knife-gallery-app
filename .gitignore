@@ -42,3 +42,4 @@ next-env.d.ts
 
 # development
 /src/data/data.db
+certificates
