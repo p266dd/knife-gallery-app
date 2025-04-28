@@ -1,7 +1,16 @@
+import Header from "@/ui/header";
 import { verifyUserSession } from "@/utils/session";
+import { fetchCart } from "@/actions/fetch-cart";
 
 export default async function MainLayout({ children }) {
-  await verifyUserSession();
+  const session = await verifyUserSession();
 
-  return <div>{children}</div>;
+  const { cartCount } = await fetchCart();
+
+  return (
+    <>
+      <Header userRole={session.role} cartCount={cartCount} />
+      {children}
+    </>
+  );
 }
