@@ -18,7 +18,7 @@ export default async function HomePage() {
   });
 
   return (
-    <main className="pb-36">
+    <main className="pb-40">
       <div className="px-6 pt-8">
         <Image
           priority

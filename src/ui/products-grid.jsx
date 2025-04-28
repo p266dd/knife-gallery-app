@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "motion/react";
 import ProductModal from "./product-modal";
 import { fetchProductsInfinite } from "@/actions/fetch-products-infinite";
 import { useStore } from "@/utils/store";
+import { CircleFadingPlus } from "lucide-react";
 
 export default function ProductsGrid() {
   // * Only one filter at a time.
@@ -62,8 +63,12 @@ export default function ProductsGrid() {
       </div>
       {hasMoreData && !isLoading && (
         <div key="laodMore" className="flex items-center justify-center mt-6">
-          <button onClick={() => setSize(size + 1)} disabled={isLoading}>
-            Load More
+          <button
+            className="flex items-center gap-4 text-slate-400"
+            onClick={() => setSize(size + 1)}
+            disabled={isLoading}
+          >
+            Load More <CircleFadingPlus size={18} />
           </button>
         </div>
       )}

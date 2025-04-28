@@ -8,7 +8,7 @@ export default async function MainLayout({ children }) {
   const { cartCount } = await fetchCart();
 
   return (
-    <div className="h-screen pb-48">
+    <div className="h-screen">
       <Header userRole={session.role} cartCount={cartCount} />
       {children}
     </div>
