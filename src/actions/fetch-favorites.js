@@ -13,12 +13,21 @@ export async function fetchFavorites() {
     },
     include: {
       client: true,
-      products: true,
+      products: {
+        include: {
+          product: {
+            include: {
+              media: true,
+              thumbnail: true,
+            },
+          },
+        },
+      },
     },
   });
 
   return {
-    favoritesCount: favorites?.length || 0,
+    favoritesCount: favorites.products?.length || 0,
     favorites: favorites || [],
   };
 }

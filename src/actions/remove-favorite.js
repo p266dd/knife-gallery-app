@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import prisma from "@/data/prisma";
 import { getSession } from "@/utils/session";
 
@@ -27,6 +28,8 @@ export async function removeFavorite(productId) {
       },
     },
   });
+
+  revalidatePath("/favorites", "page");
 
   return deleted;
 }
