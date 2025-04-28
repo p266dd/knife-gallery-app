@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-// import ProductGallery from "@/components/ProductGallery";
+import ProductGallery from "./product-gallery";
 // import FavoriteStar from "@/components/ui/FavoriteStar";
 
 import { CircleX } from "lucide-react";
@@ -66,9 +66,13 @@ export default function ProductModal({ product, children }) {
 
   return (
     <>
-      <span ref={triggerRef} className="block w-full h-full min-h-36">
+      <div
+        ref={triggerRef}
+        className="relative z-0 block w-full h-full min-h-36"
+      >
+        <span className="block w-full h-full absolute top-0 left-0 bg-transparent z-10"></span>
         {children}
-      </span>
+      </div>
 
       {isOpen &&
         createPortal(
@@ -95,12 +99,12 @@ export default function ProductModal({ product, children }) {
                 </div>
 
                 <div className="relative h-[65vh]">
-                  {/* <FavoriteStar product={product} />
-                  <ProductGallery product={product} /> */}
+                  {/* <FavoriteStar product={product} /> */}
+                  <ProductGallery product={product} />
                 </div>
 
                 <Link href={"/products/" + product.id || "#"}>
-                  <div className="bg-white rounded-xl p-4">{product.title}</div>
+                  <div className="bg-white rounded-xl p-4">{product.name}</div>
                 </Link>
               </div>
             </motion.div>
