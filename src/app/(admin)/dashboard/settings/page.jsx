@@ -1,6 +1,15 @@
 import { Settings } from "lucide-react";
+import prisma from "@/data/prisma";
+
+import ManageBrandsForm from "@/ui/admin/manage-brands-form";
 
 export default async function SettingsPage() {
+  const brands = await prisma.brand.findMany({
+    orderBy: {
+      name: "desc",
+    },
+  });
+
   return (
     <main className="py-12 pr-6 pl-4">
       <div className="mb-10">
@@ -11,9 +20,13 @@ export default async function SettingsPage() {
           </div>
         </div>
 
-        <div>
-          <div>Brands</div>
+        <div className="flex flex-col gap-8 pt-6">
+          <div>
+            <ManageBrandsForm brands={brands} />
+          </div>
+
           <div>Handles</div>
+
           <div>Filters</div>
         </div>
       </div>

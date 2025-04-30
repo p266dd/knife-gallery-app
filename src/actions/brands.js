@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/data/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function fetchBrands() {
   // * return brands.
@@ -14,7 +15,7 @@ export async function fetchBrands() {
   return brands;
 }
 
-export async function addBrand({ brandName }) {
+export async function addBrand(brandName) {
   // * Add a new brand and return it.
   const newBrand = await prisma.brand.create({
     data: {
@@ -22,17 +23,34 @@ export async function addBrand({ brandName }) {
     },
   });
 
+  revalidatePath("/dashboard/settings");
+
   return newBrand;
 }
 
-export async function removeBrand({ brandName }) {
-  // * Delete brand where name is brandName.
-  // ** The name must be unique.
+export async function removeBrand(brandId) {
   const deletedBrand = await prisma.brand.delete({
     where: {
-      name: brandName,
+      id: brandId,
     },
   });
 
+  revalidatePath("/dashboard/settings");
+
   return deletedBrand;
+}
+
+export async function updateBrand(brand) {
+  const updatedBrand = await prisma.brand.update({
+    where: {
+      id: brand.id,
+    },
+    data: {
+      name: brand.name,
+    },
+  });
+
+  revalidatePath("/dashboard/settings");
+
+  return updatedBrand;
 }
