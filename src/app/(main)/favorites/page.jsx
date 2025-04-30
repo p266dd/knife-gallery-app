@@ -23,9 +23,9 @@ export default async function FavoritesPage() {
       </div>
 
       <div className="mt-6">
-        <div className="px-2 grid grid-cols-3 gap-1">
-          {data && data.favoritesCount > 0 ? (
-            data.favorites.products.map((product, i) => {
+        {data && data.favoritesCount > 0 ? (
+          <div className="px-2 grid grid-cols-3 gap-1">
+            {data.favorites.products.map((product, i) => {
               return (
                 <div key={i} className="relative bg-slate-100">
                   <ProductModal product={product.product}>
@@ -41,11 +41,11 @@ export default async function FavoritesPage() {
                   </ProductModal>
                 </div>
               );
-            })
-          ) : (
-            <EmptyFavorites />
-          )}
-        </div>
+            })}
+          </div>
+        ) : (
+          <EmptyFavorites />
+        )}
       </div>
     </main>
   );
