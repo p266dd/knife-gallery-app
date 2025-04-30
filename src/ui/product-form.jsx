@@ -120,21 +120,14 @@ export default function ProductForm({ product, preferences, cart }) {
                   Select an engraving for this product.
                 </option>
 
-                {currentProduct && (
+                {/* This is the product from the cart. */}
+                {currentProduct && currentProduct.brand !== product.brand && (
                   <option value={currentProduct.brand}>
-                    *{currentProduct.brand}
+                    {currentProduct.brand}
                   </option>
                 )}
 
-                {preferences.engraving &&
-                  preferences.engraving.map((val, i) => {
-                    return (
-                      <option key={i} value={val.toLowerCase()}>
-                        {val}
-                      </option>
-                    );
-                  })}
-
+                {/* This is the default products brand. */}
                 <option
                   className="capitalize"
                   value={product.brand.toLowerCase()}
@@ -142,6 +135,19 @@ export default function ProductForm({ product, preferences, cart }) {
                   {product.brand}
                 </option>
                 <option value="other">Other</option>
+
+                {/* This is user's own preferences. */}
+                {preferences.engraving && (
+                  <optgroup label="Preferences">
+                    {preferences.engraving.map((val, i) => {
+                      return (
+                        <option key={i} value={val.name.toLowerCase()}>
+                          {val.name}
+                        </option>
+                      );
+                    })}
+                  </optgroup>
+                )}
               </select>
 
               {otherField && (

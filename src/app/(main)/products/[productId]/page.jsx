@@ -32,7 +32,7 @@ export default async function ProductSinglePage({ params }) {
   });
 
   const userPreferences = {
-    engraving: user.engraving ? JSON.stringify(user.engraving) : [],
+    engraving: user.engraving ? JSON.parse(user.engraving) : [],
     id: user.id,
   };
 
