@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/data/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function fetchHandles() {
   // * return handles.
@@ -14,7 +15,7 @@ export async function fetchHandles() {
   return handles;
 }
 
-export async function addHandle({ handleName }) {
+export async function addHandle(handleName) {
   // * Add a new handle and return it.
   const newHandle = await prisma.handle.create({
     data: {
@@ -22,17 +23,34 @@ export async function addHandle({ handleName }) {
     },
   });
 
+  revalidatePath("/dashboard/settings");
+
   return newHandle;
 }
 
-export async function removeHandle({ handleName }) {
-  // * Delete handle where name is handleName.
-  // ** The name must be unique.
+export async function removeHandle(handleId) {
   const deletedHandle = await prisma.handle.delete({
     where: {
-      name: handleName,
+      id: handleId,
     },
   });
 
+  revalidatePath("/dashboard/settings");
+
   return deletedHandle;
+}
+
+export async function updateHandle(handle) {
+  const updatedHandle = await prisma.handle.update({
+    where: {
+      id: handle.id,
+    },
+    data: {
+      name: handle.name,
+    },
+  });
+
+  revalidatePath("/dashboard/settings");
+
+  return updatedHandle;
 }

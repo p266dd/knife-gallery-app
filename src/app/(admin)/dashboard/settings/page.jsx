@@ -2,11 +2,18 @@ import { Settings } from "lucide-react";
 import prisma from "@/data/prisma";
 
 import ManageBrandsForm from "@/ui/admin/manage-brands-form";
+import ManageHandlesForm from "@/ui/admin/manage-handles-form";
 
 export default async function SettingsPage() {
   const brands = await prisma.brand.findMany({
     orderBy: {
-      name: "desc",
+      name: "asc",
+    },
+  });
+
+  const handles = await prisma.handle.findMany({
+    orderBy: {
+      name: "asc",
     },
   });
 
@@ -25,7 +32,9 @@ export default async function SettingsPage() {
             <ManageBrandsForm brands={brands} />
           </div>
 
-          <div>Handles</div>
+          <div>
+            <ManageHandlesForm handles={handles} />
+          </div>
 
           <div>Filters</div>
         </div>
