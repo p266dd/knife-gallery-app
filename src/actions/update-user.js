@@ -3,8 +3,11 @@
 import prisma from "@/data/prisma";
 import { redirect } from "next/navigation";
 import { userSchema } from "@/data/validation/user";
+import { verifyAdminSession } from "@/utils/session";
 
 export default async function updateUser(state, formData) {
+  await verifyAdminSession();
+
   const data = Object.fromEntries(formData);
 
   const user = {
@@ -16,9 +19,7 @@ export default async function updateUser(state, formData) {
     isActive: Boolean(Number(data.isActive)),
   };
 
-  console.log("Before", user);
-
-  // * Validate product data or return validation error.
+  // * Validate user data or return validation error.
   let validatedData;
   try {
     validatedData = await userSchema.omit(["password"]).validate(user, {
@@ -37,8 +38,6 @@ export default async function updateUser(state, formData) {
     // * Log any other error.
     console.log(error);
   }
-
-  console.log("after", user);
 
   const newUser = await prisma.user.update({
     where: {
