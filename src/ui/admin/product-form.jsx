@@ -4,9 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { motion, AnimatePresence } from "motion/react";
+import Link from "next/link";
+import { Settings } from "lucide-react";
 
 import ManageHandlesModal from "./manage-handles-modal";
-import ManageBrandsModal from "./manage-brands-modal";
 import ImageUpload from "./image-uploader";
 import ManageSizeModal from "./manage-size-modal";
 import ManageFilters from "./manage-filters";
@@ -169,7 +170,13 @@ export default function ProductForm({ product, edit = false }) {
             </select>
           </div>
           <div className="flex-shrink-0">
-            <ManageBrandsModal brands={brands.data} />
+            <Link
+              href="/dashboard/settings"
+              className="p-3 flex items-center gap-2 text-xs font-semibold text-white bg-slate-700 rounded-xl"
+            >
+              <Settings size={16} />
+              Brands
+            </Link>
           </div>
         </div>
 
@@ -205,7 +212,13 @@ export default function ProductForm({ product, edit = false }) {
                 </select>
               </div>
               <div className="flex-shrink-0">
-                <ManageHandlesModal handles={handles.data} />
+                <Link
+                  href="/dashboard/settings"
+                  className="p-3 flex items-center gap-2 text-xs font-semibold text-white bg-slate-700 rounded-xl"
+                >
+                  <Settings size={16} />
+                  Handles
+                </Link>
               </div>
             </motion.div>
           )}
