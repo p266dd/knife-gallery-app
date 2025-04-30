@@ -13,12 +13,22 @@ export async function fetchCart() {
     },
     include: {
       client: true,
-      products: true,
+      products: {
+        include: {
+          product: {
+            include: {
+              thumbnail: true,
+              media: true,
+              sizes: true,
+            },
+          },
+        },
+      },
     },
   });
 
   return {
-    cartCount: cart?.length || 0,
-    cata: cart || [],
+    cartCount: cart.products?.length || 0,
+    data: cart || [],
   };
 }
