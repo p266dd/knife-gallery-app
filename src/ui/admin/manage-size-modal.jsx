@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "motion/react";
 import {
   JapaneseYen,
@@ -17,6 +17,7 @@ import { addToSizes, updateSize, deleteSize } from "@/actions/sizes";
 export default function ManageSizeModal({ data, setData, edit = false }) {
   const [editSize, setEditSize] = useState(false);
   const [currentEdit, setCurrentEdit] = useState({});
+  const sizeNameRef = useRef(null);
 
   const addSize = (e) => {
     e.preventDefault();
@@ -152,14 +153,14 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
           </div>
         )}
 
-        <div className="p-2 border border-slate-200 rounded-lg">
+        <div>
           <div className="mb-2">
             <input
+              ref={sizeNameRef}
               type="text"
               name="name"
               placeholder="Size name"
               value={currentEdit.name || ""}
-              disabled={editSize}
               onChange={(e) =>
                 setCurrentEdit({ ...currentEdit, name: e.target.value })
               }
@@ -174,7 +175,6 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                 name="size"
                 placeholder="mm"
                 value={currentEdit.size || ""}
-                disabled={editSize}
                 onChange={(e) =>
                   setCurrentEdit({ ...currentEdit, size: e.target.value })
                 }
@@ -189,7 +189,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
               <input
                 type="number"
                 name="price"
-                placeholder="¥ Price"
+                placeholder="Price"
                 value={currentEdit.price || ""}
                 onChange={(e) =>
                   setCurrentEdit({ ...currentEdit, price: e.target.value })
@@ -218,11 +218,11 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
             </div>
           </div>
 
-          <div>
+          <div className="flex items-center gap-3">
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={editSize ? saveSize : addSize}
-              className={`w-full px-4 py-2 ${editSize ? "bg-green-700 text-white" : "bg-slate-700 text-white"} text-sm font-bold rounded-lg`}
+              className={`flex-grow px-4 py-2 ${editSize ? "bg-green-700 text-white" : "bg-slate-700 text-white"} text-sm font-bold rounded-lg`}
             >
               {editSize ? (
                 <span>
@@ -235,12 +235,25 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                 </span>
               )}
             </motion.button>
+
+            {editSize && (
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                onClick={() => {
+                  setEditSize(false);
+                  setCurrentEdit({});
+                }}
+                className="w-1/3 px-4 py-2 bg-slate-200 text-slate-700 text-sm font-bold rounded-lg"
+              >
+                Cancel
+              </motion.button>
+            )}
           </div>
         </div>
       </div>
 
       {data && data?.sizes && (
-        <div className="px-3 py-3 text-sm bg-white rounded-xl shadow-xs">
+        <div className="px-1 py-3 text-sm bg-white">
           <table className="w-full">
             <thead>
               <tr>
@@ -254,10 +267,9 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
             <tbody>
               {data.sizes.map((size, i) => (
                 <motion.tr
-                  layout
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="text-sm border-b border-slate-300 rounded-xl"
+                  className={`text-sm border-b last:border-b-0 border-slate-100 rounded-xl ${currentEdit.id === size.id ? "bg-slate-100" : ""}`}
                   key={`size-${i}`}
                 >
                   <td className="w-4/12 py-2">
@@ -267,15 +279,18 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                       {size.size} mm
                     </span>
                   </td>
-                  <td className="w-4/12 text-xs py-2">
-                    ¥ {size.price} <span className="text-[10px]">ea.</span>
+                  <td className="w-4/12 py-2">
+                    {new Intl.NumberFormat("ja-JP", {
+                      style: "currency",
+                      currency: "JPY",
+                    }).format(size.price)}
                   </td>
                   <td className="w-2/12 py-2">{size.stock}</td>
                   <td className="w-2/12 py-2">
                     <div className="flex flex-col justify-center items-center gap-2">
                       <button
                         type="button"
-                        className="p-2 bg-red-600 text-white rounded-full"
+                        className="p-2 text-slate-500"
                         onClick={() =>
                           removeSize(size.name, size.size, size.id)
                         }
@@ -285,10 +300,12 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
 
                       <button
                         type="button"
-                        className="p-2 bg-green-700 text-white rounded-full"
+                        className="p-2 text-slate-500"
                         onClick={() => {
                           setEditSize(true);
+                          sizeNameRef.current.focus();
                           setCurrentEdit({
+                            id: size.id,
                             name: size.name,
                             size: size.size,
                             price: size.price,

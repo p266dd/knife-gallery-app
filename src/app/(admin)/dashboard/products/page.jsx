@@ -1,15 +1,20 @@
 import Link from "next/link";
 import prisma from "@/data/prisma";
-import { PlusCircle } from "lucide-react";
+import { Box, PlusCircle } from "lucide-react";
 
 import ProductsTable from "@/ui/admin/products-table";
 
 export default async function ProductsPage() {
-  const filters = await prisma.filter.findMany();
+  const filters = await prisma.filter.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
 
   return (
-    <main className="py-7 px-3">
-      <div className="mb-9 mt-8">
+    <main className="py-9 px-3">
+      <div className="mb-9 flex items-center gap-4">
+        <Box size={28} strokeWidth={1.5} className="text-slate-700" />
         <h1 className="text-2xl text-slate-700">Product List</h1>
       </div>
 
@@ -26,10 +31,10 @@ export default async function ProductsPage() {
           </div>
 
           <div>
-            <button className="px-3 py-2 text-sm bg-slate-100 text-slate-800 rounded-l-xl border-r border-slate-200">
+            <button className="px-3 py-2 text-sm bg-slate-100 text-slate-400 rounded-l-xl border-r border-slate-200">
               Import
             </button>
-            <button className="px-3 py-2 text-sm bg-slate-100 text-slate-800 rounded-r-xl">
+            <button className="px-3 py-2 text-sm bg-slate-100 text-slate-400 rounded-r-xl">
               Export
             </button>
           </div>
@@ -37,7 +42,7 @@ export default async function ProductsPage() {
       </div>
 
       <div>
-        <ProductsTable filters={filters} />
+        <ProductsTable filters={(filters && filters) || []} />
       </div>
     </main>
   );

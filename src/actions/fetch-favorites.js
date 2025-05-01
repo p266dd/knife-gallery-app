@@ -27,7 +27,7 @@ export async function fetchFavorites() {
   });
 
   return {
-    favoritesCount: favorites.products?.length || 0,
-    favorites: favorites || [],
+    favoritesCount: (favorites && favorites?.products?.length) || 0,
+    favorites: (favorites && favorites) || [],
   };
 }

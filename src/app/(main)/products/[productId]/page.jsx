@@ -63,7 +63,9 @@ export default async function ProductSinglePage({ params }) {
 
       <div className="px-6">
         <div className="mb-6">
-          <p className="text-slate-600">{product.description}</p>
+          <p className="text-slate-600 whitespace-pre-line">
+            {product.description}
+          </p>
         </div>
         <ProductForm
           product={product}

@@ -29,6 +29,7 @@ export default function AccountForm({ user }) {
   };
 
   const handleRemoveEngraving = (name) => {
+    setShowFormSave(true);
     setEngravingPreferences((prev) =>
       prev.filter((pref) => pref.name !== name)
     );
@@ -49,24 +50,17 @@ export default function AccountForm({ user }) {
       )}
 
       <div className="mb-9 flex flex-col gap-3">
-        <div className="relative flex flex-col">
-          <label
-            htmlFor="name"
-            className="block text-sm px-2 py-1 text-slate-600"
-          >
-            Name
-          </label>
+        <div className="mb-4">
+          <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
+            Product Name
+          </h3>
           <input
+            required
             type="text"
             name="name"
             id="name"
             defaultValue={user && user.name}
-            placeholder="Enter your name"
-            className={`block px-3 py-2 text-sm border bg-white rounded-xl focus-visible:outline-0 focus-visible:border-slate-700 ${
-              state?.errors && state?.errors?.name
-                ? "border-red-500"
-                : "border-slate-300"
-            }`}
+            className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
           />
           {state?.errors && state?.errors?.name && (
             <span className="text-red-600 text-xs font-semibold">
@@ -75,24 +69,17 @@ export default function AccountForm({ user }) {
           )}
         </div>
 
-        <div className="relative flex flex-col">
-          <label
-            htmlFor="email"
-            className="block text-sm px-2 py-1 text-slate-600"
-          >
+        <div className="mb-4">
+          <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
             Email
-          </label>
+          </h3>
           <input
+            required
             type="email"
             name="email"
             id="email"
             defaultValue={user && user.email}
-            placeholder="account@email.com"
-            className={`block px-3 py-2 text-sm border bg-white rounded-xl focus-visible:outline-0 focus-visible:border-slate-700 ${
-              state?.errors && state?.errors?.email
-                ? "border-red-500"
-                : "border-slate-300"
-            }`}
+            className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
           />
           {state?.errors && state?.errors?.email && (
             <span className="text-red-600 text-xs font-semibold">
@@ -101,28 +88,30 @@ export default function AccountForm({ user }) {
           )}
         </div>
 
-        <div className="relative flex flex-col">
-          <label
-            htmlFor="password"
-            className="block text-sm px-2 py-1 text-slate-600"
-          >
-            Change your password
-          </label>
-          <div className="relative w-full">
-            <span
-              className="absolute right-4 top-3 text-slate-400"
-              onClick={() => setShowPassword((prev) => !prev)}
-            >
-              {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
-            </span>
+        <div className="mb-7">
+          <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
+            Change your password.
+          </h3>
+          <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               name="password"
               id="password"
-              placeholder="*******"
-              className="w-full block px-3 py-2 text-sm border border-slate-400 bg-white rounded-xl focus-visible:outline-0 focus-visible:border-slate-700"
+              placeholder="******"
+              className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
             />
+            <span
+              className="absolute right-4 top-4 text-slate-400"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+            </span>
           </div>
+          {state?.errors && state?.errors?.password && (
+            <span className="text-red-600 text-xs font-semibold">
+              {state.errors.password}
+            </span>
+          )}
         </div>
       </div>
 
@@ -132,51 +121,36 @@ export default function AccountForm({ user }) {
 
       <div className="mb-9">
         <div className="w-full flex items-center gap-3">
-          <div className="relative flex-grow flex flex-col">
-            <label
-              htmlFor="businessName"
-              className="block text-sm px-2 py-1 text-slate-600"
-            >
-              Company Name
-            </label>
+          <div className="mb-4">
+            <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
+              Business Name
+            </h3>
             <input
+              required
               type="text"
               name="businessName"
               id="businessName"
               defaultValue={user && user.businessName}
-              placeholder="Type your company name"
-              className={`block px-3 py-2 text-sm border bg-white rounded-xl focus-visible:outline-0 focus-visible:border-slate-700 ${
-                state?.errors && state?.errors?.email
-                  ? "border-red-500"
-                  : "border-slate-300"
-              }`}
+              className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
             />
-            {state?.errors && state?.errors?.businessname && (
+            {state?.errors && state?.errors?.businessName && (
               <span className="text-red-600 text-xs font-semibold">
-                {state.errors.businessname}
+                {state.errors.businessName}
               </span>
             )}
           </div>
 
-          <div className="relative w-[90px] flex flex-col">
-            <label
-              htmlFor="businessCode"
-              className="block text-sm px-2 py-1 text-slate-600"
-            >
-              Code
-            </label>
+          <div className="mb-4">
+            <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
+              Business Code
+            </h3>
             <input
+              required
               type="text"
               name="businessCode"
               id="businessCode"
               defaultValue={user && user.businessCode}
-              placeholder="IC3245"
-              max={7}
-              className={`block px-3 py-2 text-sm border bg-white rounded-xl focus-visible:outline-0 focus-visible:border-slate-700 ${
-                state?.errors && state?.errors?.email
-                  ? "border-red-500"
-                  : "border-slate-300"
-              }`}
+              className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
             />
             {state?.errors && state?.errors?.businessCode && (
               <span className="text-red-600 text-xs font-semibold">
@@ -192,14 +166,11 @@ export default function AccountForm({ user }) {
       </div>
 
       <div className="relative flex-grow flex flex-col gap-2">
-        <label
-          htmlFor="engravingPref"
-          className="block text-sm px-2 py-1 text-slate-600"
-        >
-          Engraving
-        </label>
+        <div className="mb-4">
+          <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
+            Engraving
+          </h3>
 
-        <div className="relative overflow-hidden">
           <AnimatePresence>
             {showEngravingSave && (
               <motion.button
@@ -228,7 +199,7 @@ export default function AccountForm({ user }) {
                 ? setShowEngravingSave(true)
                 : setShowEngravingSave(false)
             }
-            className="block w-full px-3 py-2 text-sm border border-slate-400 bg-white rounded-xl focus-visible:outline-0 focus-visible:border-slate-700"
+            className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
           />
           <input
             name="engraving"

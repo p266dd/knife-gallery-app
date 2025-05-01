@@ -5,11 +5,11 @@ import UsersTable from "@/ui/admin/users-table";
 
 export default async function UsersPage() {
   return (
-    <main className="py-12 pr-6 pl-4">
+    <main className="py-9 pr-6 pl-4">
       <div className="mb-10">
         <div className="mb-6 flex items-center justify-between gap-3">
           <div className="flex items-center gap-4">
-            <User size={28} strokeWidth={1.5} />
+            <User size={28} strokeWidth={1.5} className="text-slate-700" />
             <h1 className="text-2xl text-slate-700">Users</h1>
           </div>
           <Link

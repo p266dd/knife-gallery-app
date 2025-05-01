@@ -1,15 +1,19 @@
 import Link from "next/link";
-import { CirclePlus, ShoppingBag } from "lucide-react";
+import { CirclePlus, LayoutList, ShoppingBag } from "lucide-react";
 
 import DashboardOrdersTable from "@/ui/admin/orders-table";
 
 export default async function DashboardPage() {
   return (
-    <div className="py-12 pr-6 pl-4">
+    <div className="py-9 pr-6 pl-4">
       <div className="mb-10">
         <div className="mb-6 flex items-center justify-between gap-3">
           <div className="flex items-center gap-4">
-            <ShoppingBag size={28} strokeWidth={1.5} />
+            <ShoppingBag
+              size={28}
+              strokeWidth={1.5}
+              className="text-slate-700"
+            />
             <h1 className="text-2xl text-slate-700">New Orders</h1>
           </div>
           <Link
@@ -28,6 +32,7 @@ export default async function DashboardPage() {
 
       <div className="mb-10">
         <div className="flex items-center gap-4 mb-6">
+          <LayoutList size={28} strokeWidth={1.5} className="text-slate-700" />
           <h1 className="text-2xl text-slate-700">Orders History</h1>
         </div>
 

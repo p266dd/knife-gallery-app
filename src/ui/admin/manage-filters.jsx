@@ -1,141 +1,136 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
-import { motion } from "motion/react";
-import { mutate } from "swr";
-import { Settings, Trash2 } from "lucide-react";
+import { Check, CirclePlus, Pencil, Trash2 } from "lucide-react";
 
-import Modal from "../modal";
-import { addFilter, deleteFilter } from "@/actions/filters";
+import { addFilter, removeFilter, updateFilter } from "@/actions/filters";
 
-export default function ManageFilters({ data, setData, filters }) {
+export default function ManageFiltersForm({ filters }) {
   const [newFilter, setNewFilter] = useState("");
-
-  const addNewFilter = (e) => {
-    e.preventDefault();
-
-    // * Don't do anything if the input is empty.
-    if (newFilter === "") return;
-
-    addFilter({ filterName: newFilter, productId: data.id })
-      .then((res) => {
-        setNewFilter("");
-
-        // * Tell SWR about the change so it updates the caching..
-        mutate("fetchFilters");
-      })
-      .catch((error) => console.log(error));
-  };
-
-  const removeFilter = (e, name) => {
-    e.preventDefault();
-
-    deleteFilter({ filterName: name })
-      .then((res) => null)
-      .catch((error) => console.log(error));
-
-    // * Tell SWR about the change so it updates the caching..
-    mutate("fetchFilters");
-  };
+  const [edit, setEdit] = useState(false);
+  const [edited, setEdited] = useState({});
 
   return (
-    <div className="mb-5 flex flex-col gap-3">
-      <div className="grid grid-cols-3 gap-2">
-        {filters &&
-          filters.length > 0 &&
-          filters.map((filter, i) => (
-            <label
-              key={`filter-${i}`}
-              className="flex items-center gap-2 p-2 bg-white border border-slate-200 rounded-lg cursor-pointer"
+    <div>
+      <h2 className="text-xl mb-4">Manage Filters</h2>
+      <AnimatePresence>
+        <div className="mb-4">
+          {!edit && (
+            <motion.div
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              className="flex flex-col gap-3"
             >
               <input
-                type="checkbox"
-                value={filter.id || ""}
-                onChange={(e) => {
-                  const selectedFilters = data.filters || [];
-                  if (e.target.checked) {
-                    return setData({
-                      ...data,
-                      filters: [
-                        ...selectedFilters,
-                        { id: filter.id, name: filter.name },
-                      ],
-                    });
-                  }
-                  return setData({
-                    ...data,
-                    filters: selectedFilters.filter((f) => f.id !== filter.id),
-                  });
-                }}
-                checked={
-                  (data.filters &&
-                    data.filters.some((obj) => obj.id === filter.id)) ||
-                  false
-                }
+                required
+                name="filterName"
+                placeholder="Filter Name"
+                onChange={(e) => setNewFilter(e.target.value)}
+                value={newFilter}
+                className="w-full text-sm px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-300 rounded-xl bg-white shadow-xs"
               />
-              <span className="text-sm">{filter.name}</span>
-            </label>
-          ))}
-      </div>
 
-      <div className="flex-shrink-0">
-        <Modal
-          trigger={
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              type="button"
-              className="p-3 w-full flex items-center gap-2 text-xs font-semibold text-white bg-slate-700 rounded-xl"
-            >
-              <Settings size={16} /> Filters
-            </motion.button>
-          }
-        >
-          <div className="flex flex-col gap-3">
-            <input
-              required
-              name="filterName"
-              placeholder="Filter"
-              onChange={(e) => setNewFilter(e.target.value)}
-              value={newFilter}
-              className="w-full text-sm px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
-            />
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                type="button"
+                className="w-full px-3 py-2 flex items-center justify-center gap-3 bg-slate-700 text-white text-sm font-semibold rounded-xl"
+                onClick={async () => {
+                  newFilter !== "" && (await addFilter(newFilter));
+                  setNewFilter("");
+                }}
+              >
+                <CirclePlus size={16} /> Add Filter
+              </motion.button>
+            </motion.div>
+          )}
 
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              type="button"
-              className="w-full px-3 py-2 bg-slate-700 text-white text-sm font-semibold rounded-xl"
-              onClick={addNewFilter}
+          {edit && (
+            <motion.div
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ delay: 0.25 }}
+              className="flex flex-col gap-3 mb-3"
             >
-              Add Filter
-            </motion.button>
-          </div>
-          <div className="h-auto max-h-52 overflow-y-auto">
-            {filters && filters.length > 0 && (
-              <div className="mt-3">
-                <h4 className="text-sm font-semibold">Existing Filters</h4>
-                <ul className="flex flex-col gap-2 mt-2">
-                  {filters.map((filter, i) => (
-                    <li
-                      key={`filter-l-${i}`}
-                      className="flex items-center justify-between p-2 pr-4 border border-slate-200 rounded-lg"
-                    >
-                      {filter.name}
-                      <button
-                        type="button"
-                        className="text-red-600 cursor-pointer"
-                        onClick={(e) => {
-                          removeFilter(e, filter.name);
-                        }}
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+              <input
+                required
+                name="filterName"
+                placeholder="Filter Name"
+                onChange={(e) => setEdited({ ...edited, name: e.target.value })}
+                value={edited?.name}
+                className="w-full text-sm px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-300 rounded-xl bg-white shadow-xs"
+              />
+
+              <div className="flex items-center gap-2">
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  type="button"
+                  className="w-9/12 px-3 py-2 flex items-center justify-center gap-3 bg-green-700 text-white text-sm font-semibold rounded-xl"
+                  onClick={async () => {
+                    setEdit(false);
+                    await updateFilter(edited);
+                  }}
+                >
+                  <Check size={16} /> Save
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  type="button"
+                  className="w-3/12 px-3 py-2 flex items-center justify-center gap-3 bg-slate-300 text-slate-700 text-sm font-semibold rounded-xl"
+                  onClick={async () => {
+                    setEdit(false);
+                    setEdited({});
+                  }}
+                >
+                  Cancel
+                </motion.button>
               </div>
+            </motion.div>
+          )}
+        </div>
+      </AnimatePresence>
+      <div className="max-h-56 overflow-scroll py-4 bg-white rounded-xl shadow-sm">
+        <table className="w-full text-left">
+          <thead className="text-sm">
+            <tr>
+              <th className="pl-2">Filters</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody className="text-sm">
+            {filters.length > 0 ? (
+              filters.map((filter, i) => (
+                <tr
+                  key={i}
+                  className="border-b border-slate-200 last:border-b-transparent"
+                >
+                  <td className="py-2 px-2 w-9/12 h-10">
+                    <span>{filter.name}</span>
+                  </td>
+                  <td className="py-2 w-3/12 flex items-center gap-5">
+                    <button
+                      onClick={() => {
+                        setEdit(true);
+                        setEdited(filter);
+                      }}
+                    >
+                      <Pencil className="text-blue-600" size={16} />
+                    </button>
+                    <button onClick={async () => removeFilter(filter.id)}>
+                      <Trash2 className="text-red-600" size={16} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td className="py-4 px-2">There is no filter registered.</td>
+              </tr>
             )}
-          </div>
-        </Modal>
+          </tbody>
+        </table>
       </div>
     </div>
   );

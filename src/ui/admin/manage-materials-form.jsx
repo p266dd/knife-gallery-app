@@ -4,16 +4,20 @@ import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { Check, CirclePlus, Pencil, Trash2 } from "lucide-react";
 
-import { addBrand, removeBrand, updateBrand } from "@/actions/brands";
+import {
+  addMaterial,
+  removeMaterial,
+  updateMaterial,
+} from "@/actions/materials";
 
-export default function ManageBrandsForm({ brands }) {
-  const [newBrand, setNewBrand] = useState("");
+export default function ManageMaterialsForm({ materials }) {
+  const [newMaterial, setNewMaterial] = useState("");
   const [edit, setEdit] = useState(false);
   const [edited, setEdited] = useState({});
 
   return (
     <div>
-      <h2 className="text-xl mb-4">Manage Brands</h2>
+      <h2 className="text-xl mb-4">Manage Materials</h2>
 
       <AnimatePresence>
         <div className="mb-4">
@@ -26,10 +30,10 @@ export default function ManageBrandsForm({ brands }) {
             >
               <input
                 required
-                name="brandName"
-                placeholder="Brand Name"
-                onChange={(e) => setNewBrand(e.target.value)}
-                value={newBrand}
+                name="materialName"
+                placeholder="Material Name"
+                onChange={(e) => setNewMaterial(e.target.value)}
+                value={newMaterial}
                 className="w-full text-sm px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-300 rounded-xl bg-white shadow-xs"
               />
 
@@ -38,11 +42,11 @@ export default function ManageBrandsForm({ brands }) {
                 type="button"
                 className="w-full px-3 py-2 flex items-center justify-center gap-3 bg-slate-700 text-white text-sm font-semibold rounded-xl"
                 onClick={async () => {
-                  newBrand !== "" && (await addBrand(newBrand));
-                  setNewBrand("");
+                  newMaterial !== "" && (await addMaterial(newMaterial));
+                  setNewMaterial("");
                 }}
               >
-                <CirclePlus size={16} /> Add Brand
+                <CirclePlus size={16} /> Add Material
               </motion.button>
             </motion.div>
           )}
@@ -57,8 +61,8 @@ export default function ManageBrandsForm({ brands }) {
             >
               <input
                 required
-                name="brandName"
-                placeholder="Brand Name"
+                name="materialName"
+                placeholder="Material Name"
                 onChange={(e) => setEdited({ ...edited, name: e.target.value })}
                 value={edited?.name}
                 className="w-full text-sm px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-300 rounded-xl bg-white shadow-xs"
@@ -71,7 +75,7 @@ export default function ManageBrandsForm({ brands }) {
                   className="w-9/12 px-3 py-2 flex items-center justify-center gap-3 bg-green-700 text-white text-sm font-semibold rounded-xl"
                   onClick={async () => {
                     setEdit(false);
-                    await updateBrand(edited);
+                    await updateMaterial(edited);
                   }}
                 >
                   <Check size={16} /> Save
@@ -97,30 +101,30 @@ export default function ManageBrandsForm({ brands }) {
         <table className="w-full text-left">
           <thead className="text-sm">
             <tr>
-              <th className="pl-2">Brands</th>
+              <th className="pl-2">Materials</th>
               <th></th>
             </tr>
           </thead>
           <tbody className="text-sm">
-            {brands.length > 0 ? (
-              brands.map((brand, i) => (
+            {materials.length > 0 ? (
+              materials.map((material, i) => (
                 <tr
                   key={i}
                   className="border-b border-slate-200 last:border-b-transparent"
                 >
                   <td className="py-2 px-2 w-9/12 h-10">
-                    <span>{brand.name}</span>
+                    <span>{material.name}</span>
                   </td>
                   <td className="py-2 w-3/12 flex items-center gap-5">
                     <button
                       onClick={() => {
                         setEdit(true);
-                        setEdited(brand);
+                        setEdited(material);
                       }}
                     >
                       <Pencil className="text-blue-600" size={16} />
                     </button>
-                    <button onClick={async () => removeBrand(brand.id)}>
+                    <button onClick={async () => removeMaterial(material.id)}>
                       <Trash2 className="text-red-600" size={16} />
                     </button>
                   </td>
@@ -128,7 +132,7 @@ export default function ManageBrandsForm({ brands }) {
               ))
             ) : (
               <tr>
-                <td className="py-4 px-2">There is no brand registered.</td>
+                <td className="py-4 px-2">There is no material registered.</td>
               </tr>
             )}
           </tbody>

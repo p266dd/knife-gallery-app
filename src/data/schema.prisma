@@ -66,6 +66,7 @@ model Product {
   description String?
   brand       String
   handle      String
+  material    String
   media       Media[]           @relation("ProductMedia")
   thumbnail   Media?            @relation("ProductThumbnail", fields: [thumbnailId], references: [id])
   thumbnailId Int?
@@ -81,6 +82,11 @@ model Product {
 }
 
 model Brand {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+}
+
+model Material {
   id   Int    @id @default(autoincrement())
   name String @unique
 }

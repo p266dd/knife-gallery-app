@@ -41,9 +41,14 @@ export default async function LoginAction(state, formData) {
   }
 
   // * Fetch user by its email
-  const user = await prisma.user.findFirst({
-    where: { email: validData.email },
-  });
+  let user;
+  try {
+    user = await prisma.user.findFirst({
+      where: { email: validData.email },
+    });
+  } catch (error) {
+    return (state = { ...state, message: "An error occured." });
+  }
 
   if (!user) return (state = { ...state, message: "User does not exist." });
 

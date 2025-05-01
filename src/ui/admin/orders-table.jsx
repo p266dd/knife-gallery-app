@@ -8,6 +8,7 @@ import {
   ArrowRightCircle,
   Search,
   PrinterIcon,
+  BadgeInfo,
 } from "lucide-react";
 
 import Button from "@/ui/button";
@@ -46,6 +47,17 @@ export default function DashboardOrdersTable({ newOnly = false }) {
     setSearchQuery(inputContent);
     setPage(1);
   };
+
+  if (data && data?.data.length === 0) {
+    return (
+      <div className="flex items-center gap-3">
+        <BadgeInfo size={16} strokeWidth={1.5} />
+        <h4 className="text font-thin text-slate-600">
+          There are no orders to display.
+        </h4>
+      </div>
+    );
+  }
 
   return (
     <div>

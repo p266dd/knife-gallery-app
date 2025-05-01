@@ -1,34 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import useSWR from "swr";
+import { useState, useActionState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import Link from "next/link";
-import { Settings } from "lucide-react";
 
-import ManageHandlesModal from "./manage-handles-modal";
 import ImageUpload from "./image-uploader";
 import ManageSizeModal from "./manage-size-modal";
 import ManageFilters from "./manage-filters";
 
-import { fetchHandles } from "@/actions/handles";
-import { fetchFilters } from "@/actions/filters";
-import { fetchBrands } from "@/actions/brands";
-
 import addProduct from "@/actions/add-product";
 import updateProduct from "@/actions/update-product";
+import { removeProduct } from "@/actions/remove-product";
+import { Info } from "lucide-react";
 
-export default function ProductForm({ product, edit = false }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [message, setMessage] = useState(null);
+export default function ProductForm({
+  product,
+  handles,
+  filters,
+  brands,
+  materials,
+  edit = false,
+}) {
   const [formData, setFormData] = useState({
     id: (product && product.id) || "",
     type: (product && product.type) || "",
     name: (product && product.name) || "",
     brand: (product && product.brand) || "",
     handle: (product && product.handle) || "",
+    material: (product && product.material) || "",
     description: (product && product.description) || "",
     sizes: (product && product.sizes) || "",
     filters: (product && product.filters) || "",
@@ -36,258 +34,316 @@ export default function ProductForm({ product, edit = false }) {
     thumbnail: (product && product.thumbnail) || "",
   });
 
-  const router = useRouter();
-
-  // * Available properties SWR => handles.data, handles.error, handles.isLoading
-  const handles = useSWR("fetchHandles", fetchHandles);
-  const filters = useSWR("fetchFilters", fetchFilters);
-  const brands = useSWR("fetchBrands", fetchBrands);
-
-  // * Add a new product to database or save existing one.
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    setLoading(true);
-    setError(null);
-    setMessage(null);
-
-    if (edit) {
-      updateProduct(formData, product)
-        .then((res) => {
-          if (res.errors) {
-            setError(res.errors);
-            setLoading(false);
-            setMessage(null);
-            return;
-          }
-          setLoading(false);
-          setMessage(null);
-          setError(null);
-          router.push("/dashboard/products");
-        })
-        .catch((error) => {
-          setLoading(false);
-          setError([error.message]);
-          setMessage(null);
-        });
-      return;
-    }
-
-    addProduct(formData)
-      .then((res) => {
-        if (res.errors) {
-          setError(res.errors);
-          setLoading(false);
-          setMessage(null);
-          return;
-        }
-        setLoading(false);
-        setMessage(null);
-        setError(null);
-        router.push("/dashboard/products");
-      })
-      .catch((error) => {
-        setLoading(false);
-        setError([error.message]);
-        setMessage(null);
-      });
-  };
+  const [state, action, isPending] = useActionState(
+    edit ? () => updateProduct(formData, product) : () => addProduct(formData),
+    {}
+  );
 
   return (
     <div>
-      <form className="relative">
-        <div className="mb-3 flex items-center gap-3">
-          {(edit && product.type === "knife") || !edit ? (
-            <div className="flex-grow flex items-center gap-3 px-3 py-2 bg-white border border-slate-300 rounded-xl">
-              <input
-                name="type"
-                id="typeKnife"
-                type="radio"
-                defaultChecked={formData.type === "knife"}
-                disabled={edit && product.type === "knife"}
-                onChange={(e) =>
-                  e.target.checked &&
-                  setFormData((prev) => ({ ...prev, type: "knife" }))
-                }
-              />
-              <label className="flex-grow" htmlFor="typeKnife">
-                Knife
-              </label>
-            </div>
-          ) : null}
+      <form action={action} className="relative">
+        <h3 className="pl-2 mb-1 text-slate-600 text-sm font-semibold">
+          Product Type
+        </h3>
+        <div className="flex items-center gap-3 mb-7">
+          <div className="flex-grow flex items-center gap-3 px-3 py-2 bg-white border border-slate-300 rounded-xl">
+            <input
+              name="type"
+              id="typeKnife"
+              type="radio"
+              defaultChecked={formData.type === "knife"}
+              onChange={(e) =>
+                e.target.checked &&
+                setFormData((prev) => ({ ...prev, type: "knife" }))
+              }
+            />
+            <label className="flex-grow" htmlFor="typeKnife">
+              Knife
+            </label>
+          </div>
 
-          {(edit && product.type === "other") || !edit ? (
-            <div className="flex-grow flex items-center gap-3 px-3 py-2 bg-white border border-slate-300 rounded-xl">
-              <input
-                name="type"
-                id="typeOther"
-                type="radio"
-                defaultChecked={formData.type === "other"}
-                disabled={edit && product.type === "other"}
-                onChange={(e) =>
-                  e.target.checked &&
-                  setFormData((prev) => ({ ...prev, type: "other" }))
-                }
-              />
-              <label className="flex-grow" htmlFor="typeOther">
-                Other
-              </label>
-            </div>
-          ) : null}
+          <div className="flex-grow flex items-center gap-3 px-3 py-2 bg-white border border-slate-300 rounded-xl">
+            <input
+              name="type"
+              id="typeOther"
+              type="radio"
+              defaultChecked={formData.type === "other"}
+              onChange={(e) =>
+                e.target.checked &&
+                setFormData((prev) => ({ ...prev, type: "other" }))
+              }
+            />
+            <label className="flex-grow" htmlFor="typeOther">
+              Other
+            </label>
+          </div>
         </div>
-        <div className="mb-3">
+        <div className="mb-7">
+          <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
+            Product Name
+          </h3>
           <input
             required
             name="name"
-            placeholder="Product title"
             value={(formData && formData.name) || ""}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
           />
+          {state?.errors && state?.errors?.name && (
+            <span className="text-red-600 text-xs font-semibold">
+              {state.errors.name}
+            </span>
+          )}
         </div>
 
-        <div className="mb-3 flex items-center gap-3">
+        <div className="relative mb-7">
+          <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
+            Product Description
+          </h3>
+          <textarea
+            name="description"
+            rows={5}
+            value={(formData && formData.description) || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+            className="w-full px-2 py-3 whitespace-pre-line placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
+          ></textarea>
+          {state?.errors && state?.errors?.description && (
+            <span className="text-red-600 text-xs font-semibold">
+              {state.errors.description}
+            </span>
+          )}
+        </div>
+
+        <div className="mb-7 flex items-center gap-3">
+          <h3 className="w-2/12 mb-1 pl-2 text-slate-600 text-sm font-semibold">
+            Brand
+          </h3>
           <div className="flex-grow">
             <select
               required
               name="brand"
               value={(formData && formData.brand) || ""}
-              disabled={brands.isLoading}
               onChange={(e) =>
                 setFormData({ ...formData, brand: e.target.value })
               }
               className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
             >
               <option value="" disabled>
-                {brands.isLoading ? "Loading..." : "Select a brand"}
+                Select
               </option>
-              {brands?.data &&
-                brands.data.map((brand, i) => (
+              {brands &&
+                brands.map((brand, i) => (
                   <option key={`brand-${i}`} value={brand.name}>
                     {brand.name}
                   </option>
                 ))}
             </select>
-          </div>
-          <div className="flex-shrink-0">
-            <Link
-              href="/dashboard/settings"
-              className="p-3 flex items-center gap-2 text-xs font-semibold text-white bg-slate-700 rounded-xl"
-            >
-              <Settings size={16} />
-              Brands
-            </Link>
+            {state?.errors && state?.errors?.brand && (
+              <span className="text-red-600 text-xs font-semibold">
+                {state.errors.brand}
+              </span>
+            )}
           </div>
         </div>
 
         <AnimatePresence>
-          {formData.type === "knife" && (
+          {formData.type !== "other" && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               layout
-              className="mb-3 flex items-center gap-3"
+              className="mb-7 flex items-center gap-3"
             >
+              <h3 className="w-2/12 mb-1 pl-2 text-slate-600 text-sm font-semibold">
+                Handle
+              </h3>
               <div className="flex-grow">
                 <select
                   required
                   name="handle"
                   value={(formData && formData.handle) || ""}
-                  disabled={handles.isLoading}
                   onChange={(e) =>
                     setFormData({ ...formData, handle: e.target.value })
                   }
                   className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
                 >
                   <option value="" disabled>
-                    {handles.isLoading ? "Loading..." : "Select a handle"}
+                    Select
                   </option>
-                  {handles?.data &&
-                    handles.data.map((handle, i) => (
+                  {handles &&
+                    handles.map((handle, i) => (
                       <option key={`handle-${i}`} value={handle.name}>
                         {handle.name}
                       </option>
                     ))}
                 </select>
-              </div>
-              <div className="flex-shrink-0">
-                <Link
-                  href="/dashboard/settings"
-                  className="p-3 flex items-center gap-2 text-xs font-semibold text-white bg-slate-700 rounded-xl"
-                >
-                  <Settings size={16} />
-                  Handles
-                </Link>
+                {state?.errors && state?.errors?.handle && (
+                  <span className="text-red-600 text-xs font-semibold">
+                    {state.errors.handle}
+                  </span>
+                )}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className="mb-3">
-          <textarea
-            name="description"
-            placeholder="Describe your product"
-            rows="3"
-            value={(formData && formData.description) || ""}
-            onChange={(e) =>
-              setFormData({ ...formData, description: e.target.value })
-            }
-            className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
-          ></textarea>
-        </div>
-      </form>
-
-      <div className="mb-5">
-        <ImageUpload data={formData} setData={setFormData} />
-      </div>
-
-      <div className="mb-5">
-        <ManageSizeModal data={formData} setData={setFormData} edit={edit} />
-      </div>
-
-      <ManageFilters
-        data={formData}
-        setData={setFormData}
-        filters={filters?.data}
-      />
-
-      <div className="pt-4">
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          type="button"
-          onClick={handleSubmit}
-          className={`w-full px-3 py-2 ${loading ? "bg-slate-200 text-slate-700" : "bg-slate-700 text-white"} font-semibold rounded-xl`}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          layout
+          className="mb-7 flex items-center gap-3"
         >
-          {loading ? (
-            edit ? (
-              <span>Saving...</span>
-            ) : (
-              <span>Adding...</span>
-            )
-          ) : edit ? (
-            "Save Changes"
-          ) : (
-            "Add New Product"
+          <h3 className="w-2/12 mb-1 pl-2 text-slate-600 text-sm font-semibold">
+            Material
+          </h3>
+          <div className="flex-grow">
+            <select
+              required
+              name="material"
+              value={(formData && formData.material) || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, material: e.target.value })
+              }
+              className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
+            >
+              <option value="" disabled>
+                Select
+              </option>
+              {materials &&
+                materials.map((material, i) => (
+                  <option key={`material-${i}`} value={material.name}>
+                    {material.name}
+                  </option>
+                ))}
+            </select>
+            {state?.errors && state?.errors?.material && (
+              <span className="text-red-600 text-xs font-semibold">
+                {state.errors.material}
+              </span>
+            )}
+          </div>
+        </motion.div>
+
+        <div className="my-7">
+          <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
+            Upload Images
+          </h3>
+          <ImageUpload data={formData} setData={setFormData} />
+          {state?.errors && state?.errors?.media && (
+            <span className="text-red-600 text-xs font-semibold">
+              {state.errors.media}
+            </span>
           )}
-        </motion.button>
-      </div>
+        </div>
 
-      {error && error.length > 0 && (
-        <div className="mt-3">
-          {error.map((err, i) => (
-            <p key={`error-${i}`} className="text-red-600">
-              {err}
-            </p>
+        <div className="mb-5">
+          <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
+            Product Sizes
+          </h3>
+          <ManageSizeModal data={formData} setData={setFormData} edit={edit} />
+          {state?.errors && state?.errors?.sizes && (
+            <span className="text-red-600 text-xs font-semibold">
+              {state.errors.sizes}
+            </span>
+          )}
+        </div>
+
+        <div className="my-7">
+          <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
+            Filters
+          </h3>
+          <div className="grid grid-cols-2 gap-4">
+            {filters &&
+              filters.map((filter, i) => (
+                <div
+                  key={`filter-${i}`}
+                  className="px-4 py-2 bg-white border border-slate-300 rounded-xl"
+                >
+                  <label htmlFor="filter" className="flex items-center gap-3">
+                    <input
+                      id="filter"
+                      name="filter"
+                      type="checkbox"
+                      defaultChecked={product.filters.some(
+                        (f) => f.name === "Limited"
+                      )}
+                      onChange={(e) =>
+                        e.target.checked
+                          ? setFormData({
+                              ...formData,
+                              filters: [
+                                ...formData.filters,
+                                { id: filter.id, name: filter.name },
+                              ],
+                            })
+                          : setFormData({
+                              ...formData,
+                              filters: formData.filters.filter(
+                                (f) => f.name !== filter.name
+                              ),
+                            })
+                      }
+                    />
+                    <span>{filter.name}</span>
+                  </label>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        <div className="pt-4 flex flex-col gap-3">
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            type="submit"
+            className={`w-full px-3 py-2 ${isPending ? "bg-slate-200 text-slate-700" : "bg-slate-700 text-white"} font-semibold rounded-xl`}
+          >
+            {isPending ? (
+              edit ? (
+                <span>Saving...</span>
+              ) : (
+                <span>Adding...</span>
+              )
+            ) : edit ? (
+              "Save Changes"
+            ) : (
+              "Add New Product"
+            )}
+          </motion.button>
+
+          {edit && (
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              type="button"
+              onClick={async () => await removeProduct(product.id)}
+              className="w-full px-3 py-2 bg-slate-200 text-slate-700 font-semibold rounded-xl"
+            >
+              Delete
+            </motion.button>
+          )}
+        </div>
+
+        {state?.message && (
+          <div className="flex items-center gap-3 mt-3 px-3 py-2 text-green-800 bg-green-100 rounded-xl">
+            <Info size={18} />
+            <p>{state.message}</p>
+          </div>
+        )}
+        {state?.errors ||
+          (state?.generalError && (
+            <div className="flex items-center gap-3 mt-3 px-3 py-2 text-red-800 bg-red-100 rounded-xl">
+              <Info size={18} />
+              {state?.generalError ? (
+                <p>{state.generalError}</p>
+              ) : (
+                <p>Some errors occured, please check.</p>
+              )}
+            </div>
           ))}
-        </div>
-      )}
-
-      {message && message.length > 0 && (
-        <div className="mt-3">
-          <p className="text-green-600">{message}</p>
-        </div>
-      )}
+      </form>
     </div>
   );
 }

@@ -54,7 +54,7 @@ export default function ProductsGrid() {
                     width={1080}
                     height={1080}
                     alt="Placeholder"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full min-h-[200px] object-cover"
                   />
                 </ProductModal>
               </motion.div>

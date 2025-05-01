@@ -18,7 +18,7 @@ export default function AddToFavortite({ productId }) {
 
   data &&
     !found &&
-    data.favorites?.products.map((f) => {
+    data?.favorites?.products?.map((f) => {
       if (f.productId === productId) {
         // only set active if id is inside the favorite products.
         setActive(true);

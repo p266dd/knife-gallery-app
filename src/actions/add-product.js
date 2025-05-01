@@ -8,8 +8,9 @@ import { verifyAdminSession } from "@/utils/session";
 
 import { knifeSchema } from "@/data/validation/knife";
 import { otherProductSchema } from "@/data/validation/other-product";
+import { redirect } from "next/navigation";
 
-export default async function addProduct(productData) {
+export default async function addProduct(state) {
   await verifyAdminSession();
 
   let validatedData;
@@ -17,17 +18,25 @@ export default async function addProduct(productData) {
   // * Validate product data or return validation error.
   try {
     validatedData =
-      productData.type == "knife"
-        ? await knifeSchema.validate(productData, {
+      state.type == "knife"
+        ? await knifeSchema.validate(state, {
             abortEarly: false,
           })
-        : await otherProductSchema.validate(productData, {
+        : await otherProductSchema.validate(state, {
             abortEarly: false,
           });
   } catch (error) {
     // * Cath validation errors.
+    if (error.name === "ValidationError") {
+      const fieldErrors = {};
+      for (const fieldError of error.inner) {
+        fieldErrors[fieldError.path] = fieldError.message;
+      }
+      return { ...state, errors: fieldErrors };
+    }
+
+    // * Log any other error.
     console.log(error);
-    return { errors: ["Validation failed"] };
   }
 
   // upload images to storage
@@ -73,6 +82,7 @@ export default async function addProduct(productData) {
         description: validatedData.description,
         brand: validatedData.brand,
         handle: validatedData.handle,
+        material: validatedData.material,
         media: {
           create: mediaObject,
         },
@@ -132,5 +142,5 @@ export default async function addProduct(productData) {
     return { errors: [error.message] };
   }
 
-  return true;
+  return redirect("/dashboard/products");
 }

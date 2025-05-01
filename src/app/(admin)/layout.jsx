@@ -14,7 +14,7 @@ export default async function AdminLayout({ children }) {
   return (
     <div>
       <DashboardNavigation />
-      <main className="ml-12">{children}</main>
+      <div className="ml-12">{children}</div>
     </div>
   );
 }

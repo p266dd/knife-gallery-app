@@ -183,7 +183,7 @@ export default function ProductsTable({ filters }) {
                   ref={inputRef}
                   type="text"
                   name="searchQuery"
-                  placeholder="Search by product name."
+                  placeholder="Search product by name."
                   defaultValue={searchQuery ? searchQuery : ""}
                   className="text-sm px-3 py-2 bg-white border border-slate-300 rounded-l-xl shadow-lg focus-visible:outline-0"
                 />
@@ -216,7 +216,7 @@ export default function ProductsTable({ filters }) {
         <table className="w-full text-left">
           <thead className="text-sm">
             <tr>
-              <th>Product</th>
+              <th className="pl-2">Product</th>
               <th>Type</th>
             </tr>
           </thead>
@@ -239,7 +239,7 @@ export default function ProductsTable({ filters }) {
                   key={i}
                   className="border-b border-slate-200 last:border-b-transparent"
                 >
-                  <td className="py-2 w-10/12">
+                  <td className="py-2 px-2 w-10/12 h-14">
                     <div>
                       <h5>
                         <Link href={"/dashboard/products/" + product.id}>

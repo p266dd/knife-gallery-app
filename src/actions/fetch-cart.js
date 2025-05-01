@@ -28,7 +28,7 @@ export async function fetchCart() {
   });
 
   return {
-    cartCount: cart.products?.length || 0,
-    data: cart || [],
+    cartCount: (cart && cart?.products?.length) || 0,
+    data: (cart && cart) || [],
   };
 }

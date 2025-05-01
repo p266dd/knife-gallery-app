@@ -14,8 +14,9 @@ import { verifyAdminSession } from "@/utils/session";
 
 import { knifeSchema } from "@/data/validation/knife";
 import { otherProductSchema } from "@/data/validation/other-product";
+import { revalidatePath } from "next/cache";
 
-export default async function updateProduct(productData, current) {
+export default async function updateProduct(state, current) {
   await verifyAdminSession();
 
   let validatedData;
@@ -23,17 +24,25 @@ export default async function updateProduct(productData, current) {
   // * Validate product data or return validation error.
   try {
     validatedData =
-      productData.type == "knife"
-        ? await knifeSchema.validate(productData, {
+      state.type == "knife"
+        ? await knifeSchema.validate(state, {
             abortEarly: false,
           })
-        : await otherProductSchema.validate(productData, {
+        : await otherProductSchema.validate(state, {
             abortEarly: false,
           });
   } catch (error) {
     // * Cath validation errors.
+    if (error.name === "ValidationError") {
+      const fieldErrors = {};
+      for (const fieldError of error.inner) {
+        fieldErrors[fieldError.path] = fieldError.message;
+      }
+      return { ...state, errors: fieldErrors };
+    }
+
+    // * Log any other error.
     console.log(error);
-    return { errors: ["Validation failed"] };
   }
 
   // * Return an object with only the fields that aren't same.
@@ -50,13 +59,13 @@ export default async function updateProduct(productData, current) {
   let newImages = [];
 
   // * Handle the deleted, added and keept images.
-  keptImages = productData.media.filter((m) =>
+  keptImages = state.media.filter((m) =>
     current.media.some((v) => v.name === m.name)
   );
   deletedImages = current.media.filter(
-    (m) => !productData.media.some((v) => v.name === m.name)
+    (m) => !state.media.some((v) => v.name === m.name)
   );
-  newImages = productData.media.filter(
+  newImages = state.media.filter(
     (m) => !current.media.some((v) => v.name === m.name)
   );
 
@@ -110,13 +119,13 @@ export default async function updateProduct(productData, current) {
   let keptSizes, deletedSizes, newSizes;
   let newSizeObject = {};
 
-  keptSizes = productData.sizes.filter((m) =>
+  keptSizes = state.sizes.filter((m) =>
     current.sizes.some((v) => v.name === m.name)
   );
   deletedSizes = current.sizes.filter(
-    (m) => !productData.sizes.some((v) => v.name === m.name)
+    (m) => !state.sizes.some((v) => v.name === m.name)
   );
-  newSizes = productData.sizes.filter(
+  newSizes = state.sizes.filter(
     (m) => !current.sizes.some((v) => v.name === m.name)
   );
 
@@ -125,13 +134,13 @@ export default async function updateProduct(productData, current) {
     deletedSizes.map(
       async (size) =>
         await prisma.size.delete({
-          where: { id: size.id },
+          where: { id: Number(size.id) },
         })
     );
 
     newSizeObject = {
       ...newSizeObject,
-      disconnect: deletedSizes.map((size) => ({ id: size.id })),
+      disconnect: deletedSizes.map((size) => ({ id: Number(size.id) })),
     };
   }
 
@@ -148,13 +157,13 @@ export default async function updateProduct(productData, current) {
   let keptFilters, deletedFilters, newFilters;
   let newFilterObject = {};
 
-  keptFilters = productData.filters.filter((m) =>
+  keptFilters = state.filters.filter((m) =>
     current.filters.some((v) => v.name === m.name)
   );
   deletedFilters = current.filters.filter(
-    (m) => !productData.filters.some((v) => v.name === m.name)
+    (m) => !state.filters.some((v) => v.name === m.name)
   );
-  newFilters = productData.filters.filter(
+  newFilters = state.filters.filter(
     (m) => !current.filters.some((v) => v.name === m.name)
   );
 
@@ -187,6 +196,7 @@ export default async function updateProduct(productData, current) {
         description: validatedData.description,
         brand: validatedData.brand,
         handle: validatedData.handle,
+        material: validatedData.material,
         media: newMediaObject,
         sizes: newSizeObject,
         filters: newFilterObject,
@@ -236,5 +246,5 @@ export default async function updateProduct(productData, current) {
     }
   }
 
-  return true;
+  return { ...state, message: "Product changes saved." };
 }

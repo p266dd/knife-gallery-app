@@ -9,7 +9,7 @@ export const knifeSchema = object({
     .required("Please type a title.")
     .max(50, "Title is too long.")
     .trim(),
-  description: string().max(200, "Description is too long.").trim(),
+  description: string().max(400, "Description is too long.").trim(),
   brand: string()
     .required("Please type a brand.")
     .max(50, "Brand is too long.")

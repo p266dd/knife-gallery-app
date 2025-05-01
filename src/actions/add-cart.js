@@ -8,6 +8,9 @@ export async function addToCart(state, formData) {
   const session = await verifyUserSession();
   const data = Object.fromEntries(formData);
 
+  state.generalError = "";
+  state.message = "";
+
   let sizes = [];
   // * Extract and format the sizes into [{sizeId: value},...]
   Object.entries(data).map(([key, val]) => {
@@ -16,6 +19,14 @@ export async function addToCart(state, formData) {
       sizes.push({ id: sizeId, quantity: val });
     }
   });
+
+  console.log(
+    sizes.every((s) => Number(s.quantity) === 0 || s.quantity === "")
+  );
+
+  if (sizes.every((s) => Number(s.quantity) === 0 || s.quantity === "")) {
+    return { ...state, generalError: "You have to add quantity to a product." };
+  }
 
   // * verify if the user already has a collection.
   let collection = await prisma.cart.findUnique({

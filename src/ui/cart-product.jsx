@@ -178,9 +178,9 @@ export default function CartProduct({ cartProduct, preferences }) {
                               return (
                                 <option
                                   key={`preference-${i}`}
-                                  value={val.toLowerCase()}
+                                  value={val.name.toLowerCase()}
                                 >
-                                  {val}
+                                  {val.name}
                                 </option>
                               );
                             })}

@@ -20,9 +20,11 @@ export default async function CartPage() {
   });
 
   const userPreferences = {
-    engraving: user.engraving ? JSON.stringify(user.engraving) : [],
+    engraving: user.engraving ? JSON.parse(user.engraving) : [],
     id: user.id,
   };
+
+  console.log(userPreferences);
 
   return (
     <main className="pt-16 pb-40">

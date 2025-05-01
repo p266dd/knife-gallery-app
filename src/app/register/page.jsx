@@ -43,8 +43,8 @@ export default function RegisterPage() {
 
   if (state?.success) {
     return (
-      <main className="flex min-h-screen overflow-hidden bg-slate-100 py-8">
-        <div className="w-full h-screen flex flex-col justify-center items-center">
+      <main className="flex h-full overflow-hidden py-3">
+        <div className="w-full h-full flex flex-col justify-center items-center">
           <div className="w-11/12 max-w-96">
             <AnimatePresence>
               <motion.div
@@ -65,9 +65,10 @@ export default function RegisterPage() {
                   <h4 className="text-lg text-slate-500 mb-4">
                     Your application has been received.
                   </h4>
-                  <p className="text-sm text-center text-slate-600">
+                  <p className="text-sm text-center text-slate-600 mb-3">
                     Please wait while our team review your aplication.
                   </p>
+                  <Link href="/login">Go Back</Link>
                 </div>
               </motion.div>
             </AnimatePresence>
@@ -78,8 +79,8 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="flex min-h-screen overflow-hidden bg-slate-100 py-8">
-      <div className="w-full h-screen flex flex-col justify-center items-center">
+    <main className="flex h-full overflow-hidden py-3">
+      <div className="w-full h-full  flex flex-col justify-center items-center">
         <div className="w-11/12 max-w-96">
           <AnimatePresence>
             <motion.div

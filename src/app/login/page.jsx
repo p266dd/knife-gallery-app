@@ -41,8 +41,8 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="flex min-h-screen overflow-hidden bg-slate-100">
-      <div className="w-full h-screen flex flex-col justify-center items-center">
+    <main className="flex h-full overflow-hidden">
+      <div className="w-full h-full flex flex-col justify-center items-center">
         <div className="w-11/12 max-w-96">
           <AnimatePresence>
             <motion.div

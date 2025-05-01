@@ -11,12 +11,12 @@ export const loginFormSchema = object({
     .trim(),
 
   password: string()
-    .required("Password is required.")
     .min(6, "Password must be at least 6 characters.")
     .max(20, "Password is in wrong format.")
     .matches(
       '^(?=.*[!@#$%^&*(),.?":{}|<>-_+=\\`~])(?=.*[0-9]).{2,}$',
       "Password must contain at least 1 special character and 1 number."
     )
+    .nullable()
     .trim(),
 });

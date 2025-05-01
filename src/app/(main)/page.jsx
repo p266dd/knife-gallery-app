@@ -32,7 +32,7 @@ export default async function HomePage() {
 
       <div className="px-6 mt-8 flex flex-row items-center justify-between">
         <div>
-          <h3 className="text-lg">Welcome back,</h3>
+          <h3 className="text-lg mb-3">Welcome back,</h3>
           <h1 className="text-2xl font-bold flex items-center gap-3">
             <LogoutButton logout={fnLogout} />
             {session.name}

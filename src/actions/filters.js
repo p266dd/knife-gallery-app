@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/data/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function fetchFilters() {
   // * return filters.
@@ -8,44 +9,49 @@ export async function fetchFilters() {
     select: {
       id: true,
       name: true,
+      products: true,
     },
   });
 
   return filters;
 }
 
-export async function addFilter({ filterName, productId = null }) {
+export async function addFilter(filterName) {
   // * Add a new filter and return it.
-  if (productId) {
-    const newFilter = await prisma.filter.create({
-      data: {
-        name: filterName,
-        product: {
-          connect: { id: productId },
-        },
-      },
-    });
-
-    return newFilter;
-  }
-
   const newFilter = await prisma.filter.create({
     data: {
       name: filterName,
     },
   });
 
+  revalidatePath("/dashboard/settings");
+
   return newFilter;
 }
 
-export async function deleteFilter({ filterName }) {
-  // * Delete filter where name is filterName.
-  // ** The name must be unique.
+export async function removeFilter(filterId) {
   const deletedFilter = await prisma.filter.delete({
     where: {
-      name: filterName,
+      id: filterId,
     },
   });
 
+  revalidatePath("/dashboard/settings");
+
   return deletedFilter;
+}
+
+export async function updateFilter(filter) {
+  const updatedFilter = await prisma.filter.update({
+    where: {
+      id: filter.id,
+    },
+    data: {
+      name: filter.name,
+    },
+  });
+
+  revalidatePath("/dashboard/settings");
+
+  return updatedFilter;
 }

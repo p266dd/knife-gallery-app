@@ -3,7 +3,14 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Info, ArrowRight, Pencil, ShoppingCart, Save } from "lucide-react";
+import {
+  Info,
+  ArrowRight,
+  Pencil,
+  ShoppingCart,
+  Save,
+  XCircle,
+} from "lucide-react";
 
 import { addToCart } from "@/actions/add-cart";
 import { updateCart } from "@/actions/update-cart";
@@ -61,9 +68,17 @@ export default function ProductForm({ product, preferences, cart }) {
                   <span className="text-xs text-slate-500">{size.size} mm</span>
                 </td>
                 <td className="w-3/12 py-2">
-                  ¥ {size.price} <span className="text-[10px]">ea.</span>
+                  ¥ {size.price}{" "}
+                  <span className="text-[10px] text-slate-500">ea.</span>
                 </td>
-                <td className="w-3/12 py-2">{size.stock}</td>
+                <td className="w-3/12 py-2">
+                  <div className="flex items-center gap-1">
+                    {size.stock}
+                    {Number(size.stock) === 0 && (
+                      <XCircle size={14} className="text-red-600" />
+                    )}
+                  </div>
+                </td>
                 <td className="w-3/12 py-2">
                   <div className="flex items-center gap-2 border border-slate-300 px-3 py-2 rounded-xl">
                     <Pencil size={12} className="text-slate-500" />
@@ -226,6 +241,20 @@ export default function ProductForm({ product, preferences, cart }) {
               >
                 <Info size={18} />
                 {state.message}
+              </motion.div>
+            )}
+
+            {state?.generalError && (
+              <motion.div
+                key="responseError"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                className="flex items-center gap-3 text-sm mt-5 p-3 rounded-xl bg-red-200 text-red-900"
+              >
+                <Info size={18} />
+                {state.generalError}
               </motion.div>
             )}
 
