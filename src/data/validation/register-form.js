@@ -21,15 +21,11 @@ export const registerFormSchema = object({
     .max(20, "Password is too long.")
     .matches(
       '^(?=.*[!@#$%^&*(),.?":{}|<>-_+=\\`~])(?=.*[0-9]).{2,}$',
-      "Password must contain at least 1 special character and 1 number."
+      "Password must contain at least 1 special character or 1 number."
     )
     .trim(),
 
-  businessCode: string()
-    .required()
-    .length(6, "Code must be 6 characters.")
-    .matches("^[A-Z]{2}[0-9]{4}$", "Code must match this format AA1234.")
-    .trim(),
+  businessCode: string().nullable().trim(),
 
   businessName: string()
     .required("Business name is required.")

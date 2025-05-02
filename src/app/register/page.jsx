@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useActionState } from "react";
 import { AnimatePresence, motion } from "motion/react";
@@ -48,7 +49,6 @@ export default function RegisterPage() {
           <div className="w-11/12 max-w-96">
             <AnimatePresence>
               <motion.div
-                layout
                 key="form"
                 variants={formAnimation}
                 initial="hidden"
