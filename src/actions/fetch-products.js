@@ -14,6 +14,9 @@ export async function fetchProducts({
       id: true,
       name: true,
       type: true,
+      handle: true,
+      material: true,
+      thumbnail: true,
     },
     where: {},
   };

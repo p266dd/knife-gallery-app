@@ -44,7 +44,7 @@ export default function AccountForm({ user }) {
       </div>
 
       {state && state.message && (
-        <div className="px-3 py-2 text-xs font-semibold bg-blue-200 text-blue-900 rounded-xl">
+        <div className="px-3 py-2 mb-4 text-xs font-semibold bg-blue-200 text-blue-900 rounded-xl">
           {state.message}
         </div>
       )}
@@ -209,7 +209,7 @@ export default function AccountForm({ user }) {
         </div>
 
         {engravingPreferences && engravingPreferences.length >= 1 && (
-          <div className="border border-slate-400 bg-white text-sm rounded-xl">
+          <div className="border border-slate-200 shadow-xs bg-white text-sm rounded-xl">
             <h5 className="px-2 py-2 text-xs bg-slate-700 text-white font-bold rounded-t-xl">
               Saved
             </h5>

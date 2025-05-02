@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useRef } from "react";
 import useSWR from "swr";
 import { AnimatePresence, motion } from "motion/react";
@@ -79,7 +80,7 @@ export default function ProductsTable({ filters }) {
           >
             <option value="10">10</option>
             <option value="20">20</option>
-            <option value="20">40</option>
+            <option value="40">40</option>
           </select>
         </div>
 
@@ -216,8 +217,8 @@ export default function ProductsTable({ filters }) {
         <table className="w-full text-left">
           <thead className="text-sm">
             <tr>
-              <th className="pl-2">Product</th>
-              <th>Type</th>
+              <th className="pl-2">Products</th>
+              <th></th>
             </tr>
           </thead>
           <tbody className="text-sm">
@@ -239,18 +240,38 @@ export default function ProductsTable({ filters }) {
                   key={i}
                   className="border-b border-slate-200 last:border-b-transparent"
                 >
+                  <td>
+                    <div className="relative w-16 h-28 my-2 rounded-xl overflow-hidden">
+                      <Image
+                        src={product?.thumbnail.url}
+                        alt={product.name}
+                        fill
+                      />
+                    </div>
+                  </td>
                   <td className="py-2 px-2 w-10/12 h-14">
                     <div>
-                      <h5>
+                      <h5 className="mb-1 w-full text-ellipsis overflow-hidden">
                         <Link href={"/dashboard/products/" + product.id}>
                           {product.name}
                         </Link>
                       </h5>
-                    </div>
-                  </td>
-                  <td className="py-2 w-2/12">
-                    <div>
-                      <h5>{product.type}</h5>
+                      <div className="flex items-center gap-4">
+                        <span className="text-xs text-slate-500">
+                          <strong className="text-[10px] font-semibold">
+                            Handle:
+                          </strong>{" "}
+                          <br />
+                          {product.handle}
+                        </span>
+                        <span className="text-xs text-slate-500">
+                          <strong className="text-[10px] font-semibold">
+                            Material:
+                          </strong>{" "}
+                          <br />
+                          {product.material}
+                        </span>
+                      </div>
                     </div>
                   </td>
                 </tr>
