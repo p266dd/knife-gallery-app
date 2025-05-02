@@ -21,6 +21,11 @@ export default function ProductModal({ product, children }) {
     let started;
     let hasMoved;
 
+    // * Disabled context menu for the entire component.
+    document.addEventListener("contextmenu", function (e) {
+      e.preventDefault();
+    });
+
     // hide the default context menu on mobile browsers [iOS issue]
     triggerRef.current.addEventListener("contextmenu", (e) => {
       e.preventDefault();

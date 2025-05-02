@@ -24,8 +24,6 @@ export default async function CartPage() {
     id: user.id,
   };
 
-  console.log(userPreferences);
-
   return (
     <main className="pt-16 pb-40">
       <div className="px-6 mt-9 mb-12">

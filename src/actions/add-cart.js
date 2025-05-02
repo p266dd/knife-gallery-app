@@ -20,10 +20,6 @@ export async function addToCart(state, formData) {
     }
   });
 
-  console.log(
-    sizes.every((s) => Number(s.quantity) === 0 || s.quantity === "")
-  );
-
   if (sizes.every((s) => Number(s.quantity) === 0 || s.quantity === "")) {
     return { ...state, generalError: "You have to add quantity to a product." };
   }
