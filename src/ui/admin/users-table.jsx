@@ -33,7 +33,7 @@ export default function UsersTable({ filters }) {
   const itemsPerPage = perPage || 10;
 
   const { data, error, isLoading } = useSWR(
-    { searchQuery, filterType, page, itemsPerPage },
+    { searchQuery, filterType, page, itemsPerPage, table: "users" },
     (config) => fetchUsers(config)
   );
 

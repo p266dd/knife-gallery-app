@@ -34,7 +34,7 @@ export default function ProductsTable({ filters }) {
   const itemsPerPage = perPage || 10;
 
   const { data, error, isLoading } = useSWR(
-    { searchQuery, filterType, page, itemsPerPage },
+    { searchQuery, filterType, page, itemsPerPage, table: "products" },
     (config) => fetchProducts(config)
   );
 
