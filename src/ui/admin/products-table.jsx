@@ -242,11 +242,16 @@ export default function ProductsTable({ filters }) {
                 >
                   <td>
                     <div className="relative w-16 h-28 my-2 rounded-xl overflow-hidden">
-                      <Image
-                        src={product?.thumbnail.url}
-                        alt={product.name}
-                        fill
-                      />
+                      <Link href={"/dashboard/products/" + product.id}>
+                        <Image
+                          src={
+                            (product?.thumbnail && product?.thumbnail.url) ||
+                            "/img/product-image-placeholder.webp"
+                          }
+                          alt={product.name}
+                          fill
+                        />
+                      </Link>
                     </div>
                   </td>
                   <td className="py-2 px-2 w-10/12 h-14">

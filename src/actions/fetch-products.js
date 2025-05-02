@@ -19,6 +19,9 @@ export async function fetchProducts({
       thumbnail: true,
     },
     where: {},
+    orderBy: {
+      name: "asc",
+    },
   };
 
   // * Handle the search query if user is searching for something.
