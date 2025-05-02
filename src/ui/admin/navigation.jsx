@@ -51,98 +51,87 @@ export default function DashboardNavigation() {
   ];
 
   return (
-    <motion.div
-      layout
-      transition={{ type: "spring", duration: 0.25 }}
+    <div
       className={`fixed top-0 left-0 z-50 px-2 h-full min-h-screen 
-        flex flex-col gap-8 justify-center items-center 
+        flex flex-col gap-8 justify-center items-center
         bg-slate-800 text-white ${open ? "shadow-2xl shadow-black w-auto" : "w-11 "}
         `}
     >
-      <AnimatePresence>
-        <motion.div layout className="w-full">
-          <motion.button
-            layout
-            className={`w-full flex items-center justify-start gap-3 text-xs font-bold ${open ? "p-3" : "p-1"} rounded-full`}
-            onClick={() => setOpen((prev) => !prev)}
-          >
-            <motion.span
-              layout
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, x: 20 }}
-              className={open ? "block" : "hidden"}
-            >
-              Close
-            </motion.span>
-            <motion.span layout className="bg-slate-900 rounded-full p-3">
-              {open ? (
-                <X size={18} strokeWidth={2} />
-              ) : (
-                <ChevronsRight size={18} strokeWidth={2} />
-              )}
-            </motion.span>
-          </motion.button>
-        </motion.div>
-
-        {navigationLinks.map((link, i) => {
-          return (
-            <Link
-              key={i}
-              href={link.url}
-              onClick={() => setOpen(false)}
-              className="w-full"
-            >
-              <motion.div
-                layout
-                className={`w-full flex items-center justify-start gap-3 text-xs font-bold ${open ? "p-2" : "p-1"}`}
-              >
-                <motion.span
-                  layout
-                  className={`${link.url === path ? "bg-white text-slate-700 rounded-full p-1" : "rounded-full"}`}
-                >
-                  {link.icon}
-                </motion.span>
-
-                <motion.span
-                  layout
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  className={open ? "block" : "hidden"}
-                >
-                  {link.title}
-                </motion.span>
-              </motion.div>
-            </Link>
-          );
-        })}
-
+      <motion.div className="w-full">
         <button
-          key="logout"
-          onClick={async () => await fnLogout()}
-          className="w-full"
+          className={`w-full flex items-center justify-start gap-3 text-xs font-bold ${open ? "p-3" : "p-1"} rounded-full`}
+          onClick={() => setOpen((prev) => !prev)}
         >
-          <motion.div
-            layout
-            className={`w-full flex items-center justify-start gap-3 text-xs font-bold ${open ? "p-3" : "p-1"}`}
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={open ? "block" : "hidden"}
           >
-            <span>
-              <Lock strokeWidth={1.5} size={18} />
-            </span>
-
-            <motion.span
-              layout
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, x: 20 }}
-              className={open ? "block" : "hidden"}
-            >
-              Logout
-            </motion.span>
-          </motion.div>
+            Close
+          </motion.span>
+          <motion.span className="bg-slate-900 rounded-full p-3">
+            {open ? (
+              <X size={18} strokeWidth={2} />
+            ) : (
+              <ChevronsRight size={18} strokeWidth={2} />
+            )}
+          </motion.span>
         </button>
-      </AnimatePresence>
-    </motion.div>
+      </motion.div>
+
+      {navigationLinks.map((link, i) => {
+        return (
+          <Link
+            key={i}
+            href={link.url}
+            onClick={() => setOpen(false)}
+            className="w-full"
+          >
+            <motion.div
+              className={`w-full flex items-center justify-start gap-3 text-xs font-bold ${open ? "p-2" : "p-1"}`}
+            >
+              <motion.span
+                className={`${link.url === path ? "bg-white text-slate-700 rounded-full p-1" : "rounded-full"}`}
+              >
+                {link.icon}
+              </motion.span>
+
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, x: 20 }}
+                className={open ? "block" : "hidden"}
+              >
+                {link.title}
+              </motion.span>
+            </motion.div>
+          </Link>
+        );
+      })}
+
+      <button
+        key="logout"
+        onClick={async () => await fnLogout()}
+        className="w-full"
+      >
+        <motion.div
+          className={`w-full flex items-center justify-start gap-3 text-xs font-bold ${open ? "p-3" : "p-1"}`}
+        >
+          <span>
+            <Lock strokeWidth={1.5} size={18} />
+          </span>
+
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, x: 20 }}
+            className={open ? "block" : "hidden"}
+          >
+            Logout
+          </motion.span>
+        </motion.div>
+      </button>
+    </div>
   );
 }
