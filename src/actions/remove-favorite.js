@@ -30,6 +30,8 @@ export async function removeFavorite(productId) {
   });
 
   revalidatePath("/favorites", "page");
+  revalidatePath("/products/" + productId, "page");
+  revalidatePath("/", "page");
 
   return deleted;
 }

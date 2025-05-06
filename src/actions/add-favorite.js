@@ -46,6 +46,8 @@ export async function addFavorite(productId) {
   });
 
   revalidatePath("/favorites", "page");
+  revalidatePath("/products/" + productId, "page");
+  revalidatePath("/", "page");
 
   return favorite;
 }
