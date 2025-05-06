@@ -5,7 +5,13 @@ import _ from "lodash";
 
 import "rc-slider/assets/index.css";
 
-export default function RangeSlider({ label = "label", data, setData }) {
+export default function RangeSlider({
+  label = "label",
+  min = 0,
+  max = 100,
+  data,
+  setData,
+}) {
   const handleOnChange = (value) => {
     // Add to the search params.
     if (label === "Price")
@@ -14,21 +20,25 @@ export default function RangeSlider({ label = "label", data, setData }) {
       return setData({ ...data, size: { min: value[0], max: value[1] } });
   };
 
-  const min = 0;
-  const max = 100;
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("ja-JP", {
+      style: "currency",
+      currency: "JPY",
+    }).format(price);
+  };
 
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
         <div className="text-sm font-semibold">
-          {label === "Price" ? "¥ " : ""}
-          {data[label.toLowerCase()]?.min || min}
-          {label === "Size" ? " mm" : ""}
+          {label === "Price"
+            ? formatPrice(data[label.toLowerCase()]?.min || min)
+            : data[label.toLowerCase()]?.min || min + " mm"}
         </div>
         <div className="text-sm font-semibold">
-          {label === "Price" ? "¥ " : ""}
-          {data[label.toLowerCase()]?.max || max}
-          {label === "Size" ? " mm" : ""}
+          {label === "Price"
+            ? formatPrice(data[label.toLowerCase()]?.max || max)
+            : data[label.toLowerCase()]?.max || max + " mm"}
         </div>
       </div>
       <Slider
@@ -46,7 +56,7 @@ export default function RangeSlider({ label = "label", data, setData }) {
             boxShadow: "none",
           },
           track: {
-            backgroundColor: "#1d293d",
+            backgroundColor: "#62748e",
           },
           rail: {
             backgroundColor: "#cccccc",

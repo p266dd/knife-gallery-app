@@ -134,13 +134,21 @@ export default function SearchForm({ brands = [], materials = [] }) {
         <div className="mb-2">
           <RangeSlider
             label="Price"
+            min={3200}
+            max={10000}
             data={searchData}
             setData={setSearchData}
           />
         </div>
 
         <div className="mb-2">
-          <RangeSlider label="Size" data={searchData} setData={setSearchData} />
+          <RangeSlider
+            label="Size"
+            min={130}
+            max={300}
+            data={searchData}
+            setData={setSearchData}
+          />
         </div>
       </div>
 
@@ -202,7 +210,7 @@ export default function SearchForm({ brands = [], materials = [] }) {
       <div>
         <button
           type="submit"
-          className="w-full flex items-center justify-center gap-3 px-3 py-2 bg-slate-800 text-white rounded-xl"
+          className="w-full flex items-center justify-center gap-3 px-3 py-3 bg-slate-800 text-white rounded-xl"
         >
           <Search size={20} />
           <span>Search</span>
