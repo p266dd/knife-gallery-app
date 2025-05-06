@@ -18,6 +18,10 @@ export const knifeSchema = object({
     .required("Please select a handle.")
     .max(20, "Handle is too long.")
     .trim(),
+  style: string()
+    .required("Please select a style.")
+    .max(20, "Style is too long.")
+    .trim(),
   media: array()
     .required("Please select at least one image.")
     .min(1, "Please select at least one image.")

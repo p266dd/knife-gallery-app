@@ -215,13 +215,13 @@ export default function ProductsTable({ filters }) {
 
       <div className="py-3 px-2 bg-white drop-shadow-xs rounded-2xl">
         <table className="w-full text-left">
-          <thead className="text-sm">
+          <thead className="text-sm sm:text-lg">
             <tr>
               <th className="pl-2">Products</th>
               <th></th>
             </tr>
           </thead>
-          <tbody className="text-sm">
+          <tbody className="text-sm sm:text-lg">
             {isLoading && (
               <tr>
                 <td>Loading data...</td>
@@ -254,7 +254,7 @@ export default function ProductsTable({ filters }) {
                       </Link>
                     </div>
                   </td>
-                  <td className="py-2 px-2 w-10/12 h-14">
+                  <td className="py-2 px-2 w-10/12 sm:w-11/12 h-14">
                     <div>
                       <h5 className="mb-1 w-full text-ellipsis overflow-hidden">
                         <Link href={"/dashboard/products/" + product.id}>
@@ -262,15 +262,15 @@ export default function ProductsTable({ filters }) {
                         </Link>
                       </h5>
                       <div className="flex items-center gap-4">
-                        <span className="text-xs text-slate-500">
-                          <strong className="text-[10px] font-semibold">
+                        <span className="text-xs sm:text-base text-slate-500">
+                          <strong className="text-[10px] sm:text-xs font-semibold">
                             Handle:
                           </strong>{" "}
                           <br />
                           {product.handle}
                         </span>
-                        <span className="text-xs text-slate-500">
-                          <strong className="text-[10px] font-semibold">
+                        <span className="text-xs sm:text-base text-slate-500">
+                          <strong className="text-[10px] sm:text-xs font-semibold">
                             Material:
                           </strong>{" "}
                           <br />

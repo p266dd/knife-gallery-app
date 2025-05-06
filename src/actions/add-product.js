@@ -82,6 +82,7 @@ export default async function addProduct(state) {
         description: validatedData.description,
         brand: validatedData.brand,
         handle: validatedData.handle,
+        style: validatedData.style,
         material: validatedData.material,
         media: {
           create: mediaObject,

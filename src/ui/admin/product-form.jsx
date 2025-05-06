@@ -26,6 +26,7 @@ export default function ProductForm({
     name: (product && product.name) || "",
     brand: (product && product.brand) || "",
     handle: (product && product.handle) || "",
+    style: (product && product.style) || "",
     material: (product && product.material) || "",
     description: (product && product.description) || "",
     sizes: (product && product.sizes) || "",
@@ -189,6 +190,51 @@ export default function ProductForm({
             </motion.div>
           )}
         </AnimatePresence>
+
+        {formData.type !== "other" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            layout
+            className="flex items-center gap-3 mb-7"
+          >
+            <h3 className="pl-2 text-slate-600 text-sm font-semibold">Style</h3>
+            <div className="flex-grow flex items-center gap-3">
+              <div className="flex-grow flex items-center gap-3 px-3 py-2 bg-white border border-slate-300 rounded-xl">
+                <input
+                  name="style"
+                  id="westernStyle"
+                  type="radio"
+                  defaultChecked={formData.style === "western"}
+                  onChange={(e) =>
+                    e.target.checked &&
+                    setFormData((prev) => ({ ...prev, style: "western" }))
+                  }
+                />
+                <label className="flex-grow" htmlFor="westernStyle">
+                  Western
+                </label>
+              </div>
+
+              <div className="flex-grow flex items-center gap-3 px-3 py-2 bg-white border border-slate-300 rounded-xl">
+                <input
+                  name="style"
+                  id="japaneseStyle"
+                  type="radio"
+                  defaultChecked={formData.style === "japanese"}
+                  onChange={(e) =>
+                    e.target.checked &&
+                    setFormData((prev) => ({ ...prev, style: "japanese" }))
+                  }
+                />
+                <label className="flex-grow" htmlFor="japaneseStyle">
+                  Japanese
+                </label>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         <motion.div
           initial={{ opacity: 0 }}
