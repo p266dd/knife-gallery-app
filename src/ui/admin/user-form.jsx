@@ -206,9 +206,7 @@ export default function UserForm({ user, edit = false }) {
               id="active"
               type="radio"
               value={1}
-              defaultChecked={
-                (user && Boolean(user.isActive)) || state?.isActive || false
-              }
+              defaultChecked={user && user.isActive}
             />
             <label className="flex-grow text-sm" htmlFor="active">
               Active
@@ -221,9 +219,7 @@ export default function UserForm({ user, edit = false }) {
               id="notActive"
               type="radio"
               value={0}
-              defaultChecked={
-                (user && !Boolean(user.isActive)) || !state?.isActive || false
-              }
+              defaultChecked={user && !user.isActive}
             />
             <label className="flex-grow text-sm" htmlFor="notActive">
               Not Active
