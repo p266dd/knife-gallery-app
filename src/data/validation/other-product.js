@@ -1,23 +1,16 @@
 import { object, string, number, array, boolean } from "yup";
 
 export const otherProductSchema = object({
-  type: string()
-    .required("Please select a type.")
-    .max(10, "Unexpected type.")
-    .trim(),
+  type: string().oneOf(["other"]).required("Please select a type."),
   name: string()
-    .required("Please type a title.")
-    .max(50, "Title is too long.")
+    .required("Please write a product title.")
+    .max(90, "Title is too long.")
     .trim(),
-  description: string().max(200, "Description is too long.").trim(),
-  brand: string()
-    .required("Please type a brand.")
-    .max(50, "Brand is too long.")
-    .trim(),
+  description: string().max(400, "Description is too long.").trim(),
+  brand: string().required("Please select a brand.").max(50).trim(),
   media: array()
     .required("Please select at least one image.")
-    .min(1, "Please select at least one image.")
-    .max(8, "You can only upload 8 images."),
+    .max(10, "You can only upload up to 10 images."),
   sizes: array()
     .of(
       object({
@@ -39,12 +32,8 @@ export const otherProductSchema = object({
           .positive("Stock must be a positive number.")
           .integer("Stock must be an integer.")
           .min(0, "Stock must be at least 0."),
-        isAvailable: boolean()
-          .required("Please select if the size is available.")
-          .default(false),
       })
     )
-    .required("Please select at least one size.")
-    .min(1, "Please select at least one size.")
-    .max(20, "You can only upload 20 sizes."),
+    .required("Please enter at least one product size.")
+    .max(20, "You can only enter up to 20 sizes."),
 });

@@ -1,31 +1,21 @@
 import { object, string, number, array, boolean } from "yup";
 
 export const knifeSchema = object({
-  type: string()
-    .required("Please select a type.")
-    .max(10, "Unexpected type.")
-    .trim(),
+  type: string().oneOf(["knife"]).required("Please select a type."),
   name: string()
-    .required("Please type a title.")
-    .max(50, "Title is too long.")
+    .required("Please write a product title.")
+    .max(90, "Title is too long.")
     .trim(),
   description: string().max(400, "Description is too long.").trim(),
-  brand: string()
-    .required("Please type a brand.")
-    .max(50, "Brand is too long.")
-    .trim(),
-  handle: string()
-    .required("Please select a handle.")
-    .max(20, "Handle is too long.")
-    .trim(),
+  brand: string().required("Please select a brand.").max(50).trim(),
+  handle: string().required("Please select a handle.").max(50).trim(),
   style: string()
     .required("Please select a style.")
-    .max(20, "Style is too long.")
+    .oneOf(["japanese", "wester"])
     .trim(),
   media: array()
     .required("Please select at least one image.")
-    .min(1, "Please select at least one image.")
-    .max(8, "You can only upload 8 images."),
+    .max(10, "You can only upload up to 10 images."),
   sizes: array()
     .of(
       object({
@@ -49,7 +39,6 @@ export const knifeSchema = object({
           .min(0, "Stock must be at least 0."),
       })
     )
-    .required("Please select at least one size.")
-    .min(1, "Please select at least one size.")
-    .max(20, "You can only upload 20 sizes."),
+    .required("Please enter at least one product size.")
+    .max(20, "You can only enter up to 20 sizes."),
 });
