@@ -35,6 +35,11 @@ export default function SearchForm({ brands = [], materials = [] }) {
         if (value.min !== undefined && value.max !== undefined) {
           searchParams.append(key, `${value.min}-${value.max}`);
         }
+      } else if (key === "searchTerm") {
+        // Only append if searchTerm isn't empty
+        if (value !== "") {
+          searchParams.append(key, value);
+        }
       } else if (Array.isArray(value)) {
         value.forEach((item) => searchParams.append(key, item));
       } else {
@@ -65,7 +70,9 @@ export default function SearchForm({ brands = [], materials = [] }) {
               onChange={(e) => {
                 e.target.checked
                   ? searchData.handle.push("japanese")
-                  : searchData.handle.filter((handle) => handle !== "japanese");
+                  : (searchData.handle = searchData.handle.filter(
+                      (handle) => handle !== "japanese"
+                    ));
               }}
             />
             Japanese
@@ -82,7 +89,9 @@ export default function SearchForm({ brands = [], materials = [] }) {
               onChange={(e) => {
                 e.target.checked
                   ? searchData.handle.push("western")
-                  : searchData.handle.filter((handle) => handle !== "western");
+                  : (searchData.handle = searchData.handle.filter(
+                      (handle) => handle !== "western"
+                    ));
               }}
             />
             Western
@@ -102,7 +111,9 @@ export default function SearchForm({ brands = [], materials = [] }) {
               onChange={(e) => {
                 e.target.checked
                   ? searchData.stock.push("inStock")
-                  : searchData.stock.filter((stock) => stock !== "inStock");
+                  : (searchData.stock = searchData.stock.filter(
+                      (stock) => stock !== "inStock"
+                    ));
               }}
             />
             Only items in stock
@@ -122,7 +133,9 @@ export default function SearchForm({ brands = [], materials = [] }) {
               onChange={(e) => {
                 e.target.checked
                   ? searchData.stock.push("largeStock")
-                  : searchData.stock.filter((stock) => stock !== "largeStock");
+                  : (searchData.stock = searchData.stock.filter(
+                      (stock) => stock !== "largeStock"
+                    ));
               }}
             />
             50 or more in stock
@@ -168,9 +181,9 @@ export default function SearchForm({ brands = [], materials = [] }) {
                   onChange={(e) => {
                     e.target.checked
                       ? searchData.brand.push(brand.name)
-                      : searchData.brand.filter(
+                      : (searchData.brand = searchData.brand.filter(
                           (brand) => brand !== brand.name
-                        );
+                        ));
                   }}
                 />
                 <span>{brand.name}</span>
@@ -195,9 +208,9 @@ export default function SearchForm({ brands = [], materials = [] }) {
                   onChange={(e) => {
                     e.target.checked
                       ? searchData.material.push(material.name)
-                      : searchData.material.filter(
+                      : (searchData.material = searchData.material.filter(
                           (material) => material !== material.name
-                        );
+                        ));
                   }}
                 />
                 <span>{material.name}</span>
