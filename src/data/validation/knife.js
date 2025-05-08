@@ -1,4 +1,4 @@
-import { object, string, number, array, boolean } from "yup";
+import { object, string, number, array, boolean, lazy } from "yup";
 
 export const knifeSchema = object({
   type: string().oneOf(["knife"]).required("Please select a type."),
@@ -9,13 +9,18 @@ export const knifeSchema = object({
   description: string().max(400, "Description is too long.").trim(),
   brand: string().required("Please select a brand.").max(50).trim(),
   handle: string().required("Please select a handle.").max(50).trim(),
+  material: string().required("Please select a material.").max(50).trim(),
   style: string()
     .required("Please select a style.")
-    .oneOf(["japanese", "wester"])
+    .oneOf(["japanese", "western"], "Style must be either Western or Japanese.")
     .trim(),
   media: array()
     .required("Please select at least one image.")
+    .min(1, "Please select at least one image.")
     .max(10, "You can only upload up to 10 images."),
+  thumbnail: object({
+    name: string().required("Please select a thumbnail."),
+  }),
   sizes: array()
     .of(
       object({

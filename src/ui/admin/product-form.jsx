@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "motion/react";
 
 import ImageUpload from "./image-uploader";
 import ManageSizeModal from "./manage-size-modal";
-import ManageFilters from "./manage-filters";
 
 import addProduct from "@/actions/add-product";
 import updateProduct from "@/actions/update-product";
@@ -13,31 +12,35 @@ import { removeProduct } from "@/actions/remove-product";
 import { Info } from "lucide-react";
 
 export default function ProductForm({
-  product,
-  handles,
-  filters,
-  brands,
-  materials,
+  product = null,
+  handles = [],
+  filters = [],
+  brands = [],
+  materials = [],
   edit = false,
 }) {
-  const [formData, setFormData] = useState({
-    id: (product && product.id) || "",
-    type: (product && product.type) || "",
-    name: (product && product.name) || "",
-    brand: (product && product.brand) || "",
-    handle: (product && product.handle) || "",
-    style: (product && product.style) || "",
-    material: (product && product.material) || "",
-    description: (product && product.description) || "",
-    sizes: (product && product.sizes) || "",
-    filters: (product && product.filters) || "",
-    media: (product && product.media) || [],
-    thumbnail: (product && product.thumbnail) || "",
-  });
+  const [formData, setFormData] = useState(
+    product
+      ? {
+          id: product.id,
+          type: product.type || "",
+          name: product.name || "",
+          brand: product.brand || "",
+          handle: product.handle || "",
+          style: product.style || "",
+          material: product.material || "",
+          description: product.description || "",
+          sizes: product.sizes || [],
+          filters: product.filters || [],
+          media: product.media || [],
+          thumbnail: product.thumbnail || "",
+        }
+      : {}
+  );
 
   const [state, action, isPending] = useActionState(
     edit ? () => updateProduct(formData, product) : () => addProduct(formData),
-    {}
+    formData
   );
 
   return (
@@ -46,52 +49,63 @@ export default function ProductForm({
         <h3 className="pl-2 mb-1 text-slate-600 text-sm font-semibold">
           Product Type
         </h3>
-        <div className="flex items-center gap-3 mb-7">
-          <div className="flex-grow flex items-center gap-3 px-3 py-2 bg-white border border-slate-300 rounded-xl">
-            <input
-              name="type"
-              id="typeKnife"
-              type="radio"
-              defaultChecked={formData.type === "knife"}
-              onChange={(e) =>
-                e.target.checked &&
-                setFormData((prev) => ({ ...prev, type: "knife" }))
-              }
-            />
-            <label className="flex-grow" htmlFor="typeKnife">
-              Knife
-            </label>
-          </div>
+        <div className="mb-7">
+          <div className="flex items-center gap-3">
+            <div
+              className={`flex-grow flex items-center gap-3 px-3 py-2 bg-white border rounded-xl ${state?.errors?.type ? "border-red-600" : "border-slate-300"}`}
+            >
+              <input
+                name="type"
+                id="typeKnife"
+                type="radio"
+                defaultChecked={formData?.type === "knife"}
+                onChange={(e) =>
+                  e.target.checked &&
+                  setFormData((prev) => ({ ...prev, type: "knife" }))
+                }
+              />
+              <label className="flex-grow" htmlFor="typeKnife">
+                Knife
+              </label>
+            </div>
 
-          <div className="flex-grow flex items-center gap-3 px-3 py-2 bg-white border border-slate-300 rounded-xl">
-            <input
-              name="type"
-              id="typeOther"
-              type="radio"
-              defaultChecked={formData.type === "other"}
-              onChange={(e) =>
-                e.target.checked &&
-                setFormData((prev) => ({ ...prev, type: "other" }))
-              }
-            />
-            <label className="flex-grow" htmlFor="typeOther">
-              Other
-            </label>
+            <div
+              className={`flex-grow flex items-center gap-3 px-3 py-2 bg-white border rounded-xl ${state?.errors?.type ? "border-red-600" : "border-slate-300"}`}
+            >
+              <input
+                name="type"
+                id="typeOther"
+                type="radio"
+                defaultChecked={formData?.type === "other"}
+                onChange={(e) =>
+                  e.target.checked &&
+                  setFormData((prev) => ({ ...prev, type: "other" }))
+                }
+              />
+              <label className="flex-grow" htmlFor="typeOther">
+                Other
+              </label>
+            </div>
           </div>
+          {state?.errors && state?.errors?.type && (
+            <span className="px-3 text-red-600 text-xs font-semibold">
+              {state.errors.type}
+            </span>
+          )}
         </div>
+
         <div className="mb-7">
           <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
             Product Name
           </h3>
           <input
-            required
             name="name"
-            value={(formData && formData.name) || ""}
+            value={formData?.name || ""}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
+            className={`w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border rounded-xl bg-white shadow-xs ${state?.errors?.name ? "border-red-600" : "border-slate-300"}`}
           />
           {state?.errors && state?.errors?.name && (
-            <span className="text-red-600 text-xs font-semibold">
+            <span className="px-3 text-red-600 text-xs font-semibold">
               {state.errors.name}
             </span>
           )}
@@ -104,17 +118,12 @@ export default function ProductForm({
           <textarea
             name="description"
             rows={5}
-            value={(formData && formData.description) || ""}
+            value={formData?.description || ""}
             onChange={(e) =>
               setFormData({ ...formData, description: e.target.value })
             }
             className="w-full px-2 py-3 whitespace-pre-line placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
           ></textarea>
-          {state?.errors && state?.errors?.description && (
-            <span className="text-red-600 text-xs font-semibold">
-              {state.errors.description}
-            </span>
-          )}
         </div>
 
         <div className="mb-7 flex items-center gap-3">
@@ -123,13 +132,12 @@ export default function ProductForm({
           </h3>
           <div className="flex-grow">
             <select
-              required
               name="brand"
-              value={(formData && formData.brand) || ""}
+              value={formData?.brand || ""}
               onChange={(e) =>
                 setFormData({ ...formData, brand: e.target.value })
               }
-              className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
+              className={`w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border rounded-xl bg-white shadow-xs ${state?.errors?.brand ? "border-red-600" : "border-slate-300"}`}
             >
               <option value="" disabled>
                 Select
@@ -142,7 +150,7 @@ export default function ProductForm({
                 ))}
             </select>
             {state?.errors && state?.errors?.brand && (
-              <span className="text-red-600 text-xs font-semibold">
+              <span className="px-3 text-red-600 text-xs font-semibold">
                 {state.errors.brand}
               </span>
             )}
@@ -150,140 +158,166 @@ export default function ProductForm({
         </div>
 
         <AnimatePresence>
-          {formData.type !== "other" && (
+          {formData?.type !== "other" && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               layout
-              className="mb-7 flex items-center gap-3"
+              className="mb-7"
             >
-              <h3 className="w-2/12 mb-1 pl-2 text-slate-600 text-sm font-semibold">
-                Handle
-              </h3>
-              <div className="flex-grow">
-                <select
-                  required
-                  name="handle"
-                  value={(formData && formData.handle) || ""}
-                  onChange={(e) =>
-                    setFormData({ ...formData, handle: e.target.value })
-                  }
-                  className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
-                >
-                  <option value="" disabled>
-                    Select
-                  </option>
-                  {handles &&
-                    handles.map((handle, i) => (
-                      <option key={`handle-${i}`} value={handle.name}>
-                        {handle.name}
+              <div className="flex items-center gap-3">
+                <h3 className="w-2/12 mb-1 pl-2 text-slate-600 text-sm font-semibold">
+                  Handle
+                </h3>
+                <div className="flex-grow">
+                  <div>
+                    <select
+                      name="handle"
+                      value={formData?.handle || ""}
+                      onChange={(e) =>
+                        setFormData({ ...formData, handle: e.target.value })
+                      }
+                      className={`w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border rounded-xl bg-white shadow-xs ${state?.errors?.handle ? "border-red-600" : "border-slate-300"}`}
+                    >
+                      <option value="" disabled>
+                        Select
                       </option>
-                    ))}
-                </select>
-                {state?.errors && state?.errors?.handle && (
-                  <span className="text-red-600 text-xs font-semibold">
-                    {state.errors.handle}
-                  </span>
-                )}
+                      {handles &&
+                        handles.map((handle, i) => (
+                          <option key={`handle-${i}`} value={handle.name}>
+                            {handle.name}
+                          </option>
+                        ))}
+                    </select>
+                    {state?.errors && state?.errors?.handle && (
+                      <span className="px-3 text-red-600 text-xs font-semibold">
+                        {state.errors.handle}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {formData.type !== "other" && (
+        {formData?.type !== "other" && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             layout
-            className="flex items-center gap-3 mb-7"
+            className="mb-7"
           >
-            <h3 className="pl-2 text-slate-600 text-sm font-semibold">Style</h3>
-            <div className="flex-grow flex items-center gap-3">
-              <div className="flex-grow flex items-center gap-3 px-3 py-2 bg-white border border-slate-300 rounded-xl">
-                <input
-                  name="style"
-                  id="westernStyle"
-                  type="radio"
-                  defaultChecked={formData.style === "western"}
-                  onChange={(e) =>
-                    e.target.checked &&
-                    setFormData((prev) => ({ ...prev, style: "western" }))
-                  }
-                />
-                <label className="flex-grow" htmlFor="westernStyle">
-                  Western
-                </label>
-              </div>
+            <div className="flex items-center gap-3 ">
+              <h3 className="pl-2 text-slate-600 text-sm font-semibold">
+                Style
+              </h3>
+              <div className="flex-grow">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`flex-grow flex items-center gap-3 px-3 py-2 bg-white border rounded-xl ${state?.errors?.style ? "border-red-600" : "border-slate-300"}`}
+                  >
+                    <input
+                      name="style"
+                      id="westernStyle"
+                      type="radio"
+                      defaultChecked={formData?.style === "western"}
+                      onChange={(e) =>
+                        e.target.checked &&
+                        setFormData((prev) => ({ ...prev, style: "western" }))
+                      }
+                    />
+                    <label className="flex-grow" htmlFor="westernStyle">
+                      Western
+                    </label>
+                  </div>
 
-              <div className="flex-grow flex items-center gap-3 px-3 py-2 bg-white border border-slate-300 rounded-xl">
-                <input
-                  name="style"
-                  id="japaneseStyle"
-                  type="radio"
-                  defaultChecked={formData.style === "japanese"}
-                  onChange={(e) =>
-                    e.target.checked &&
-                    setFormData((prev) => ({ ...prev, style: "japanese" }))
-                  }
-                />
-                <label className="flex-grow" htmlFor="japaneseStyle">
-                  Japanese
-                </label>
+                  <div
+                    className={`flex-grow flex items-center gap-3 px-3 py-2 bg-white border rounded-xl ${state?.errors?.style ? "border-red-600" : "border-slate-300"}`}
+                  >
+                    <input
+                      name="style"
+                      id="japaneseStyle"
+                      type="radio"
+                      defaultChecked={formData?.style === "japanese"}
+                      onChange={(e) =>
+                        e.target.checked &&
+                        setFormData((prev) => ({ ...prev, style: "japanese" }))
+                      }
+                    />
+                    <label className="flex-grow" htmlFor="japaneseStyle">
+                      Japanese
+                    </label>
+                  </div>
+                </div>
+                {state?.errors && state?.errors?.style && (
+                  <span className="px-3 text-red-600 text-xs font-semibold">
+                    {state.errors.style}
+                  </span>
+                )}
               </div>
             </div>
           </motion.div>
         )}
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          layout
-          className="mb-7 flex items-center gap-3"
-        >
-          <h3 className="w-2/12 mb-1 pl-2 text-slate-600 text-sm font-semibold">
-            Material
-          </h3>
-          <div className="flex-grow">
-            <select
-              required
-              name="material"
-              value={(formData && formData.material) || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, material: e.target.value })
-              }
-              className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
-            >
-              <option value="" disabled>
-                Select
-              </option>
-              {materials &&
-                materials.map((material, i) => (
-                  <option key={`material-${i}`} value={material.name}>
-                    {material.name}
-                  </option>
-                ))}
-            </select>
-            {state?.errors && state?.errors?.material && (
-              <span className="text-red-600 text-xs font-semibold">
-                {state.errors.material}
-              </span>
-            )}
-          </div>
-        </motion.div>
+        {formData?.type !== "other" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            layout
+            className="mb-7 flex items-center gap-3"
+          >
+            <h3 className="w-2/12 mb-1 pl-2 text-slate-600 text-sm font-semibold">
+              Material
+            </h3>
+            <div className="flex-grow">
+              <select
+                name="material"
+                value={formData?.material || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, material: e.target.value })
+                }
+                className={`w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border rounded-xl bg-white shadow-xs ${state?.errors?.material ? "border-red-600" : "border-slate-300"}`}
+              >
+                <option value="" disabled>
+                  Select
+                </option>
+                {materials &&
+                  materials.map((material, i) => (
+                    <option key={`material-${i}`} value={material.name}>
+                      {material.name}
+                    </option>
+                  ))}
+              </select>
+              {state?.errors && state?.errors?.material && (
+                <span className="px-3 text-red-600 text-xs font-semibold">
+                  {state.errors.material}
+                </span>
+              )}
+            </div>
+          </motion.div>
+        )}
 
         <div className="my-7">
           <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
             Upload Images
           </h3>
           <ImageUpload data={formData} setData={setFormData} />
-          {state?.errors && state?.errors?.media && (
-            <span className="text-red-600 text-xs font-semibold">
-              {state.errors.media}
-            </span>
-          )}
+          <div className="pt-3">
+            {state?.errors && state?.errors?.media && (
+              <span className="block pb-3 pt-2 px-3 text-red-600 text-xs font-semibold">
+                {state.errors.media}
+              </span>
+            )}
+            {state?.errors && state?.errors?.thumbnail && (
+              <span className="block pb-3 px-3 text-red-600 text-xs font-semibold">
+                {state.errors.thumbnail}
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="mb-5">
@@ -292,7 +326,7 @@ export default function ProductForm({
           </h3>
           <ManageSizeModal data={formData} setData={setFormData} edit={edit} />
           {state?.errors && state?.errors?.sizes && (
-            <span className="text-red-600 text-xs font-semibold">
+            <span className="px-3 text-red-600 text-xs font-semibold">
               {state.errors.sizes}
             </span>
           )}
@@ -302,44 +336,67 @@ export default function ProductForm({
           <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
             Filters
           </h3>
-          <div className="grid grid-cols-2 gap-4">
-            {filters &&
-              filters.map((filter, i) => (
-                <div
-                  key={`filter-${i}`}
-                  className="px-4 py-2 bg-white border border-slate-300 rounded-xl"
-                >
-                  <label htmlFor="filter" className="flex items-center gap-3">
-                    <input
-                      id="filter"
-                      name="filter"
-                      type="checkbox"
-                      defaultChecked={product.filters.some(
-                        (f) => f.name === "Limited"
-                      )}
-                      onChange={(e) =>
-                        e.target.checked
-                          ? setFormData({
-                              ...formData,
-                              filters: [
-                                ...formData.filters,
-                                { id: filter.id, name: filter.name },
-                              ],
-                            })
-                          : setFormData({
-                              ...formData,
-                              filters: formData.filters.filter(
-                                (f) => f.name !== filter.name
-                              ),
-                            })
-                      }
-                    />
-                    <span>{filter.name}</span>
-                  </label>
-                </div>
-              ))}
+          <div>
+            {filters && filters.length > 0 ? (
+              <div className="grid grid-cols-2 gap-4">
+                {filters.map((filter, i) => (
+                  <div
+                    key={`filter-${i}`}
+                    className="px-4 py-2 bg-white border border-slate-300 rounded-xl"
+                  >
+                    <label htmlFor="filter" className="flex items-center gap-3">
+                      <input
+                        id="filter"
+                        name="filter"
+                        type="checkbox"
+                        defaultChecked={product.filters.some(
+                          (f) => f.name === "Limited"
+                        )}
+                        onChange={(e) =>
+                          e.target.checked
+                            ? setFormData({
+                                ...formData,
+                                filters: [
+                                  ...formData?.filters,
+                                  { id: filter.id, name: filter.name },
+                                ],
+                              })
+                            : setFormData({
+                                ...formData,
+                                filters: formData?.filters.filter(
+                                  (f) => f.name !== filter.name
+                                ),
+                              })
+                        }
+                      />
+                      <span>{filter.name}</span>
+                    </label>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="px-5">
+                <p className="text-sm text-slate-600">
+                  There are no registered filters.
+                </p>
+              </div>
+            )}
           </div>
         </div>
+
+        {state?.message && (
+          <div className="flex items-center gap-3 mt-3 px-3 py-2 text-green-800 bg-green-100 rounded-xl">
+            <Info size={18} />
+            <p>{state.message}</p>
+          </div>
+        )}
+
+        {state?.errors && (
+          <div className="flex items-center gap-3 mt-3 px-3 py-2 text-red-800 bg-red-100 rounded-xl">
+            <Info size={18} />
+            Please fix the errors to continue.
+          </div>
+        )}
 
         <div className="pt-4 flex flex-col gap-3">
           <motion.button
@@ -371,24 +428,6 @@ export default function ProductForm({
             </motion.button>
           )}
         </div>
-
-        {state?.message && (
-          <div className="flex items-center gap-3 mt-3 px-3 py-2 text-green-800 bg-green-100 rounded-xl">
-            <Info size={18} />
-            <p>{state.message}</p>
-          </div>
-        )}
-        {state?.errors ||
-          (state?.generalError && (
-            <div className="flex items-center gap-3 mt-3 px-3 py-2 text-red-800 bg-red-100 rounded-xl">
-              <Info size={18} />
-              {state?.generalError ? (
-                <p>{state.generalError}</p>
-              ) : (
-                <p>Some errors occured, please check.</p>
-              )}
-            </div>
-          ))}
       </form>
     </div>
   );

@@ -76,7 +76,7 @@ export default function ProductsTable({ filters }) {
             name="showing"
             id="showing"
             onChange={(e) => setPerPage(e.target.value)}
-            defaultValue="20"
+            defaultValue="10"
           >
             <option value="10">10</option>
             <option value="20">20</option>
@@ -165,51 +165,57 @@ export default function ProductsTable({ filters }) {
         </div>
 
         <div className="relative">
-          <div
-            onClick={() => setShowSearch((prev) => !prev)}
-            className={`${showSearch || searchQuery ? "bg-slate-800 text-white" : "bg-white"} shadow-xs flex items-center gap-3 px-3 py-1 rounded-xl`}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch();
+            }}
           >
-            <Search size={18} />
-            <span>Search</span>
-          </div>
-          <AnimatePresence>
-            {showSearch && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 30 }}
-                className="absolute top-10 right-0 z-50 flex items-center"
-              >
-                <input
-                  ref={inputRef}
-                  type="text"
-                  name="searchQuery"
-                  placeholder="Search product by name."
-                  defaultValue={searchQuery ? searchQuery : ""}
-                  className="text-sm px-3 py-2 bg-white border border-slate-300 rounded-l-xl shadow-lg focus-visible:outline-0"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => {
-                      setSearchQuery("");
-                      setShowSearch(false);
-                      inputRef.current.value = "";
-                    }}
-                    className="absolute right-15 top-3 text-xs text-slate-500"
-                  >
-                    X Clear
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={handleSearch}
-                  className="text-sm px-3 py-2 text-white bg-slate-800 rounded-r-xl shadow-lg"
+            <div
+              onClick={() => setShowSearch((prev) => !prev)}
+              className={`${showSearch || searchQuery ? "bg-slate-800 text-white" : "bg-white"} shadow-xs flex items-center gap-3 px-3 py-1 rounded-xl`}
+            >
+              <Search size={18} />
+              <span>Search</span>
+            </div>
+            <AnimatePresence>
+              {showSearch && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 30 }}
+                  className="absolute top-10 right-0 z-50 flex items-center"
                 >
-                  <Search size={20} />
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    name="searchQuery"
+                    placeholder="Search product by name."
+                    defaultValue={searchQuery ? searchQuery : ""}
+                    className="text-sm px-3 py-3 pr-16 bg-white border border-slate-300 rounded-l-xl shadow-lg focus-visible:outline-0"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => {
+                        setSearchQuery("");
+                        setShowSearch(false);
+                        inputRef.current.value = "";
+                      }}
+                      className="absolute right-15 top-4 text-xs text-slate-500"
+                    >
+                      X Clear
+                    </button>
+                  )}
+                  <button
+                    type="submit"
+                    className="text-sm px-3 py-3 text-white bg-slate-800 rounded-r-xl shadow-lg"
+                  >
+                    <Search size={20} />
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </form>
         </div>
       </div>
 
@@ -256,27 +262,27 @@ export default function ProductsTable({ filters }) {
                   </td>
                   <td className="py-2 px-2 w-10/12 sm:w-11/12 h-14">
                     <div>
-                      <h5 className="mb-1 w-full text-ellipsis overflow-hidden">
-                        <Link href={"/dashboard/products/" + product.id}>
+                      <Link href={"/dashboard/products/" + product.id}>
+                        <h5 className="mb-1 w-full text-ellipsis overflow-hidden">
                           {product.name}
-                        </Link>
-                      </h5>
-                      <div className="flex items-center gap-4">
-                        <span className="text-xs sm:text-base text-slate-500">
-                          <strong className="text-[10px] sm:text-xs font-semibold">
-                            Handle:
-                          </strong>{" "}
-                          <br />
-                          {product.handle}
-                        </span>
-                        <span className="text-xs sm:text-base text-slate-500">
-                          <strong className="text-[10px] sm:text-xs font-semibold">
-                            Material:
-                          </strong>{" "}
-                          <br />
-                          {product.material}
-                        </span>
-                      </div>
+                        </h5>
+                        <div className="flex items-center gap-4">
+                          <span className="text-xs sm:text-base text-slate-500">
+                            <strong className="text-[10px] sm:text-xs font-semibold">
+                              Handle:
+                            </strong>{" "}
+                            <br />
+                            {product.handle}
+                          </span>
+                          <span className="text-xs sm:text-base text-slate-500">
+                            <strong className="text-[10px] sm:text-xs font-semibold">
+                              Material:
+                            </strong>{" "}
+                            <br />
+                            {product.material}
+                          </span>
+                        </div>
+                      </Link>
                     </div>
                   </td>
                 </tr>

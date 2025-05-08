@@ -35,17 +35,18 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
       size: Number(currentEdit.size),
       price: Number(currentEdit.price),
       stock: Number(currentEdit.stock),
-      productId: data.id,
     };
 
     if (edit) {
-      return addToSizes(newSize)
+      return addToSizes({ ...newSize, productId: data.id })
         .then((res) => {
-          if (data && data.sizes) {
-            setData({ ...data, sizes: [...data.sizes, currentEdit] });
-          }
+          setData((prev) =>
+            prev?.sizes
+              ? { ...prev, sizes: [...prev.sizes, newSize] }
+              : { ...prev, sizes: [newSize] }
+          );
 
-          setEditSize(false);
+          sizeNameRef.current.focus();
           return setCurrentEdit({});
         })
         .catch((error) => {
@@ -53,9 +54,13 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
         });
     }
 
-    setData((prev) => ({ ...prev, sizes: [...prev.sizes, newSize] }));
+    setData((prev) =>
+      prev?.sizes
+        ? { ...prev, sizes: [...prev.sizes, newSize] }
+        : { ...prev, sizes: [newSize] }
+    );
 
-    setEditSize(false);
+    sizeNameRef.current.focus();
     return setCurrentEdit({});
   };
 
@@ -67,6 +72,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
     }
 
     const updatedSize = {
+      id: Number(currentEdit.id),
       name: currentEdit.name,
       size: Number(currentEdit.size),
       price: Number(currentEdit.price),
@@ -75,18 +81,11 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
     };
 
     if (edit) {
-      updateSize(updatedSize, currentEdit.sizeId)
+      updateSize(updatedSize)
         .then((res) => {
           const updatedSizes = data.sizes.map((size) => {
-            if (
-              size.name === currentEdit.name &&
-              size.size === currentEdit.size
-            ) {
-              return {
-                ...size,
-                price: currentEdit.price,
-                stock: currentEdit.stock,
-              };
+            if (size.id === currentEdit.id) {
+              return updatedSize;
             }
             return size;
           });
@@ -94,6 +93,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
           setData({ ...data, sizes: updatedSizes });
 
           setEditSize(false);
+          sizeNameRef.current.focus();
           return setCurrentEdit({});
         })
         .catch((error) => {
@@ -101,13 +101,9 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
         });
     }
 
-    const updatedSizes = data.sizes.map((size) => {
-      if (size.name === currentEdit.name && size.size === currentEdit.size) {
-        return {
-          ...size,
-          price: currentEdit.price,
-          stock: currentEdit.stock,
-        };
+    const updatedSizes = data.sizes.map((size, i) => {
+      if (i === currentEdit.id || size.id === currentEdit.id) {
+        return updatedSize;
       }
       return size;
     });
@@ -115,17 +111,18 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
     setData({ ...data, sizes: updatedSizes });
 
     setEditSize(false);
+    sizeNameRef.current.focus();
     return setCurrentEdit({});
   };
 
-  const removeSize = (name, size, id) => {
+  const removeSize = (id) => {
     if (!data) return;
 
     if (edit) {
       deleteSize(id)
         .then((res) => {
           const updated = data?.sizes.filter((s) => {
-            if (s.name === name && s.size === size) return false;
+            if (s.id === id) return false;
             return true;
           });
 
@@ -136,9 +133,12 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
         });
     }
 
-    const updated = data?.sizes.filter((s) => {
-      if (s.name === name && s.size === size) return false;
-      return true;
+    let updated = [];
+    data?.sizes.map((s, i) => {
+      if (i !== id) {
+        return (updated = [...updated, s]);
+      }
+      return;
     });
 
     return setData({ ...data, sizes: updated });
@@ -148,12 +148,15 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
     <div className="px-2 py-3 border border-slate-200 bg-white rounded-xl shadow-xs">
       <div className="mb-3 p-2">
         {editSize && (
-          <div className="px-3 py-2 mb-2 bg-green-700 text-white text-xs font-bold rounded-lg">
+          <motion.div
+            layout
+            className="px-3 py-2 mb-2 bg-green-700 text-white text-xs font-bold rounded-lg"
+          >
             Editing Size
-          </div>
+          </motion.div>
         )}
 
-        <div>
+        <motion.div layout>
           <div className="mb-2">
             <input
               ref={sizeNameRef}
@@ -249,7 +252,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
               </motion.button>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {data && data?.sizes && (
@@ -269,7 +272,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                 <motion.tr
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className={`text-sm border-b last:border-b-0 border-slate-100 rounded-xl ${currentEdit.id === size.id ? "bg-slate-100" : ""}`}
+                  className={`text-sm border-b last:border-b-0 border-slate-100 rounded-xl ${currentEdit.id && currentEdit.id === size.id ? "bg-slate-100" : ""}`}
                   key={`size-${i}`}
                 >
                   <td className="w-4/12 py-2">
@@ -291,9 +294,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                       <button
                         type="button"
                         className="p-2 text-slate-500"
-                        onClick={() =>
-                          removeSize(size.name, size.size, size.id)
-                        }
+                        onClick={() => removeSize(size.id || i)}
                       >
                         <Trash2 size={14} />
                       </button>
@@ -305,12 +306,11 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                           setEditSize(true);
                           sizeNameRef.current.focus();
                           setCurrentEdit({
-                            id: size.id,
+                            id: size.id || i,
                             name: size.name,
                             size: size.size,
                             price: size.price,
                             stock: size.stock,
-                            sizeId: size.id,
                           });
                         }}
                       >

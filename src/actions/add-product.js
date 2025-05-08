@@ -13,16 +13,18 @@ import { redirect } from "next/navigation";
 export default async function addProduct(state) {
   await verifyAdminSession();
 
+  console.log("Before validation:", state);
+
   let validatedData;
 
   // * Validate product data or return validation error.
   try {
     validatedData =
-      state.type == "knife"
-        ? await knifeSchema.validate(state, {
+      state.type == "other"
+        ? await otherProductSchema.validate(state, {
             abortEarly: false,
           })
-        : await otherProductSchema.validate(state, {
+        : await knifeSchema.validate(state, {
             abortEarly: false,
           });
   } catch (error) {
@@ -30,14 +32,17 @@ export default async function addProduct(state) {
     if (error.name === "ValidationError") {
       const fieldErrors = {};
       for (const fieldError of error.inner) {
-        fieldErrors[fieldError.path] = fieldError.message;
+        fieldErrors[fieldError.path.split(".")[0]] = fieldError.message;
       }
+      console.log("Errors: ", fieldErrors);
       return { ...state, errors: fieldErrors };
     }
 
     // * Log any other error.
     console.log(error);
   }
+
+  console.log("After validation:", validatedData);
 
   // upload images to storage
   const imageUrls = await Promise.all(
@@ -68,7 +73,7 @@ export default async function addProduct(state) {
 
   // * Prepare the filters object to help create and connect filters to product.
   let filtersObject = [];
-  if (validatedData.filters.length > 0) {
+  if (validatedData?.filters && validatedData?.filters.length > 0) {
     filtersObject = validatedData.filters.map((filter) => filter.id);
   }
 

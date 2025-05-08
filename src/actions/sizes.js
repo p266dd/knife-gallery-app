@@ -36,11 +36,11 @@ export async function addToSizes(data) {
   return newSize;
 }
 
-export async function updateSize(data, sizeId) {
+export async function updateSize(data) {
   // * Add a new size and return it.
   const updatedSize = await prisma.size.update({
     where: {
-      id: sizeId,
+      id: data.id,
     },
     data: {
       name: data.name,

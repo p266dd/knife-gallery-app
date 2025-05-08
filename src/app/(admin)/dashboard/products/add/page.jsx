@@ -25,10 +25,10 @@ export default async function AddProductPage() {
 
       <div className="mb-9">
         <ProductForm
-          handles={(handles && handles) || []}
-          filters={(filters && filters) || []}
-          brands={(brands && brands) || []}
-          materials={(materials && materials) || []}
+          handles={handles && handles}
+          filters={filters && filters}
+          brands={brands && brands}
+          materials={materials && materials}
         />
       </div>
     </main>
