@@ -27,6 +27,7 @@ export default function ProductForm({
           name: product.name || "",
           brand: product.brand || "",
           handle: product.handle || "",
+          canChangeHandle: product.canChangeHandle || false,
           style: product.style || "",
           material: product.material || "",
           description: product.description || "",
@@ -166,36 +167,58 @@ export default function ProductForm({
               layout
               className="mb-7"
             >
-              <div className="flex items-center gap-3">
-                <h3 className="w-2/12 mb-1 pl-2 text-slate-600 text-sm font-semibold">
-                  Handle
-                </h3>
-                <div className="flex-grow">
-                  <div>
-                    <select
-                      name="handle"
-                      value={formData?.handle || ""}
-                      onChange={(e) =>
-                        setFormData({ ...formData, handle: e.target.value })
-                      }
-                      className={`w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border rounded-xl bg-white shadow-xs ${state?.errors?.handle ? "border-red-600" : "border-slate-300"}`}
-                    >
-                      <option value="" disabled>
-                        Select
-                      </option>
-                      {handles &&
-                        handles.map((handle, i) => (
-                          <option key={`handle-${i}`} value={handle.name}>
-                            {handle.name}
-                          </option>
-                        ))}
-                    </select>
-                    {state?.errors && state?.errors?.handle && (
-                      <span className="px-3 text-red-600 text-xs font-semibold">
-                        {state.errors.handle}
-                      </span>
-                    )}
+              <div>
+                <div className="flex items-center gap-3">
+                  <h3 className="w-2/12 mb-1 pl-2 text-slate-600 text-sm font-semibold">
+                    Handle
+                  </h3>
+                  <div className="flex-grow">
+                    <div>
+                      <select
+                        name="handle"
+                        value={formData?.handle || ""}
+                        onChange={(e) =>
+                          setFormData({ ...formData, handle: e.target.value })
+                        }
+                        className={`w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border rounded-xl bg-white shadow-xs ${state?.errors?.handle ? "border-red-600" : "border-slate-300"}`}
+                      >
+                        <option value="" disabled>
+                          Select
+                        </option>
+                        {handles &&
+                          handles.map((handle, i) => (
+                            <option key={`handle-${i}`} value={handle.name}>
+                              {handle.name}
+                            </option>
+                          ))}
+                      </select>
+                      {state?.errors && state?.errors?.handle && (
+                        <span className="px-3 text-red-600 text-xs font-semibold">
+                          {state.errors.handle}
+                        </span>
+                      )}
+                    </div>
                   </div>
+                </div>
+                <div className="pb-3 mt-3 flex items-center justify-end gap-3">
+                  <label
+                    htmlFor="canChangeHandle"
+                    className="flex items-center gap-3"
+                  >
+                    <input
+                      type="checkbox"
+                      id="canChangeHandle"
+                      name="canChangeHandle"
+                      defaultChecked={formData?.canChangeHandle}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          canChangeHandle: e.target.checked,
+                        })
+                      }
+                    />
+                    <span className="text-sm">Can Change Handle</span>
+                  </label>
                 </div>
               </div>
             </motion.div>

@@ -196,6 +196,7 @@ export default async function updateProduct(state, current) {
         description: validatedData.description,
         brand: validatedData.brand,
         handle: validatedData.handle,
+        canChangeHandle: validatedData.canChangeHandle,
         style: validatedData.style,
         material: validatedData.material,
         media: newMediaObject,

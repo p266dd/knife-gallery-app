@@ -179,7 +179,9 @@ export default function ProductForm({ product, preferences, cart }) {
 
         {product && product.type === "knife" && (
           <div>
-            <div className="relative flex gap-3 items-center px-3 py-2 pt-6 border bg-white border-slate-300 rounded-xl">
+            <div
+              className={`relative flex gap-3 items-center px-3 py-2 pt-6 border  border-slate-300 rounded-xl ${!product.canChangeHandle ? "bg-slate-200" : "bg-white"}`}
+            >
               <label
                 className="absolute top-2 left-3 text-xs text-slate-400"
                 htmlFor="handle"
@@ -195,6 +197,7 @@ export default function ProductForm({ product, preferences, cart }) {
                 defaultValue={
                   (currentProduct && currentProduct.handle) || product.handle
                 }
+                disabled={!product.canChangeHandle}
                 className="focus-visible:outline-0 w-full placeholder:text-slate-500"
               />
             </div>

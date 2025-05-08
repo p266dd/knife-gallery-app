@@ -60,24 +60,25 @@ model OrderProduct {
 }
 
 model Product {
-  id          String            @id @default(cuid())
-  type        String
-  name        String            @unique
-  description String?
-  brand       String
-  handle      String
-  style       String?
-  material    String
-  media       Media[]           @relation("ProductMedia")
-  thumbnail   Media?            @relation("ProductThumbnail", fields: [thumbnailId], references: [id])
-  thumbnailId Int?
-  sizes       Size[]
-  filters     Filter[]
-  orders      OrderProduct[]
-  carts       CartProduct[]
-  favorites   FavoriteProduct[]
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime?
+  id              String            @id @default(cuid())
+  type            String
+  name            String            @unique
+  description     String?
+  brand           String
+  handle          String
+  canChangeHandle Boolean           @default(false)
+  style           String?
+  material        String
+  media           Media[]           @relation("ProductMedia")
+  thumbnail       Media?            @relation("ProductThumbnail", fields: [thumbnailId], references: [id])
+  thumbnailId     Int?
+  sizes           Size[]
+  filters         Filter[]
+  orders          OrderProduct[]
+  carts           CartProduct[]
+  favorites       FavoriteProduct[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime?
 
   @@index([id, name(sort: Asc)])
 }
