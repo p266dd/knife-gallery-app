@@ -26,20 +26,16 @@ export const knifeSchema = object({
       object({
         name: string()
           .required("Please type a size.")
-          .max(20, "Size is too long.")
+          .max(26, "Name is too long.")
           .trim(),
         size: number()
           .required("Please type a size.")
-          .positive("Size must be a positive number.")
           .integer("Size must be an integer."),
         price: number()
           .required("Please type a price.")
-          .positive("Price must be a positive number.")
-          .integer("Price must be an integer.")
-          .min(1000, "Price must be at least ¥1000."),
+          .integer("Price must be an integer."),
         stock: number()
           .required("Please type a stock.")
-          .positive("Stock must be a positive number.")
           .integer("Stock must be an integer.")
           .min(0, "Stock must be at least 0."),
       })

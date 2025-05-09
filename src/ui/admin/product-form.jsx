@@ -348,11 +348,13 @@ export default function ProductForm({
             Product Sizes
           </h3>
           <ManageSizeModal data={formData} setData={setFormData} edit={edit} />
-          {state?.errors && state?.errors?.sizes && (
-            <span className="px-3 text-red-600 text-xs font-semibold">
-              {state.errors.sizes}
-            </span>
-          )}
+          <div className="px-4 py-2">
+            {state?.errors && state?.errors?.sizes && (
+              <span className="text-red-600 text-xs font-semibold text-wrap">
+                {state.errors.sizes}
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="my-7">

@@ -13,8 +13,6 @@ import { redirect } from "next/navigation";
 export default async function addProduct(state) {
   await verifyAdminSession();
 
-  console.log("Before validation:", state);
-
   let validatedData;
 
   // * Validate product data or return validation error.
@@ -32,17 +30,20 @@ export default async function addProduct(state) {
     if (error.name === "ValidationError") {
       const fieldErrors = {};
       for (const fieldError of error.inner) {
-        fieldErrors[fieldError.path.split(".")[0]] = fieldError.message;
+        if (fieldError.path.split("[")[0] === "sizes") {
+          fieldErrors[fieldError.path.split("[")[0]] = `${fieldError.message} [
+            ${fieldError.value} ]`;
+        } else {
+          fieldErrors[fieldError.path] = fieldError.message;
+        }
       }
-      console.log("Errors: ", fieldErrors);
+      // console.log("Errors: ", fieldErrors);
       return { ...state, errors: fieldErrors };
     }
 
     // * Log any other error.
     console.log(error);
   }
-
-  console.log("After validation:", validatedData);
 
   // upload images to storage
   const imageUrls = await Promise.all(
