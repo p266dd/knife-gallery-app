@@ -1,16 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import { isArray } from "lodash";
 import { redirect, RedirectType } from "next/navigation";
 import { Search } from "lucide-react";
 import SearchPreview from "./search-preview";
 import RangeSlider from "./range-slider";
 import Accordion from "./accordion";
 
-export default function SearchForm({ brands = [], materials = [] }) {
+export default function SearchForm({
+  brands = [],
+  materials = [],
+  currentSearch = {},
+}) {
   const [searchData, setSearchData] = useState({
     searchTerm: "",
-    handle: [],
+    style: [],
     stock: [],
     price: {},
     size: {},
@@ -53,7 +58,11 @@ export default function SearchForm({ brands = [], materials = [] }) {
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-9">
-        <SearchPreview data={searchData} setData={setSearchData} />
+        <SearchPreview
+          data={searchData}
+          currentTerm={currentSearch.searchTerm}
+          setData={setSearchData}
+        />
       </div>
 
       <div className="flex flex-col gap-3 mb-5">
@@ -64,15 +73,16 @@ export default function SearchForm({ brands = [], materials = [] }) {
           >
             <input
               id="japanesehandle"
-              type="checkbox"
-              name="handle"
+              type="radio"
+              name="style"
               className="mr-3"
+              defaultChecked={
+                currentSearch.style && currentSearch.style === "japanese"
+              }
               onChange={(e) => {
                 e.target.checked
-                  ? searchData.handle.push("japanese")
-                  : (searchData.handle = searchData.handle.filter(
-                      (handle) => handle !== "japanese"
-                    ));
+                  ? (searchData.style = "japanese")
+                  : (searchData.style = "");
               }}
             />
             Japanese
@@ -83,15 +93,16 @@ export default function SearchForm({ brands = [], materials = [] }) {
           >
             <input
               id="westernhandle"
-              name="handle"
-              type="checkbox"
+              name="style"
+              type="radio"
               className="mr-3"
+              defaultChecked={
+                currentSearch.style && searchData.style === "western"
+              }
               onChange={(e) => {
                 e.target.checked
-                  ? searchData.handle.push("western")
-                  : (searchData.handle = searchData.handle.filter(
-                      (handle) => handle !== "western"
-                    ));
+                  ? (searchData.style = "western")
+                  : (searchData.style = "");
               }}
             />
             Western
@@ -106,14 +117,15 @@ export default function SearchForm({ brands = [], materials = [] }) {
             <input
               id="stockonly"
               name="stock"
-              type="checkbox"
+              type="radio"
               className="mr-3"
+              defaultChecked={
+                currentSearch?.stock && currentSearch.stock.includes("inStock")
+              }
               onChange={(e) => {
                 e.target.checked
-                  ? searchData.stock.push("inStock")
-                  : (searchData.stock = searchData.stock.filter(
-                      (stock) => stock !== "inStock"
-                    ));
+                  ? (searchData.stock = "inStock")
+                  : (searchData.stock = "");
               }}
             />
             Only items in stock
@@ -128,17 +140,40 @@ export default function SearchForm({ brands = [], materials = [] }) {
             <input
               id="largeStock"
               name="stock"
-              type="checkbox"
+              type="radio"
               className="mr-3"
+              defaultChecked={
+                currentSearch?.stock &&
+                currentSearch.stock.includes("largeStock")
+              }
               onChange={(e) => {
                 e.target.checked
-                  ? searchData.stock.push("largeStock")
-                  : (searchData.stock = searchData.stock.filter(
-                      (stock) => stock !== "largeStock"
-                    ));
+                  ? (searchData.stock = "largeStock")
+                  : (searchData.stock = "");
               }}
             />
             50 or more in stock
+          </label>
+        </div>
+
+        <div>
+          <label
+            htmlFor="allStock"
+            className="block w-full px-3 py-2 pb-1 bg-slate-50 rounded-lg"
+          >
+            <input
+              id="allStock"
+              name="stock"
+              type="radio"
+              className="mr-3"
+              defaultChecked={!currentSearch?.stock}
+              onChange={(e) => {
+                e.target.checked
+                  ? (searchData.stock = "")
+                  : (searchData.stock = "");
+              }}
+            />
+            All Items
           </label>
         </div>
       </div>
@@ -147,8 +182,9 @@ export default function SearchForm({ brands = [], materials = [] }) {
         <div className="mb-2">
           <RangeSlider
             label="Price"
-            min={3200}
-            max={10000}
+            min={2000}
+            max={90000}
+            currentSearch={currentSearch.price}
             data={searchData}
             setData={setSearchData}
           />
@@ -157,8 +193,9 @@ export default function SearchForm({ brands = [], materials = [] }) {
         <div className="mb-2">
           <RangeSlider
             label="Size"
-            min={130}
-            max={300}
+            min={70}
+            max={350}
+            currentSearch={currentSearch.size}
             data={searchData}
             setData={setSearchData}
           />
@@ -178,6 +215,11 @@ export default function SearchForm({ brands = [], materials = [] }) {
                   id={`brand-${brand.name}`}
                   name="brand"
                   type="checkbox"
+                  defaultChecked={
+                    currentSearch?.brand && isArray(currentSearch.brand)
+                      ? currentSearch.brand.some((name) => name === brand.name)
+                      : currentSearch.brand === brand.name
+                  }
                   onChange={(e) => {
                     e.target.checked
                       ? searchData.brand.push(brand.name)
@@ -205,6 +247,13 @@ export default function SearchForm({ brands = [], materials = [] }) {
                 <input
                   id={`material-${material.name}`}
                   type="checkbox"
+                  defaultChecked={
+                    currentSearch?.material && isArray(currentSearch.material)
+                      ? currentSearch.material.some(
+                          (name) => name === material.name
+                        )
+                      : currentSearch.material === material.name
+                  }
                   onChange={(e) => {
                     e.target.checked
                       ? searchData.material.push(material.name)

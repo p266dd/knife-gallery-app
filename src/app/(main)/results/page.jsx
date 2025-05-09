@@ -111,6 +111,7 @@ export default function ResultsPage() {
               <SearchForm
                 brands={brandsObject && brandsObject.data}
                 materials={materialObject && materialObject.data}
+                currentSearch={searchObject}
               />
             </motion.div>
           )}

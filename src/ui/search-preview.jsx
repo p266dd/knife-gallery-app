@@ -9,7 +9,7 @@ import { Search, X } from "lucide-react";
 
 import { searchProduct } from "@/actions/search-products";
 
-export default function SearchPreview({ data, setData }) {
+export default function SearchPreview({ data, setData, currentTerm = null }) {
   const [showPreview, setShowPreview] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const searchTermRef = useRef(null);
@@ -49,7 +49,9 @@ export default function SearchPreview({ data, setData }) {
           name="searchTerm"
           placeholder="Search for a product."
           className="w-full pl-10 pr-3 pt-3 pb-2 focus-visible:outline-0"
-          value={(data && data?.searchTerm) || ""}
+          value={
+            (data && data?.searchTerm) || (currentTerm && currentTerm) || ""
+          }
           onChange={handleInput}
         />
         <AnimatePresence>

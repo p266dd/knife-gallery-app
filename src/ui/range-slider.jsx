@@ -11,6 +11,7 @@ export default function RangeSlider({
   max = 100,
   data,
   setData,
+  currentSearch = "",
 }) {
   const handleOnChange = (value) => {
     // Add to the search params.
@@ -46,7 +47,10 @@ export default function RangeSlider({
         min={min}
         max={max}
         step={10}
-        defaultValue={[min, max]}
+        defaultValue={[
+          currentSearch ? currentSearch.split("-")[0] : min,
+          currentSearch ? currentSearch.split("-")[1] : max,
+        ]}
         onChange={handleOnChange}
         styles={{
           handle: {

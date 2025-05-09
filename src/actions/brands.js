@@ -10,6 +10,9 @@ export async function fetchBrands() {
       id: true,
       name: true,
     },
+    orderBy: {
+      name: "asc",
+    },
   });
 
   return brands;
