@@ -10,6 +10,7 @@ import {
   Ruler,
   Save,
   Trash2,
+  XCircle,
 } from "lucide-react";
 
 import { addToSizes, updateSize, deleteSize } from "@/actions/sizes";
@@ -279,7 +280,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                     {size.name}
                     <br />
                     <span className="text-xs text-slate-500">
-                      {size.size} mm
+                      {size.size === 0 ? "Not Defined" : `${size.size} mm`}
                     </span>
                   </td>
                   <td className="w-4/12 py-2">
@@ -288,7 +289,16 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                       currency: "JPY",
                     }).format(size.price)}
                   </td>
-                  <td className="w-2/12 py-2">{size.stock}</td>
+                  <td className="w-2/12 py-2">
+                    {size.stock === 0 ? (
+                      <span className="flex items-center gap-2">
+                        {size.stock}{" "}
+                        <XCircle size={14} className="stroke-red-500" />
+                      </span>
+                    ) : (
+                      size.stock
+                    )}
+                  </td>
                   <td className="w-2/12 py-2">
                     <div className="flex flex-col justify-center items-center gap-2">
                       <button

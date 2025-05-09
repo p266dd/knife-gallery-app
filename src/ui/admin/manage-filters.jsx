@@ -21,28 +21,32 @@ export default function ManageFiltersForm({ filters }) {
               initial={{ opacity: 0, y: -30 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="flex flex-col gap-3"
             >
-              <input
-                required
-                name="filterName"
-                placeholder="Filter Name"
-                onChange={(e) => setNewFilter(e.target.value)}
-                value={newFilter}
-                className="w-full text-sm px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-300 rounded-xl bg-white shadow-xs"
-              />
-
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                type="button"
-                className="w-full px-3 py-2 flex items-center justify-center gap-3 bg-slate-700 text-white text-sm font-semibold rounded-xl"
-                onClick={async () => {
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
                   newFilter !== "" && (await addFilter(newFilter));
                   setNewFilter("");
                 }}
+                className="flex flex-col gap-3"
               >
-                <CirclePlus size={16} /> Add Filter
-              </motion.button>
+                <input
+                  required
+                  name="filterName"
+                  placeholder="Filter Name"
+                  onChange={(e) => setNewFilter(e.target.value)}
+                  value={newFilter}
+                  className="w-full text-sm px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-300 rounded-xl bg-white shadow-xs"
+                />
+
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  type="submit"
+                  className="w-full px-3 py-2 flex items-center justify-center gap-3 bg-slate-700 text-white text-sm font-semibold rounded-xl"
+                >
+                  <CirclePlus size={16} /> Add Filter
+                </motion.button>
+              </form>
             </motion.div>
           )}
 
