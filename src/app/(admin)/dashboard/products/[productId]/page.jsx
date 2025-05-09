@@ -31,7 +31,7 @@ export default async function SingleProductPage({ params }) {
 
       <div className="mb-9">
         <span className="text-sm text-slate-500">Editing</span>
-        <h1 className="text-2xl font-semibold text-slate-700">
+        <h1 className="text-2xl font-semibold text-slate-700 capitalize">
           {product.name}
         </h1>
       </div>

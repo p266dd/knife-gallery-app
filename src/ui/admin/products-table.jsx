@@ -78,9 +78,9 @@ export default function ProductsTable({ filters }) {
             onChange={(e) => setPerPage(e.target.value)}
             defaultValue="10"
           >
+            <option value="5">5</option>
             <option value="10">10</option>
             <option value="20">20</option>
-            <option value="40">40</option>
           </select>
         </div>
 
@@ -263,18 +263,18 @@ export default function ProductsTable({ filters }) {
                   <td className="py-2 px-2 w-10/12 sm:w-11/12 h-14">
                     <div>
                       <Link href={"/dashboard/products/" + product.id}>
-                        <h5 className="mb-1 w-full text-ellipsis overflow-hidden">
+                        <h5 className="mb-1 w-full text-ellipsis overflow-hidden capitalize">
                           {product.name}
                         </h5>
                         <div className="flex items-center gap-4">
-                          <span className="text-xs sm:text-base text-slate-500">
+                          <span className="text-xs sm:text-base text-slate-500 capitalize">
                             <strong className="text-[10px] sm:text-xs font-semibold">
                               Handle:
                             </strong>{" "}
                             <br />
                             {product.handle}
                           </span>
-                          <span className="text-xs sm:text-base text-slate-500">
+                          <span className="text-xs sm:text-base text-slate-500 capitalize">
                             <strong className="text-[10px] sm:text-xs font-semibold">
                               Material:
                             </strong>{" "}
@@ -307,6 +307,11 @@ export default function ProductsTable({ filters }) {
               Previous
             </span>
           )}
+
+          <div className="flex items-center gap-3 px-4">
+            {page && page === 1 ? "Page " : ""}
+            {page}
+          </div>
 
           {data && page < data.totalPages && (
             <span

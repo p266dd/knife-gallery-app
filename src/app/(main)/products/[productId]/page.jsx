@@ -52,7 +52,7 @@ export default async function ProductSinglePage({ params }) {
   return (
     <main className="pt-16 pb-40">
       <div className="px-6 mt-9 mb-9">
-        <h1 className="text-3xl mb-2">{product.name}</h1>
+        <h1 className="text-3xl mb-2 capitalize">{product.name}</h1>
         <p className="text-xs text-slate-400">Product ID: {product.id}</p>
       </div>
 

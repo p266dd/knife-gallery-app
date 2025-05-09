@@ -84,7 +84,7 @@ export default function ProductModal({ product, children }) {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="absolute inset-0 w-full h-full z-50 overflow-hidden flex items-center justify-center bg-black/70"
+            className="fixed inset-0 w-full h-full z-50 overflow-hidden flex items-center justify-center bg-black/70"
           >
             <motion.div
               initial={{ opacity: 0, y: 50 }}
@@ -109,7 +109,9 @@ export default function ProductModal({ product, children }) {
                 </div>
 
                 <Link href={"/products/" + product.id || "#"}>
-                  <div className="bg-white rounded-xl p-4">{product.name}</div>
+                  <div className="bg-white rounded-xl p-4 capitalize">
+                    {product.name}
+                  </div>
                 </Link>
               </div>
             </motion.div>
