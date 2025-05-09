@@ -268,61 +268,58 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
               </tr>
             </thead>
             <tbody>
-              {data.sizes
-                .slice()
-                .sort((a, b) => a.price - b.price)
-                .map((size, i) => (
-                  <motion.tr
-                    initial={{ opacity: 0, x: 30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className={`text-sm border-b last:border-b-0 border-slate-100 rounded-xl ${currentEdit.id && currentEdit.id === size.id ? "bg-slate-100" : ""}`}
-                    key={`size-${i}`}
-                  >
-                    <td className="w-4/12 py-2">
-                      {size.name}
-                      <br />
-                      <span className="text-xs text-slate-500">
-                        {size.size} mm
-                      </span>
-                    </td>
-                    <td className="w-4/12 py-2">
-                      {new Intl.NumberFormat("ja-JP", {
-                        style: "currency",
-                        currency: "JPY",
-                      }).format(size.price)}
-                    </td>
-                    <td className="w-2/12 py-2">{size.stock}</td>
-                    <td className="w-2/12 py-2">
-                      <div className="flex flex-col justify-center items-center gap-2">
-                        <button
-                          type="button"
-                          className="p-2 text-slate-500"
-                          onClick={() => removeSize(size.id || i)}
-                        >
-                          <Trash2 size={14} />
-                        </button>
+              {data.sizes.map((size, i) => (
+                <motion.tr
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className={`text-sm border-b last:border-b-0 border-slate-100 rounded-xl ${currentEdit.id && currentEdit.id === size.id ? "bg-slate-100" : ""}`}
+                  key={`size-${i}`}
+                >
+                  <td className="w-4/12 py-2">
+                    {size.name}
+                    <br />
+                    <span className="text-xs text-slate-500">
+                      {size.size} mm
+                    </span>
+                  </td>
+                  <td className="w-4/12 py-2">
+                    {new Intl.NumberFormat("ja-JP", {
+                      style: "currency",
+                      currency: "JPY",
+                    }).format(size.price)}
+                  </td>
+                  <td className="w-2/12 py-2">{size.stock}</td>
+                  <td className="w-2/12 py-2">
+                    <div className="flex flex-col justify-center items-center gap-2">
+                      <button
+                        type="button"
+                        className="p-2 text-slate-500"
+                        onClick={() => removeSize(size.id || i)}
+                      >
+                        <Trash2 size={14} />
+                      </button>
 
-                        <button
-                          type="button"
-                          className="p-2 text-slate-500"
-                          onClick={() => {
-                            setEditSize(true);
-                            sizeNameRef.current.focus();
-                            setCurrentEdit({
-                              id: size.id || i,
-                              name: size.name,
-                              size: size.size,
-                              price: size.price,
-                              stock: size.stock,
-                            });
-                          }}
-                        >
-                          <Pencil size={14} />
-                        </button>
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))}
+                      <button
+                        type="button"
+                        className="p-2 text-slate-500"
+                        onClick={() => {
+                          setEditSize(true);
+                          sizeNameRef.current.focus();
+                          setCurrentEdit({
+                            id: size.id || i,
+                            name: size.name,
+                            size: size.size,
+                            price: size.price,
+                            stock: size.stock,
+                          });
+                        }}
+                      >
+                        <Pencil size={14} />
+                      </button>
+                    </div>
+                  </td>
+                </motion.tr>
+              ))}
             </tbody>
           </table>
         </div>
