@@ -18,7 +18,7 @@ export default function ProductsTable({ filters }) {
   const [showSearch, setShowSearch] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
 
-  const [perPage, setPerPage] = useState(20);
+  const [perPage, setPerPage] = useState(10);
 
   // * User's search input content.
   const [searchQuery, setSearchQuery] = useState(null);
