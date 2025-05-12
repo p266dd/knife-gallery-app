@@ -13,28 +13,31 @@ import { Info } from "lucide-react";
 
 export default function ProductForm({
   product = null,
+  copy = null,
   handles = [],
   filters = [],
   brands = [],
   materials = [],
   edit = false,
 }) {
+  console.log("copy", copy);
   const [formData, setFormData] = useState(
-    product
+    product || copy
       ? {
-          id: product.id,
-          type: product.type || "",
-          name: product.name || "",
-          brand: product.brand || "",
-          handle: product.handle || "",
-          canChangeHandle: product.canChangeHandle || false,
-          style: product.style || "",
-          material: product.material || "",
-          description: product.description || "",
-          sizes: product.sizes || [],
-          filters: product.filters || [],
-          media: product.media || [],
-          thumbnail: product.thumbnail || "",
+          id: product?.id,
+          type: product?.type || copy?.type || "",
+          name: product?.name || "(Copy) " + copy?.name || "",
+          brand: product?.brand || copy?.brand || "",
+          handle: product?.handle || copy?.handle || "",
+          canChangeHandle:
+            product?.canChangeHandle || copy?.canChangeHandle || false,
+          style: product?.style || copy?.style || "",
+          material: product?.material || copy?.material || "",
+          description: product?.description || copy?.description || "",
+          sizes: product?.sizes || copy?.sizes || [],
+          filters: product?.filters || copy?.filters || [],
+          media: product?.media || copy?.media || [],
+          thumbnail: product?.thumbnail || copy?.thumbnail || "",
         }
       : {}
   );

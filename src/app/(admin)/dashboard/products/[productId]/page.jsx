@@ -1,3 +1,4 @@
+import Link from "next/link";
 import prisma from "@/data/prisma";
 import ProductForm from "@/ui/admin/product-form";
 import BackButton from "@/ui/back-button";
@@ -25,8 +26,16 @@ export default async function SingleProductPage({ params }) {
 
   return (
     <main className="py-9 px-3">
-      <div className="mb-5">
+      <div className="mb-5 flex items-center justify-between">
         <BackButton />
+        <div className="pr-4">
+          <Link
+            className="px-4 py-2 text-sm text-slate-500 border border-slate-300 rounded-xl"
+            href={`/dashboard/products/add?starter=${product.id}`}
+          >
+            Create a Copy
+          </Link>
+        </div>
       </div>
 
       <div className="mb-9">
