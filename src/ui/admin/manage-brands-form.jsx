@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Check, CirclePlus, Pencil, Trash2 } from "lucide-react";
 
 import { addBrand, removeBrand, updateBrand } from "@/actions/brands";
+import ConfirmModal from "../confirm-modal";
 
 export default function ManageBrandsForm({ brands }) {
   const [newBrand, setNewBrand] = useState("");
@@ -124,9 +125,11 @@ export default function ManageBrandsForm({ brands }) {
                     >
                       <Pencil className="text-blue-600" size={16} />
                     </button>
-                    <button onClick={async () => removeBrand(brand.id)}>
-                      <Trash2 className="text-red-600" size={16} />
-                    </button>
+                    <ConfirmModal action={async () => removeBrand(brand.id)}>
+                      <button>
+                        <Trash2 className="text-red-600" size={16} />
+                      </button>
+                    </ConfirmModal>
                   </td>
                 </tr>
               ))

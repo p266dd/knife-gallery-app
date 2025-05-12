@@ -9,6 +9,7 @@ import updateUser from "@/actions/update-user";
 import { removeUser } from "@/actions/remove-user";
 
 import { generateRandomString } from "@/utils/generate-random-string";
+import ConfirmModal from "../confirm-modal";
 
 export default function UserForm({ user, edit = false }) {
   const generatedPassword = useMemo(() => generateRandomString("password"), []);
@@ -246,14 +247,15 @@ export default function UserForm({ user, edit = false }) {
             )}
           </motion.button>
           {edit && (
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              type="button"
-              onClick={async () => await removeUser(user.id)}
-              className="w-full px-3 py-2 bg-slate-200 text-slate-700 font-semibold rounded-xl"
-            >
-              Delete
-            </motion.button>
+            <ConfirmModal action={() => removeUser(user.id)}>
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                type="button"
+                className="w-full px-3 py-2 bg-slate-200 text-slate-700 font-semibold rounded-xl"
+              >
+                Delete
+              </motion.button>
+            </ConfirmModal>
           )}
         </div>
 

@@ -9,6 +9,7 @@ import {
   removeMaterial,
   updateMaterial,
 } from "@/actions/materials";
+import ConfirmModal from "../confirm-modal";
 
 export default function ManageMaterialsForm({ materials }) {
   const [newMaterial, setNewMaterial] = useState("");
@@ -128,9 +129,13 @@ export default function ManageMaterialsForm({ materials }) {
                     >
                       <Pencil className="text-blue-600" size={16} />
                     </button>
-                    <button onClick={async () => removeMaterial(material.id)}>
-                      <Trash2 className="text-red-600" size={16} />
-                    </button>
+                    <ConfirmModal
+                      action={async () => removeMaterial(material.id)}
+                    >
+                      <button>
+                        <Trash2 className="text-red-600" size={16} />
+                      </button>
+                    </ConfirmModal>
                   </td>
                 </tr>
               ))

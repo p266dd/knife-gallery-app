@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Check, CirclePlus, Pencil, Trash2 } from "lucide-react";
 
 import { addFilter, removeFilter, updateFilter } from "@/actions/filters";
+import ConfirmModal from "../confirm-modal";
 
 export default function ManageFiltersForm({ filters }) {
   const [newFilter, setNewFilter] = useState("");
@@ -122,9 +123,11 @@ export default function ManageFiltersForm({ filters }) {
                     >
                       <Pencil className="text-blue-600" size={16} />
                     </button>
-                    <button onClick={async () => removeFilter(filter.id)}>
-                      <Trash2 className="text-red-600" size={16} />
-                    </button>
+                    <ConfirmModal action={async () => removeFilter(filter.id)}>
+                      <button>
+                        <Trash2 className="text-red-600" size={16} />
+                      </button>
+                    </ConfirmModal>
                   </td>
                 </tr>
               ))

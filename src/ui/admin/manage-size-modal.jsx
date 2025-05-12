@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { addToSizes, updateSize, deleteSize } from "@/actions/sizes";
+import ConfirmModal from "../confirm-modal";
 
 export default function ManageSizeModal({ data, setData, edit = false }) {
   const [editSize, setEditSize] = useState(false);
@@ -301,13 +302,11 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                   </td>
                   <td className="w-2/12 py-2">
                     <div className="flex flex-col justify-center items-center gap-2">
-                      <button
-                        type="button"
-                        className="p-2 text-slate-500"
-                        onClick={() => removeSize(size.id || i)}
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      <ConfirmModal action={() => removeSize(size.id || i)}>
+                        <button type="button" className="p-2 text-slate-500">
+                          <Trash2 size={14} />
+                        </button>
+                      </ConfirmModal>
 
                       <button
                         type="button"

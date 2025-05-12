@@ -10,6 +10,7 @@ import addProduct from "@/actions/add-product";
 import updateProduct from "@/actions/update-product";
 import { removeProduct } from "@/actions/remove-product";
 import { Info } from "lucide-react";
+import ConfirmModal from "../confirm-modal";
 
 export default function ProductForm({
   product = null,
@@ -20,7 +21,6 @@ export default function ProductForm({
   materials = [],
   edit = false,
 }) {
-  console.log("copy", copy);
   const [formData, setFormData] = useState(
     product || copy
       ? {
@@ -446,14 +446,15 @@ export default function ProductForm({
           </motion.button>
 
           {edit && (
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              type="button"
-              onClick={async () => await removeProduct(product.id)}
-              className="w-full px-3 py-2 bg-slate-200 text-slate-700 font-semibold rounded-xl"
-            >
-              Delete
-            </motion.button>
+            <ConfirmModal action={() => removeProduct(product.id)}>
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                type="button"
+                className="w-full px-3 py-2 bg-slate-200 text-slate-700 font-semibold rounded-xl"
+              >
+                Delete
+              </motion.button>
+            </ConfirmModal>
           )}
         </div>
       </form>

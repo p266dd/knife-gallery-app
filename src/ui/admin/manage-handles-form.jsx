@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Check, CirclePlus, Pencil, Trash2 } from "lucide-react";
 
 import { addHandle, removeHandle, updateHandle } from "@/actions/handles";
+import ConfirmModal from "../confirm-modal";
 
 export default function ManageHandlesForm({ handles }) {
   const [newHandle, setNewHandle] = useState("");
@@ -124,9 +125,11 @@ export default function ManageHandlesForm({ handles }) {
                     >
                       <Pencil className="text-blue-600" size={16} />
                     </button>
-                    <button onClick={async () => removeHandle(handle.id)}>
-                      <Trash2 className="text-red-600" size={16} />
-                    </button>
+                    <ConfirmModal action={async () => removeHandle(handle.id)}>
+                      <button>
+                        <Trash2 className="text-red-600" size={16} />
+                      </button>
+                    </ConfirmModal>
                   </td>
                 </tr>
               ))
