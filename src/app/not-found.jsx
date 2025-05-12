@@ -1,7 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function NotFoundPage() {
+  const router = useRouter();
+
   return (
     <main className="h-full flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
@@ -19,7 +24,13 @@ export default function NotFoundPage() {
             Page <strong className="font-semibold">Not Found!</strong>
           </h1>
           <p className="text-base">
-            Return to{" "}
+            Return to the{" "}
+            <span className="underline" onClick={() => router.back()}>
+              previous page
+            </span>
+          </p>
+          <p>
+            or{" "}
             <Link className="underline" href="/">
               Home page
             </Link>
