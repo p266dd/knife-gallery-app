@@ -1,15 +1,17 @@
 import Image from "next/image";
+import { Suspense } from "react";
 
 import { verifyUserSession } from "@/utils/session";
 import EmptyFavorites from "@/ui/empty-favorites";
 import ProductModal from "@/ui/product-modal";
 
 import { fetchFavorites } from "@/actions/fetch-favorites";
+import ProductsGridLoading from "@/ui/products-grid-loading";
 
 export default async function FavoritesPage() {
   await verifyUserSession();
 
-  const data = await fetchFavorites();
+  const data = fetchFavorites();
 
   return (
     <main className="pt-16 pb-40">
@@ -23,29 +25,31 @@ export default async function FavoritesPage() {
       </div>
 
       <div className="mt-6">
-        {data && data.favoritesCount > 0 ? (
-          <div className="px-2 grid grid-cols-3 gap-1">
-            {data.favorites.products.map((product, i) => {
-              return (
-                <div key={i} className="relative bg-slate-100">
-                  <ProductModal product={product.product}>
-                    <Image
-                      src={
-                        product.product.thumbnail.url || "/product-image.webp"
-                      }
-                      width={1080}
-                      height={1080}
-                      alt="Placeholder"
-                      className="w-full h-full object-cover"
-                    />
-                  </ProductModal>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <EmptyFavorites />
-        )}
+        <Suspense fallback={<ProductsGridLoading />}>
+          {data && data.favoritesCount > 0 ? (
+            <div className="px-2 grid grid-cols-3 gap-1">
+              {data.favorites.products.map((product, i) => {
+                return (
+                  <div key={i} className="relative bg-slate-100">
+                    <ProductModal product={product.product}>
+                      <Image
+                        src={
+                          product.product.thumbnail.url || "/product-image.webp"
+                        }
+                        width={1080}
+                        height={1080}
+                        alt="Placeholder"
+                        className="w-full h-full object-cover"
+                      />
+                    </ProductModal>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <EmptyFavorites />
+          )}
+        </Suspense>
       </div>
     </main>
   );

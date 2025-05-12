@@ -3,11 +3,12 @@
 import Image from "next/image";
 import useSWRInfinite from "swr/infinite";
 import { motion, AnimatePresence } from "motion/react";
+import { CircleFadingPlus } from "lucide-react";
 
 import ProductModal from "./product-modal";
 import { fetchProductsInfinite } from "@/actions/fetch-products-infinite";
 import { useStore } from "@/utils/store";
-import { CircleFadingPlus } from "lucide-react";
+import ProductsGridLoading from "./products-grid-loading";
 
 export default function ProductsGrid() {
   // * Only one filter at a time.
@@ -37,7 +38,10 @@ export default function ProductsGrid() {
   return (
     <AnimatePresence>
       <div className="px-2 grid grid-cols-3 gap-1">
-        {allProducts &&
+        {isLoading ? (
+          <ProductsGridLoading />
+        ) : (
+          allProducts &&
           allProducts.map((product, i) => {
             return (
               <motion.div
@@ -59,7 +63,8 @@ export default function ProductsGrid() {
                 </ProductModal>
               </motion.div>
             );
-          })}
+          })
+        )}
       </div>
       {hasMoreData && !isLoading && (
         <div key="laodMore" className="flex items-center justify-center mt-6">

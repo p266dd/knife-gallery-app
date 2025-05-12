@@ -41,17 +41,19 @@ export default async function HomePage() {
       </div>
 
       <div className="mt-6">
-        <div className="relative px-6 mb-3">
-          <span className="block absolute top-0 right-0 h-full w-10 bg-linear-270 from-white from-30% to-white/0"></span>
+        {filters && filters.length > 0 && (
+          <div className="relative px-6 mb-3">
+            <span className="block absolute top-0 right-0 h-full w-10 bg-linear-270 from-white from-30% to-white/0"></span>
 
-          <div className="w-full overflow-auto">
-            <div className="flex flex-row gap-2 py-3">
-              {filters.map((filter, i) => (
-                <FilterTag key={i} filter={filter} />
-              ))}
+            <div className="w-full overflow-auto">
+              <div className="flex flex-row gap-2 py-3">
+                {filters.map((filter, i) => (
+                  <FilterTag key={i} filter={filter} />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <ProductsGrid />
       </div>
