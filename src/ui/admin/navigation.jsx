@@ -12,8 +12,8 @@ import {
   Settings,
   ChevronsRight,
   X,
-  Undo2,
   Lock,
+  House,
 } from "lucide-react";
 
 import { fnLogout } from "@/actions/logout";
@@ -46,7 +46,7 @@ export default function DashboardNavigation() {
     {
       title: "Homepage",
       url: "/",
-      icon: <Undo2 strokeWidth={1.5} size={18} />,
+      icon: <House strokeWidth={1.5} size={18} />,
     },
   ];
 
