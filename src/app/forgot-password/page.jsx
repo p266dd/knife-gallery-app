@@ -86,6 +86,7 @@ export default function ForgotPassword() {
                     <input
                       type="email"
                       name="email"
+                      autoComplete="email"
                       defaultValue={state?.data?.email || null}
                       className={`rounded-lg border-1 px-3 py-2 text-sm ${
                         state?.errors && state?.errors?.email

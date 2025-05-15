@@ -92,6 +92,7 @@ export default function ResetPassword() {
                     <input
                       type="text"
                       name="code"
+                      autoComplete="off"
                       max={6}
                       defaultValue={state?.data?.code || null}
                       className={`w-full rounded-lg border-1 border-slate-300 bg-white px-3 py-2 text-sm ${

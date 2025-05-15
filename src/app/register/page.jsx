@@ -120,6 +120,7 @@ export default function RegisterPage() {
                     <input
                       type="text"
                       name="name"
+                      autoComplete="name"
                       defaultValue={state?.data?.name || null}
                       className={`rounded-lg border-1 px-3 py-2 text-sm ${
                         state?.errors && state?.errors?.name
@@ -141,6 +142,7 @@ export default function RegisterPage() {
                     <input
                       type="text"
                       name="email"
+                      autoComplete="email"
                       defaultValue={state?.data?.email || null}
                       className={`rounded-lg border-1 px-3 py-2 text-sm ${
                         state?.errors && state?.errors?.email
@@ -193,6 +195,7 @@ export default function RegisterPage() {
                     <input
                       type="text"
                       name="businessName"
+                      autoComplete="off"
                       defaultValue={state?.data?.businessName || null}
                       className={`rounded-lg border-1 px-3 py-2 text-sm ${
                         state?.errors && state?.errors?.businessName
@@ -214,6 +217,7 @@ export default function RegisterPage() {
                     <input
                       type="text"
                       name="businessCode"
+                      autoComplete="off"
                       defaultValue={state?.data?.businessCode || null}
                       className={`rounded-lg px-3 py-2 text-sm border-1 ${
                         state?.errors && state?.errors?.businessCode
