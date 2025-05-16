@@ -157,3 +157,12 @@ model FavoriteProduct {
 
   @@id([favoriteId, productId])
 }
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  link      String
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

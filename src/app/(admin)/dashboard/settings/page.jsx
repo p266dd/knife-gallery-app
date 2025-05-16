@@ -5,11 +5,18 @@ import ManageBrandsForm from "@/ui/admin/manage-brands-form";
 import ManageHandlesForm from "@/ui/admin/manage-handles-form";
 import ManageFiltersForm from "@/ui/admin/manage-filters";
 import ManageMaterialsForm from "@/ui/admin/manage-materials-form";
+import ManageMessagesForm from "@/ui/admin/manage-messages-form";
 
 export default async function SettingsPage() {
   const brands = await prisma.brand.findMany({
     orderBy: {
       name: "asc",
+    },
+  });
+
+  const messages = await prisma.message.findMany({
+    orderBy: {
+      title: "asc",
     },
   });
 
@@ -42,6 +49,10 @@ export default async function SettingsPage() {
         </div>
 
         <div className="flex flex-col gap-8">
+          <div>
+            <ManageMessagesForm messages={messages} />
+          </div>
+          <hr className="border-slate-300" />
           <div>
             <ManageBrandsForm brands={brands} />
           </div>
