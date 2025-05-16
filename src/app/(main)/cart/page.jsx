@@ -2,6 +2,7 @@ import { ShoppingBag } from "lucide-react";
 import prisma from "@/data/prisma";
 import { getSession } from "@/utils/session";
 import { fetchCart } from "@/actions/fetch-cart";
+import ClearCartButton from "@/ui/clear-cart-button";
 import CartProduct from "@/ui/cart-product";
 import EmptyCart from "@/ui/empty-cart";
 
@@ -56,9 +57,7 @@ export default async function CartPage() {
               <span>Order Now</span>
             </button>
 
-            <button className="w-full px-4 py-2 bg-slate-200 text-slate-600 text-center text-sm rounded-xl">
-              <span>Clear Cart</span>
-            </button>
+            <ClearCartButton />
           </div>
         )}
       </div>

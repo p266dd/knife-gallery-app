@@ -18,3 +18,22 @@ export async function removeCart({ cartProductId, productId }) {
 
   return removedCart;
 }
+
+export async function clearCart() {
+  const session = await verifyUserSession();
+
+  const clearedCart = await prisma.cart.update({
+    where: {
+      clientId: session.id,
+    },
+    data: {
+      products: {
+        deleteMany: {},
+      },
+    },
+  });
+
+  revalidatePath("/cart", "page");
+
+  return clearedCart;
+}

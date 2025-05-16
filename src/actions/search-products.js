@@ -114,7 +114,7 @@ export default async function searchProducts({ pageIndex, searchObject }) {
 export async function searchProduct(term) {
   // * return a list of products if the name contains the term provided.
   const product = await prisma.product.findMany({
-    take: 10,
+    take: 15,
     where: {
       name: {
         contains: term,
@@ -126,6 +126,7 @@ export async function searchProduct(term) {
       thumbnail: true,
       handle: true,
       material: true,
+      type: true,
     },
   });
 

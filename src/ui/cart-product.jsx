@@ -4,10 +4,11 @@ import Image from "next/image";
 import { useState } from "react";
 import { useActionState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Info, Pencil, Save, Trash2, X } from "lucide-react";
+import { Info, Loader, Pencil, Save, Trash2, X } from "lucide-react";
 
 import { updateCart } from "@/actions/update-cart";
 import { removeCart } from "@/actions/remove-cart";
+import { set } from "lodash";
 
 export default function CartProduct({ cartProduct, preferences }) {
   const product = cartProduct.product;
@@ -18,7 +19,7 @@ export default function CartProduct({ cartProduct, preferences }) {
   const [showDeleteBtn, setShowDeleteBtn] = useState(false);
   const [otherField, setOtherField] = useState(false);
 
-  const [state, action] = useActionState(updateCart, {});
+  const [state, action, pending] = useActionState(updateCart, {});
 
   return (
     <div className="relative">
@@ -70,6 +71,7 @@ export default function CartProduct({ cartProduct, preferences }) {
               <form
                 className="className={`overflow-hidden flex flex-col pt-3"
                 action={action}
+                onSubmit={() => setShowUpdateBtn(false)}
               >
                 <input
                   type="hidden"
@@ -84,16 +86,24 @@ export default function CartProduct({ cartProduct, preferences }) {
                     animate={{ opacity: 1 }}
                     exit={{ x: -60, opacity: 0 }}
                     type="submit"
-                    onClick={() => setShowUpdateBtn(false)}
                     className="flex items-center justify-start gap-3 px-4 py-2 m-2 mt-0 bg-green-700 text-white text-sm rounded-xl cursor-pointer"
                   >
-                    <Save size={18} />
-                    <span>Save Changes</span>
+                    {pending ? (
+                      <>
+                        <Loader size={18} className="animate-spin" />
+                        <span>Saving</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save size={18} />
+                        <span>Save Changes</span>
+                      </>
+                    )}
                   </motion.button>
                 )}
 
                 <div className="py-2 px-4">
-                  <table className="w-full">
+                  <table className="w-full mb-5">
                     <thead>
                       <tr className="w-full text-xs text-white bg-slate-600">
                         <th className="w-5/12 py-1 px-2 text-left">Size</th>
@@ -116,11 +126,12 @@ export default function CartProduct({ cartProduct, preferences }) {
                             </span>
                           </td>
                           <td className="py-2 text-center">
-                            <div className="flex items-center gap-2 border border-slate-400 px-3 py-2 rounded-xl">
+                            <div className="mx-2 flex items-center gap-2 border border-slate-400 px-3 py-2 rounded-xl">
                               <input
                                 className="w-full appearance-none focus-visible:outline-0 placeholder:text-slate-500"
                                 type="number"
                                 name={`size_${size.id}`}
+                                autoComplete="off"
                                 defaultValue={
                                   JSON.parse(cartProduct.details).find(
                                     (d) => Number(d.id) === Number(size.id)
@@ -128,7 +139,9 @@ export default function CartProduct({ cartProduct, preferences }) {
                                 }
                                 max={size.stock}
                                 step={1}
-                                onChange={() => setShowUpdateBtn(true)}
+                                onChange={() => {
+                                  setShowUpdateBtn(true);
+                                }}
                               />
                             </div>
                           </td>
@@ -156,12 +169,14 @@ export default function CartProduct({ cartProduct, preferences }) {
                             (cartProduct && cartProduct.brand) ||
                             product.brand.toLowerCase()
                           }
+                          disabled={product.brand !== "OEM"}
                           onChange={(e) => {
                             e.target.value === "other"
                               ? setOtherField(true)
                               : setOtherField(false);
+                            setShowUpdateBtn(true);
                           }}
-                          className="w-full focus-visible:outline-0 border-b border-slate-300 pb-2"
+                          className="w-full focus-visible:outline-0 border-b border-slate-300 pb-2 pr-1 pt-1 disabled:bg-slate-100"
                         >
                           <option value="" disabled>
                             Select an engraving for this product.
@@ -220,8 +235,11 @@ export default function CartProduct({ cartProduct, preferences }) {
                           id="handle"
                           placeholder={product.handle}
                           defaultValue={cartProduct.handle || null}
-                          onChange={() => setShowUpdateBtn(true)}
-                          className="focus-visible:outline-0 w-full placeholder:text-slate-500 text-sm  border-b border-slate-300 pb-2"
+                          onChange={() => {
+                            setShowUpdateBtn(true);
+                          }}
+                          disabled={!product.canChangeHandle}
+                          className="focus-visible:outline-0 w-full placeholder:text-slate-500 text-sm  border-b border-slate-300 pb-2 py-1 pl-1 disabled:bg-slate-100"
                         />
                       </div>
                     )}
@@ -239,7 +257,9 @@ export default function CartProduct({ cartProduct, preferences }) {
                         id="request"
                         placeholder="No special request."
                         defaultValue={cartProduct.request || null}
-                        onChange={() => setShowUpdateBtn(true)}
+                        onChange={() => {
+                          setShowUpdateBtn(true);
+                        }}
                         className="focus-visible:outline-0 w-full placeholder:text-slate-500 text-sm  border-b border-slate-300 pb-2"
                       />
                     </div>
@@ -254,16 +274,24 @@ export default function CartProduct({ cartProduct, preferences }) {
                       animate={{ opacity: 1 }}
                       exit={{ x: -60, opacity: 0 }}
                       type="submit"
-                      onClick={() => setShowUpdateBtn(false)}
                       className="flex items-center w-full justify-start gap-3 px-4 py-2 m-2 mt-0 bg-green-700 text-white text-sm rounded-xl cursor-pointer"
                     >
-                      <Save size={18} />
-                      <span>Save Changes</span>
+                      {pending ? (
+                        <>
+                          <Loader size={18} className="animate-spin" />
+                          <span>Saving</span>
+                        </>
+                      ) : (
+                        <>
+                          <Save size={18} />
+                          <span>Save Changes</span>
+                        </>
+                      )}
                     </motion.button>
                   </div>
                 )}
 
-                <div className="flex items-center gap-2 px-2 mb-2">
+                <div className="flex items-center gap-2 px-6 mb-2">
                   <motion.button
                     whileTap={{ scale: 0.9 }}
                     initial={{ opacity: 0 }}
@@ -275,7 +303,7 @@ export default function CartProduct({ cartProduct, preferences }) {
                         ? await removeCart({ cartProductId: cartProduct.id })
                         : setShowDeleteBtn(true)
                     }
-                    className={`flex items-center gap-3 px-4 py-2 transition-colors flex-grow ${showDeleteBtn ? "bg-red-700 text-white" : "bg-red-200 text-red-700"}  text-sm rounded-xl`}
+                    className={`flex items-center gap-3 px-4 py-2 mb-4 transition-colors flex-grow ${showDeleteBtn ? "bg-red-700 text-white" : "bg-red-200 text-red-700"}  text-sm rounded-xl`}
                   >
                     <Trash2 size={16} />
                     <span>{showDeleteBtn ? "Remove" : "Remove Product"}</span>
@@ -289,7 +317,7 @@ export default function CartProduct({ cartProduct, preferences }) {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ x: -60, opacity: 0 }}
-                      className="px-3 py-2 text-sm rounded-xl bg-slate-200"
+                      className="px-3 py-2 mb-4 text-sm rounded-xl bg-slate-200"
                       onClick={() => setShowDeleteBtn(false)}
                     >
                       Cancel

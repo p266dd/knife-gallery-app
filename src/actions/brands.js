@@ -20,15 +20,21 @@ export async function fetchBrands() {
 
 export async function addBrand(brandName) {
   // * Add a new brand and return it.
-  const newBrand = await prisma.brand.create({
-    data: {
-      name: brandName,
-    },
-  });
+  try {
+    const newBrand = await prisma.brand.create({
+      data: {
+        name: brandName,
+      },
+    });
 
-  revalidatePath("/dashboard/settings");
+    revalidatePath("/dashboard/settings");
 
-  return newBrand;
+    return newBrand;
+  } catch (err) {
+    if (err.code === "P2002") {
+      console.log("Item already exists.");
+    }
+  }
 }
 
 export async function removeBrand(brandId) {

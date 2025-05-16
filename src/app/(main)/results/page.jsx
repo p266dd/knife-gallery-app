@@ -16,7 +16,7 @@ import { fetchBrands } from "@/actions/brands";
 import { fetchMaterials } from "@/actions/materials";
 
 export default function ResultsPage() {
-  const router = useRouter();
+  // const router = useRouter();
   const searchParams = useSearchParams();
   const [showFilter, setShowFilter] = useState(false);
 

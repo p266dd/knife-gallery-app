@@ -49,16 +49,36 @@ export default function AccountForm({ user }) {
         </div>
       )}
 
+      <AnimatePresence>
+        {showFormSave && (
+          <div className="mb-4">
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className={`w-full flex items-center justify-center gap-3 py-3 bg-green-600 text-white text-sm font-bold rounded-xl`}
+              type="submit"
+              onClick={() => setShowFormSave(false)}
+            >
+              <SaveAll size={18} />
+              <span>Save</span>
+            </motion.button>
+          </div>
+        )}
+      </AnimatePresence>
+
       <div className="mb-9 flex flex-col gap-3">
         <div className="mb-4">
           <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
-            Product Name
+            Full Name
           </h3>
           <input
             required
             type="text"
             name="name"
             id="name"
+            autoComplete="off"
             defaultValue={user && user.name}
             className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
           />
@@ -78,6 +98,7 @@ export default function AccountForm({ user }) {
             type="email"
             name="email"
             id="email"
+            autoComplete="email"
             defaultValue={user && user.email}
             className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
           />
@@ -131,6 +152,7 @@ export default function AccountForm({ user }) {
               name="businessName"
               id="businessName"
               defaultValue={user && user.businessName}
+              autoComplete="off"
               className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
             />
             {state?.errors && state?.errors?.businessName && (
@@ -150,6 +172,7 @@ export default function AccountForm({ user }) {
               name="businessCode"
               id="businessCode"
               defaultValue={user && user.businessCode}
+              autoComplete="off"
               className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
             />
             {state?.errors && state?.errors?.businessCode && (
@@ -166,7 +189,7 @@ export default function AccountForm({ user }) {
       </div>
 
       <div className="relative flex-grow flex flex-col gap-2">
-        <div className="mb-4">
+        <div className="mb-4 relative">
           <h3 className="mb-1 pl-2 text-slate-600 text-sm font-semibold">
             Engraving
           </h3>
@@ -179,7 +202,7 @@ export default function AccountForm({ user }) {
                 exit={{ x: 50, opacity: 0 }}
                 transition={{ type: "spring", duration: 0.35 }}
                 type="button"
-                className="absolute top-2 right-2 flex gap-2 items-center px-3 py-1 bg-green-700 text-white text-xs font-bold rounded-xl cursor-pointer"
+                className="absolute bottom-2 right-3 flex gap-2 items-center px-3 py-2 bg-green-700 text-white text-xs font-bold rounded-lg cursor-pointer"
                 onClick={handleAddEngraving}
               >
                 <PlusCircle size={14} className="inline-block" />
@@ -194,6 +217,7 @@ export default function AccountForm({ user }) {
             name="engravingPref"
             id="engravingPref"
             placeholder="Add a new engraving preference"
+            autoComplete="off"
             onChange={(e) =>
               e.target.value.length >= 3
                 ? setShowEngravingSave(true)

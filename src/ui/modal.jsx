@@ -23,6 +23,7 @@ export default function Modal({ children, trigger }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
               className="fixed inset-0 w-full min-h-screen h-full z-50 overflow-hidden flex items-center justify-center bg-black/70"
             >
               <motion.div

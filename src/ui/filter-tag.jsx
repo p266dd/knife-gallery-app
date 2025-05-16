@@ -1,26 +1,21 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Flame, CircleX } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { CircleX } from "lucide-react";
 
-import { useStore } from "@/utils/store";
-
-export default function FilterTag({ filter }) {
-  // * Parameter filter has name and id only
-
-  const storeFilter = useStore((state) => state.filter);
-  const addFilter = useStore((state) => state.addFilter);
-  const removeFilter = useStore((state) => state.removeFilter);
-
-  const isActive = storeFilter === filter.name;
-
-  const handleClick = () =>
-    isActive ? removeFilter(filter.name) : addFilter(filter.name);
+export default function FilterTag({ filter, active }) {
+  const router = useRouter();
+  const isActive = filter.name.toLowerCase() === active;
 
   return (
     <motion.span
       whileTap={{ scale: 0.9 }}
-      onClick={handleClick}
+      onClick={() =>
+        isActive
+          ? router.push("/")
+          : router.push("/?filter=" + filter.name.toLowerCase())
+      }
       className={`
         cursor-pointer flex felx-row gap-2 items-center
         px-4 py-2 text-sm rounded-xl border border-transparent

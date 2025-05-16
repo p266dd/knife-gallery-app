@@ -20,8 +20,6 @@ export default async function AddProductPage({ searchParams }) {
         id: starter,
       },
       include: {
-        media: true,
-        thumbnail: true,
         sizes: true,
         filters: true,
       },

@@ -7,13 +7,10 @@ import { CircleFadingPlus } from "lucide-react";
 
 import ProductModal from "./product-modal";
 import { fetchProductsInfinite } from "@/actions/fetch-products-infinite";
-import { useStore } from "@/utils/store";
+
 import ProductsGridLoading from "./products-grid-loading";
 
-export default function ProductsGrid() {
-  // * Only one filter at a time.
-  const filter = useStore((state) => state.filter);
-
+export default function ProductsGrid({ filter }) {
   // * Get the pageIndex and filter.
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.length) return null;
@@ -55,6 +52,8 @@ export default function ProductsGrid() {
                 <ProductModal product={product}>
                   <Image
                     src={product.thumbnail.url || "/product-image.webp"}
+                    placeholder="blur"
+                    blurDataURL="/img/product-image-placeholder-blur.webp"
                     width={1080}
                     height={1080}
                     alt="Placeholder"

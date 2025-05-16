@@ -4,6 +4,7 @@ import { useState } from "react";
 import { isArray } from "lodash";
 import { redirect, RedirectType } from "next/navigation";
 import { Search } from "lucide-react";
+
 import SearchPreview from "./search-preview";
 import RangeSlider from "./range-slider";
 import Accordion from "./accordion";
@@ -106,6 +107,25 @@ export default function SearchForm({
               }}
             />
             Western
+          </label>
+
+          <label
+            htmlFor="allhandle"
+            className="flex-grow px-3 py-2 pb-1 bg-slate-50 rounded-lg"
+          >
+            <input
+              id="allhandle"
+              name="style"
+              type="radio"
+              className="mr-3"
+              defaultChecked={!currentSearch?.style}
+              onChange={(e) => {
+                e.target.checked
+                  ? (searchData.style = "")
+                  : (searchData.style = "");
+              }}
+            />
+            All
           </label>
         </div>
 

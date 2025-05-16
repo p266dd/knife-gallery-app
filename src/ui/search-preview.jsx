@@ -33,7 +33,7 @@ export default function SearchPreview({ data, setData, currentTerm = null }) {
         setShowPreview(false);
       }
 
-      document.removeEventListener("click", this);
+      return () => document.removeEventListener("click", this);
     });
   }, [showPreview]);
 
@@ -47,6 +47,7 @@ export default function SearchPreview({ data, setData, currentTerm = null }) {
           ref={searchTermRef}
           type="text"
           name="searchTerm"
+          autoComplete="off"
           placeholder="Search for a product."
           className="w-full pl-10 pr-3 pt-3 pb-2 focus-visible:outline-0"
           value={
@@ -80,6 +81,12 @@ export default function SearchPreview({ data, setData, currentTerm = null }) {
             exit={{ opacity: 0, y: -20 }}
             className="absolute top-14 left-0 z-50 w-full max-h-80 overflow-y-auto overflow-x-hidden px-2 py-3 flex flex-col gap-3 bg-white rounded-xl shadow-md"
           >
+            {response.isLoading && (
+              <div className="py-6 px-9 text-base text-slate-600">
+                Loading..
+              </div>
+            )}
+
             {response.data && response.data.length > 0 ? (
               response.data.map((product, i) => (
                 <Link
@@ -101,14 +108,18 @@ export default function SearchPreview({ data, setData, currentTerm = null }) {
                     <div className="w-9/12">
                       <h4>{product.name}</h4>
                       <div className="flex flex-col items-start">
-                        <span className="text-xs text-slate-500">
-                          <strong>Handle: </strong>
-                          {product.handle}
-                        </span>
-                        <span className="text-xs text-slate-500">
-                          <strong>Material: </strong>
-                          {product.material}
-                        </span>
+                        {product.type === "knife" && (
+                          <>
+                            <span className="text-xs text-slate-500">
+                              <strong>Handle: </strong>
+                              {product.handle}
+                            </span>
+                            <span className="text-xs text-slate-500">
+                              <strong>Material: </strong>
+                              {product.material}
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>

@@ -1,21 +1,27 @@
 import Image from "next/image";
+import { string } from "yup";
+import { notFound } from "next/navigation";
 
-import prisma from "@/data/prisma";
 import ProductsGrid from "@/ui/products-grid";
 import FilterTag from "@/ui/filter-tag";
 import LogoutButton from "@/ui/logout-button";
 
+import { fetchFilters } from "@/actions/filters";
 import { fnLogout } from "@/actions/logout";
 import { getSession } from "@/utils/session";
 
-export default async function HomePage() {
+export default async function HomePage({ searchParams }) {
   const session = await getSession();
 
-  const filters = await prisma.filter.findMany({
-    orderBy: {
-      name: "desc",
-    },
-  });
+  let { filter } = await searchParams;
+
+  const sanitizedFilter = await string()
+    .default("")
+    .lowercase()
+    .trim()
+    .validate(filter);
+
+  const filters = await fetchFilters();
 
   return (
     <main className="pb-40">
@@ -48,14 +54,14 @@ export default async function HomePage() {
             <div className="w-full overflow-auto">
               <div className="flex flex-row gap-2 py-3">
                 {filters.map((filter, i) => (
-                  <FilterTag key={i} filter={filter} />
+                  <FilterTag key={i} filter={filter} active={sanitizedFilter} />
                 ))}
               </div>
             </div>
           </div>
         )}
 
-        <ProductsGrid />
+        <ProductsGrid filter={sanitizedFilter} />
       </div>
     </main>
   );

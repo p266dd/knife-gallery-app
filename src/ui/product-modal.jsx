@@ -84,6 +84,7 @@ export default function ProductModal({ product, children }) {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
+            onClick={() => setIsOpen(false)}
             className="fixed inset-0 w-full h-full z-50 overflow-hidden flex items-center justify-center bg-black/70"
           >
             <motion.div

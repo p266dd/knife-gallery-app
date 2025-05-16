@@ -104,6 +104,8 @@ export default function ProductForm({
           </h3>
           <input
             name="name"
+            type="text"
+            autoComplete="off"
             value={formData?.name || ""}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             className={`w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border rounded-xl bg-white shadow-xs ${state?.errors?.name ? "border-red-600" : "border-slate-300"}`}

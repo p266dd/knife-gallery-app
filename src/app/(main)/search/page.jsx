@@ -1,7 +1,10 @@
 import SearchForm from "@/ui/search-form";
+import { verifyUserSession } from "@/utils/session";
 import prisma from "@/data/prisma";
 
 export default async function SearchPage() {
+  await verifyUserSession();
+
   const brands = await prisma.brand.findMany({
     orderBy: {
       name: "asc",

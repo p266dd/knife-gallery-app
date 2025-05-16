@@ -44,6 +44,18 @@ export async function addToCart(state, formData) {
     });
   }
 
+  // * Retrieve the products brand and handle to add
+  // in case the client didn't add.
+  const productDetails = await prisma.product.findUnique({
+    where: {
+      id: data.productId,
+    },
+    select: {
+      brand: true,
+      handle: true,
+    },
+  });
+
   // * Add item to cart collection.
   const cart = await prisma.cart.update({
     where: {
@@ -57,8 +69,10 @@ export async function addToCart(state, formData) {
               id: data.productId,
             },
           },
-          brand: data.brandOther ? data.brandOther : data.brand,
-          handle: data.handle || "No handle.",
+          brand:
+            (data.brandOther ? data.brandOther : data.brand) ||
+            productDetails.brand,
+          handle: data.handle || productDetails.handle || "No handle.",
           request: data.request,
           details: JSON.stringify(sizes),
         },

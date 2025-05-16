@@ -165,6 +165,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
               type="text"
               name="name"
               placeholder="Size name"
+              autoComplete="off"
               value={currentEdit.name || ""}
               onChange={(e) =>
                 setCurrentEdit({ ...currentEdit, name: e.target.value })
@@ -211,7 +212,9 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                 type="number"
                 placeholder="Stock"
                 name="stock"
-                value={currentEdit.stock || ""}
+                defaultValue={
+                  editSize ? (currentEdit.stock ? currentEdit.stock : 0) : ""
+                }
                 onChange={(e) =>
                   setCurrentEdit({ ...currentEdit, stock: e.target.value })
                 }

@@ -36,6 +36,7 @@ export default function ManageBrandsForm({ brands }) {
                   required
                   name="brandName"
                   placeholder="Brand Name"
+                  autoComplete="off"
                   onChange={(e) => setNewBrand(e.target.value)}
                   value={newBrand}
                   className="w-full text-sm px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-300 rounded-xl bg-white shadow-xs"

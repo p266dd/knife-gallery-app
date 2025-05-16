@@ -191,6 +191,7 @@ export default function ProductsTable({ filters }) {
                     type="text"
                     name="searchQuery"
                     placeholder="Search product by name."
+                    autoComplete="off"
                     defaultValue={searchQuery ? searchQuery : ""}
                     className="text-sm px-3 py-3 pr-16 bg-white border border-slate-300 rounded-l-xl shadow-lg focus-visible:outline-0"
                   />

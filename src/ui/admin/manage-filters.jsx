@@ -63,6 +63,7 @@ export default function ManageFiltersForm({ filters }) {
                 required
                 name="filterName"
                 placeholder="Filter Name"
+                autoComplete="off"
                 onChange={(e) => setEdited({ ...edited, name: e.target.value })}
                 value={edited?.name}
                 className="w-full text-sm px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-300 rounded-xl bg-white shadow-xs"

@@ -89,6 +89,7 @@ export default function ProductForm({ product, preferences, cart }) {
                       step={1}
                       name={`size_${size.id}`}
                       placeholder="0"
+                      autoComplete="off"
                       defaultValue={
                         currentProduct &&
                         JSON.parse(currentProduct.details).find(
@@ -107,7 +108,9 @@ export default function ProductForm({ product, preferences, cart }) {
 
       <div className="flex flex-col gap-4 mb-6">
         <div>
-          <div className="relative flex gap-3 items-center px-3 py-2 pt-6 bg-white border border-slate-300 rounded-xl">
+          <div
+            className={`relative flex gap-3 items-center px-3 py-2 pt-6 border  border-slate-300 rounded-xl ${!product.canChangeHandle ? "bg-slate-200" : "bg-white"}`}
+          >
             <label
               className="absolute top-2 left-3 text-xs text-slate-400"
               htmlFor="brand"
@@ -129,6 +132,7 @@ export default function ProductForm({ product, preferences, cart }) {
                     ? setOtherField(true)
                     : setOtherField(false);
                 }}
+                disabled={product.brand !== "OEM"}
                 className="w-full focus-visible:outline-0"
               >
                 <option value="" disabled>
@@ -149,10 +153,13 @@ export default function ProductForm({ product, preferences, cart }) {
                 >
                   {product.brand}
                 </option>
-                <option value="other">Other</option>
+
+                {product.brand === "OEM" && (
+                  <option value="other">Other</option>
+                )}
 
                 {/* This is user's own preferences. */}
-                {preferences.engraving && (
+                {preferences.engraving && product.brand === "OEM" && (
                   <optgroup label="Preferences">
                     {preferences.engraving.map((val, i) => {
                       return (
@@ -165,10 +172,11 @@ export default function ProductForm({ product, preferences, cart }) {
                 )}
               </select>
 
-              {otherField && (
+              {otherField && product.brand === "OEM" && (
                 <input
                   type="text"
                   name="brandOther"
+                  autoComplete="off"
                   placeholder="What do you want engraved?"
                   className="focus-visible:outline-0 w-full placeholder:text-slate-500 px-4 py-2 bg-slate-100 rounded-xl"
                 />
@@ -188,11 +196,12 @@ export default function ProductForm({ product, preferences, cart }) {
               >
                 Choose a different handle
               </label>
-              <Pencil size={14} />
+              <Pencil size={14} className="text-slate-500" />
               <input
                 type="text"
                 name="handle"
                 id="handle"
+                autoComplete="off"
                 placeholder={product.handle}
                 defaultValue={
                   (currentProduct && currentProduct.handle) || product.handle
@@ -212,12 +221,13 @@ export default function ProductForm({ product, preferences, cart }) {
             >
               Specific request for this product
             </label>
-            <Pencil size={14} />
+            <Pencil size={14} className="text-slate-500" />
             <input
               type="text"
               name="request"
               id="request"
               placeholder={"No special requests."}
+              autoComplete="off"
               defaultValue={(currentProduct && currentProduct.request) || ""}
               className="focus-visible:outline-0 w-full placeholder:text-slate-500"
             />

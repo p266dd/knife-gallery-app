@@ -5,7 +5,7 @@ import prisma from "@/data/prisma";
 import { verifyUserSession } from "@/utils/session";
 
 export async function updateCart(state, formData) {
-  const session = await verifyUserSession();
+  await verifyUserSession();
   const data = Object.fromEntries(formData);
 
   let sizes = [];
@@ -35,5 +35,6 @@ export async function updateCart(state, formData) {
 
   return {
     message: "Product updated.",
+    status: "success",
   };
 }

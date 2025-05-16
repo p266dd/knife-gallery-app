@@ -9,7 +9,6 @@ export async function fetchFilters() {
     select: {
       id: true,
       name: true,
-      products: true,
     },
   });
 
