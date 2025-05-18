@@ -90,6 +90,7 @@ export default function UserForm({ user, edit = false }) {
             name="name"
             type="text"
             placeholder="Full Name"
+            autoComplete="off"
             defaultValue={(user && user.name) || state?.name || ""}
             className={`w-full px-2 py-3 pl-7 placeholder:text-slate-500 focus-visible:outline-0 border rounded-xl bg-white shadow-xs ${
               state?.errors && state?.errors?.name
@@ -111,6 +112,7 @@ export default function UserForm({ user, edit = false }) {
             name="email"
             type="email"
             placeholder="Email address"
+            autoComplete="off"
             defaultValue={(user && user.email) || state?.email || ""}
             className={`w-full px-2 py-3 pl-7 placeholder:text-slate-500 focus-visible:outline-0 border rounded-xl bg-white shadow-xs ${
               state?.errors && state?.errors?.email
@@ -151,6 +153,7 @@ export default function UserForm({ user, edit = false }) {
             name="businessName"
             type="text"
             placeholder="Business Name"
+            autoComplete="off"
             defaultValue={
               (user && user.businessName) || state?.businessName || ""
             }
@@ -177,6 +180,7 @@ export default function UserForm({ user, edit = false }) {
             name="businessCode"
             type="text"
             placeholder="Business Code"
+            autoComplete="off"
             defaultValue={
               (user && user.businessCode) ||
               state?.businessCode ||
