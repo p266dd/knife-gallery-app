@@ -6,6 +6,7 @@ import { useState, useActionState } from "react";
 import { LoaderCircle, Eye, EyeOff } from "lucide-react";
 
 import BrandIcon from "@/ui/brand-icon";
+import LinkLoading from "@/ui/link-loading";
 
 import LoginAction from "./action";
 import Button from "@/ui/button";
@@ -68,7 +69,7 @@ export default function LoginPage() {
                     href="/register"
                     className="inline-block ml-2 text-blue-400 cursor-pointer hover:underline"
                   >
-                    Create an account.
+                    Create an account. <LinkLoading />
                   </Link>
                 </h4>
               </div>
@@ -142,7 +143,7 @@ export default function LoginPage() {
                       href="/forgot-password"
                       className="text-blue-400 cursor-pointer hover:underline"
                     >
-                      Forgot password?
+                      Forgot password? <LinkLoading />
                     </Link>
                   </div>
 
