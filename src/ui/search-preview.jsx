@@ -79,7 +79,7 @@ export default function SearchPreview({ data, setData, currentTerm = null }) {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-14 left-0 z-50 w-full max-h-80 overflow-y-auto overflow-x-hidden px-2 py-3 flex flex-col gap-3 bg-white rounded-xl shadow-md"
+            className="absolute top-14 left-0 z-50 w-full max-h-80 overflow-y-auto overflow-x-hidden px-2 py-3 flex flex-col gap-3 bg-white border border-slate-300 rounded-xl shadow-2xl"
           >
             {response.isLoading && (
               <div className="py-6 px-9 text-base text-slate-600">

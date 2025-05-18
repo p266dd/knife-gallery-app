@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { fetchUsers } from "@/actions/fetch-users";
+import LinkLoading from "../link-loading";
 
 export default function UsersTable({ filters }) {
   const [showSearch, setShowSearch] = useState(false);
@@ -230,7 +231,7 @@ export default function UsersTable({ filters }) {
                     <div>
                       <h5>
                         <Link href={"/dashboard/users/" + user.id}>
-                          {user.name}
+                          <LinkLoading /> {user.name}
                         </Link>
                       </h5>
                     </div>

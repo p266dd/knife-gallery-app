@@ -3,6 +3,7 @@ import prisma from "@/data/prisma";
 import { Box, PlusCircle } from "lucide-react";
 
 import ProductsTable from "@/ui/admin/products-table";
+import LinkLoading from "@/ui/link-loading";
 
 export default async function ProductsPage() {
   const filters = await prisma.filter.findMany({
@@ -26,7 +27,7 @@ export default async function ProductsPage() {
               className="w-full flex items-center gap-2 px-2 py-2 text-sm bg-slate-700 text-white rounded-xl"
             >
               <PlusCircle size={20} strokeWidth={2} />
-              Add Product
+              Add Product <LinkLoading />
             </Link>
           </div>
 

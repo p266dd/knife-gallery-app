@@ -2,6 +2,7 @@ import Link from "next/link";
 import { User, CirclePlus } from "lucide-react";
 
 import UsersTable from "@/ui/admin/users-table";
+import LinkLoading from "@/ui/link-loading";
 
 export default async function UsersPage() {
   return (
@@ -18,6 +19,7 @@ export default async function UsersPage() {
           >
             <CirclePlus size={16} />
             <span>User</span>
+            <LinkLoading />
           </Link>
         </div>
 

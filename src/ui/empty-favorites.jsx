@@ -5,7 +5,7 @@ import { Star } from "lucide-react";
 
 export default function EmptyFavorites() {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 mx-4 py-20 px-12 bg-slate-50 text-slate-500 rounded-xl">
+    <div className="flex flex-col items-center justify-center gap-3 mx-4 py-20 px-12 text-slate-500 rounded-xl">
       <motion.div
         animate={{
           rotate: 360,

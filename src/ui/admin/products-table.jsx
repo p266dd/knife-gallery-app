@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { fetchProducts } from "@/actions/fetch-products";
+import LinkLoading from "../link-loading";
 
 export default function ProductsTable({ filters }) {
   const [showSearch, setShowSearch] = useState(false);
@@ -265,7 +266,7 @@ export default function ProductsTable({ filters }) {
                     <div>
                       <Link href={"/dashboard/products/" + product.id}>
                         <h5 className="mb-1 w-full text-ellipsis overflow-hidden capitalize">
-                          {product.name}
+                          <LinkLoading /> {product.name}
                         </h5>
                         <div className="flex items-center gap-4">
                           <span className="text-xs sm:text-base text-slate-500 capitalize">

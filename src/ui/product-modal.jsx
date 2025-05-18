@@ -73,7 +73,7 @@ export default function ProductModal({ product, children }) {
     <>
       <div
         ref={triggerRef}
-        className="relative z-0 block w-full h-full min-h-36"
+        className="relative z-0 block w-full h-full min-h-48"
       >
         <span className="block w-full h-full absolute top-0 left-0 bg-transparent z-10"></span>
         {children}

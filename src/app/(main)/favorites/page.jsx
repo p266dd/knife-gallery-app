@@ -27,12 +27,14 @@ export default async function FavoritesPage() {
           <div className="px-2 grid grid-cols-3 gap-1">
             {data.favorites.products.map((product, i) => {
               return (
-                <div key={i} className="relative bg-slate-100">
+                <div key={i} className="relative bg-slate-200">
                   <ProductModal product={product.product}>
                     <Image
                       src={
                         product.product.thumbnail.url || "/product-image.webp"
                       }
+                      placeholder="blur"
+                      blurDataURL="/img/product-image-placeholder-blur.webp"
                       width={1080}
                       height={1080}
                       alt="Placeholder"

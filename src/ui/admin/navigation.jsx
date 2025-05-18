@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
@@ -14,9 +14,16 @@ import {
   X,
   Lock,
   House,
+  LoaderCircle,
 } from "lucide-react";
 
 import { fnLogout } from "@/actions/logout";
+
+const DisplayIconOrLoading = ({ icon }) => {
+  const { pending } = useLinkStatus();
+
+  return pending ? <LoaderCircle size={18} className="animate-spin" /> : icon;
+};
 
 export default function DashboardNavigation() {
   const [open, setOpen] = useState(false);
@@ -94,7 +101,7 @@ export default function DashboardNavigation() {
               <motion.span
                 className={`${link.url === path ? "bg-white text-slate-700 rounded-full p-1" : "rounded-full"}`}
               >
-                {link.icon}
+                <DisplayIconOrLoading icon={link.icon} />
               </motion.span>
 
               <motion.span

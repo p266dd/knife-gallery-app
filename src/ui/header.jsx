@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import TopNavigation from "./top-navigation";
+import LinkLoading from "./link-loading";
 
 export default function Header({ userRole = "user", cartCount = 0 }) {
   const pathname = usePathname();
@@ -75,6 +76,7 @@ export default function Header({ userRole = "user", cartCount = 0 }) {
           >
             <LayoutDashboard size={18} />
             <span>Dashboard</span>
+            <LinkLoading />
           </Link>
         )}
       </header>

@@ -68,6 +68,7 @@ export default function LoginPage() {
                   <Link
                     href="/register"
                     className="inline-block ml-2 text-blue-400 cursor-pointer hover:underline"
+                    prefetch={true}
                   >
                     Create an account. <LinkLoading />
                   </Link>
@@ -142,6 +143,7 @@ export default function LoginPage() {
                     <Link
                       href="/forgot-password"
                       className="text-blue-400 cursor-pointer hover:underline"
+                      prefetch={true}
                     >
                       Forgot password? <LinkLoading />
                     </Link>
