@@ -73,7 +73,7 @@ export default function ProductModal({ product, children }) {
     <>
       <div
         ref={triggerRef}
-        className="relative z-0 block w-full h-full min-h-48"
+        className="relative z-0 block w-full h-full min-h-48 hover:cursor-pointer"
       >
         <span className="block w-full h-full absolute top-0 left-0 bg-transparent z-10"></span>
         {children}
@@ -90,7 +90,8 @@ export default function ProductModal({ product, children }) {
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }}
-              className="relative w-10/12 px-4 py-5"
+              className="relative w-10/12 px-4 py-5 sm:w-8/12"
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="flex flex-col gap-3">
                 <div className="flex justify-end">

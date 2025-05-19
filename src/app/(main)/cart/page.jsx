@@ -37,27 +37,33 @@ export default async function CartPage() {
         )}
       </div>
 
-      <div className="px-6">
-        {cart && cart.cartCount !== 0 ? (
-          cart.data.products.map((product, i) => (
-            <CartProduct
-              key={i}
-              cartProduct={product}
-              preferences={userPreferences}
-            />
-          ))
-        ) : (
-          <EmptyCart />
-        )}
+      <div className="px-6 flex flex-col gap-4 sm:flex-row">
+        <div
+          className={`flex-grow ${cart?.cartCount !== 0 ? "sm:w-3/4" : ""} `}
+        >
+          {cart && cart.cartCount !== 0 ? (
+            cart.data.products.map((product, i) => (
+              <CartProduct
+                key={i}
+                cartProduct={product}
+                preferences={userPreferences}
+              />
+            ))
+          ) : (
+            <EmptyCart />
+          )}
+        </div>
 
         {cart && cart.cartCount !== 0 && (
-          <div className="my-4 flex flex-col gap-2">
-            <button className="flex items-center justify-center gap-3 w-full px-4 py-2 bg-slate-800 text-white font-bold rounded-xl">
-              <ShoppingBag size={18} />
-              <span>Order Now</span>
-            </button>
+          <div className="flex-grow sm:w-1/4">
+            <div className="my-4 flex flex-col gap-2">
+              <button className="flex items-center justify-center gap-3 w-full px-4 py-2 bg-slate-800 text-white font-bold rounded-xl">
+                <ShoppingBag size={18} />
+                <span>Order Now</span>
+              </button>
 
-            <ClearCartButton />
+              <ClearCartButton />
+            </div>
           </div>
         )}
       </div>

@@ -67,7 +67,7 @@ export default function AddToFavortite({ productId }) {
         animate="stale"
         exit="exit"
       >
-        <Star className="w-6 h-6" />
+        <Star className="w-6 h-6 sm:w-8 sm:h-8" />
       </motion.div>
     );
   };
@@ -80,7 +80,7 @@ export default function AddToFavortite({ productId }) {
         animate="animate"
         exit="exit"
       >
-        <Star color="orange" fill="orange" className="w-6 h-6" />
+        <Star color="orange" fill="orange" className="w-6 h-6 sm:w-8 sm:h-8" />
       </motion.div>
     );
   };
@@ -88,7 +88,7 @@ export default function AddToFavortite({ productId }) {
   return (
     <button
       onClick={handleClick}
-      className="absolute block right-6 top-6 z-40 cursor-pointer"
+      className="absolute block right-6 top-6 z-40 cursor-pointer sm:right-9 sm:top-9"
     >
       <AnimatePresence>
         {active ? <StarFilledIcon /> : <StarIcon />}

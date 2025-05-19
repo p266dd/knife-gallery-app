@@ -45,7 +45,7 @@ export default function Header({ userRole = "user", cartCount = 0 }) {
       {pathname === "/" ? null : <TopNavigation />}
 
       <header className="fixed w-full p-3 z-30 bottom-0 left-0">
-        <nav className="grid grid-cols-4 gap-2 p-2 justify-between max-w-[600px] sm:mx-auto bg-slate-800 text-white rounded-2xl">
+        <nav className="grid grid-cols-4 gap-2 p-2 justify-between max-w-[600px] mx-auto bg-slate-800 text-white rounded-2xl">
           {navigationLinks.map((link, i) => {
             return (
               <motion.div
@@ -72,7 +72,7 @@ export default function Header({ userRole = "user", cartCount = 0 }) {
         {userRole && userRole == "admin" && (
           <Link
             href="/dashboard"
-            className="flex items-center justify-center gap-3 mt-2 px-4 py-2 bg-slate-800 text-white rounded-2xl"
+            className="flex items-center justify-center gap-3 mt-2 px-4 py-2 max-w-[600px] mx-auto bg-slate-800 text-white rounded-2xl"
           >
             <LayoutDashboard size={18} />
             <span>Dashboard</span>

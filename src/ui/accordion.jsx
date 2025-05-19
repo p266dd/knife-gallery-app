@@ -9,7 +9,7 @@ export default function Accordion({ title, children }) {
   return (
     <div className="relative">
       <div
-        className={`flex items-center justify-between px-3 py-2 text-white bg-slate-500 rounded-xl ${open ? "rounded-b-none" : ""}`}
+        className={`flex items-center justify-between px-3 py-2 text-white bg-slate-500 rounded-xl hover:cursor-pointer ${open ? "rounded-b-none" : ""}`}
         onClick={() => setOpen((prev) => !prev)}
       >
         <h5 className="flex-grow">{title || "Heading"}</h5>

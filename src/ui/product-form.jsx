@@ -10,6 +10,7 @@ import {
   ShoppingCart,
   Save,
   XCircle,
+  Loader,
 } from "lucide-react";
 
 import { addToCart } from "@/actions/add-cart";
@@ -282,9 +283,11 @@ export default function ProductForm({ product, preferences, cart }) {
                   <motion.button
                     whileTap={{ scale: 0.95 }}
                     type="submit"
-                    className="w-full px-4 py-3 mb-3 bg-slate-700 text-slate-100 font-bold rounded-xl cursor-pointer overflow-hidden"
+                    className="w-full flex items-center justify-center gap-3 px-4 py-3 mb-3 bg-slate-700 text-slate-100 font-bold rounded-xl cursor-pointer overflow-hidden"
                   >
+                    <Info size={20} />
                     Save Changes
+                    {isPending && <Loader size={18} className="animate-spin" />}
                   </motion.button>
                   <Link
                     href="/cart"
@@ -302,6 +305,7 @@ export default function ProductForm({ product, preferences, cart }) {
                 >
                   <ShoppingCart size={20} />
                   Add to Cart
+                  {isPending && <Loader size={18} className="animate-spin" />}
                 </motion.button>
               )}
             </div>

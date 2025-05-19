@@ -12,10 +12,10 @@ export default async function FavoritesPage() {
   const data = await fetchFavorites();
 
   return (
-    <main className="pt-16 pb-40">
+    <main className="pt-16 pb-40 sm:pt-24 sm:pb-48">
       <div className="px-6 mt-9 mb-7">
         <h1 className="text-4xl mb-2">Favorites</h1>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-slate-400 sm:text-lg">
           You have {data.favoritesCount}{" "}
           {data.favoritesCount > 1 ? "items " : "item "}
           in your favorites.
@@ -24,7 +24,7 @@ export default async function FavoritesPage() {
 
       <div className="mt-6">
         {data && data.favoritesCount > 0 ? (
-          <div className="px-2 grid grid-cols-3 gap-1">
+          <div className="px-2 grid grid-cols-3 gap-1 sm:grid-cols-4">
             {data.favorites.products.map((product, i) => {
               return (
                 <div key={i} className="relative bg-slate-200">

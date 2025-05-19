@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { string } from "yup";
-import { notFound } from "next/navigation";
 
 import ProductsGrid from "@/ui/products-grid";
 import FilterTag from "@/ui/filter-tag";
@@ -24,29 +23,29 @@ export default async function HomePage({ searchParams }) {
   const filters = await fetchFilters();
 
   return (
-    <main className="pb-40">
-      <div className="px-6 pt-8">
+    <main className="pb-40 sm:pb-56">
+      <div className="px-6 pt-8 mb-8 sm:mb-12">
         <Image
           priority
           src="/img/logo.png"
           width={897}
           height={192}
           alt="Ironclad"
-          className="w-52"
+          className="w-52 sm:w-64"
         />
       </div>
 
-      <div className="px-6 mt-8 flex flex-row items-center justify-between">
+      <div className="px-6 mb-6 flex flex-row items-center justify-between sm:mb-12">
         <div>
-          <h3 className="text-lg mb-3">Welcome back,</h3>
-          <h1 className="text-2xl font-bold flex items-center gap-3">
+          <h3 className="text-lg mb-3 sm:text-2xl sm:mb-9">Welcome back,</h3>
+          <h1 className="text-2xl font-bold flex items-center gap-3 sm:text-4xl">
             <LogoutButton logout={fnLogout} />
             {session.name}
           </h1>
         </div>
       </div>
 
-      <div className="mt-6">
+      <div>
         {filters && filters.length > 0 && (
           <div className="relative px-6 mb-3">
             <span className="block absolute top-0 right-0 h-full w-10 bg-linear-270 from-white from-30% to-white/0"></span>

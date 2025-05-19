@@ -87,7 +87,7 @@ export default function ResultsPage() {
         <h1 className="text-4xl mb-2">Search Results</h1>
       </div>
 
-      <div className="bg-slate-900 ">
+      <div className="bg-slate-900 sm:rounded-xl">
         <div className="px-6 py-3">
           <button
             type="button"
@@ -120,7 +120,7 @@ export default function ResultsPage() {
 
       <div className="mt-2">
         <AnimatePresence>
-          <div className="px-2 grid grid-cols-3 gap-1">
+          <div className="px-2 grid grid-cols-3 gap-1 sm:grid-cols-4">
             {allProducts &&
               allProducts.map((product, i) => {
                 return (

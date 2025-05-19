@@ -34,7 +34,7 @@ export default function ProductsGrid({ filter }) {
 
   return (
     <AnimatePresence>
-      <div className="px-2 grid grid-cols-3 gap-1">
+      <div className="px-2 grid grid-cols-3 gap-1 sm:grid-cols-4">
         {isLoading ? (
           <ProductsGridLoading />
         ) : (
@@ -66,9 +66,12 @@ export default function ProductsGrid({ filter }) {
         )}
       </div>
       {hasMoreData && !isLoading && (
-        <div key="laodMore" className="flex items-center justify-center mt-6">
+        <div
+          key="laodMore"
+          className="flex items-center justify-center mt-6 sm:mt-12"
+        >
           <button
-            className="flex items-center gap-4 text-slate-400"
+            className="flex items-center gap-4 text-slate-400 sm:text-xl"
             onClick={() => setSize(size + 1)}
             disabled={isLoading}
           >

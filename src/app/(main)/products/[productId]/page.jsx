@@ -51,27 +51,31 @@ export default async function ProductSinglePage({ params }) {
 
   return (
     <main className="pt-16 pb-40">
-      <div className="px-6 mt-9 mb-9">
-        <h1 className="text-3xl mb-2 capitalize">{product.name}</h1>
-        <p className="text-xs text-slate-400">Product ID: {product.id}</p>
+      <div className="px-6 mt-9 mb-9 sm:mb-16">
+        <h1 className="text-3xl mb-2 capitalize sm:text-4xl">{product.name}</h1>
+        <p className="text-xs text-slate-400 sm:text-sm">
+          Product ID: {product.id}
+        </p>
       </div>
 
-      <div className="relative mx-3 mb-9">
-        <AddToFavortite productId={product.id} />
-        <ProductGallery product={product} />
-      </div>
-
-      <div className="px-6">
-        <div className="mb-6">
-          <p className="text-slate-600 whitespace-pre-line">
-            {product.description}
-          </p>
+      <div className="flex flex-col sm:flex-row sm:items-start gap-16">
+        <div className="relative flex-grow mx-3 mb-9 sm:w-1/2">
+          <AddToFavortite productId={product.id} />
+          <ProductGallery product={product} />
         </div>
-        <ProductForm
-          product={product}
-          preferences={userPreferences}
-          cart={cart}
-        />
+
+        <div className="px-6 flex-grow sm:w-1/2">
+          <div className="mb-6">
+            <p className="text-slate-600 whitespace-pre-line">
+              {product.description}
+            </p>
+          </div>
+          <ProductForm
+            product={product}
+            preferences={userPreferences}
+            cart={cart}
+          />
+        </div>
       </div>
     </main>
   );

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { isArray } from "lodash";
+import { isArray, set } from "lodash";
 import { redirect, RedirectType } from "next/navigation";
-import { Search } from "lucide-react";
+import { Loader, Search } from "lucide-react";
 
 import SearchPreview from "./search-preview";
 import RangeSlider from "./range-slider";
@@ -14,6 +14,7 @@ export default function SearchForm({
   materials = [],
   currentSearch = {},
 }) {
+  const [loading, setLoading] = useState(false);
   const [searchData, setSearchData] = useState({
     searchTerm: "",
     style: [],
@@ -26,6 +27,7 @@ export default function SearchForm({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
 
     // * Create searchparams from object.
     const searchParams = new URLSearchParams();
@@ -98,7 +100,7 @@ export default function SearchForm({
               type="radio"
               className="mr-3"
               defaultChecked={
-                currentSearch.style && searchData.style === "western"
+                currentSearch.style && currentSearch.style === "western"
               }
               onChange={(e) => {
                 e.target.checked
@@ -292,10 +294,11 @@ export default function SearchForm({
       <div>
         <button
           type="submit"
-          className="w-full flex items-center justify-center gap-3 px-3 py-3 bg-slate-800 text-white rounded-xl"
+          className="w-full flex items-center justify-center gap-3 px-3 py-3 bg-slate-800 text-white rounded-xl hover:cursor-pointer"
         >
           <Search size={20} />
           <span>Search</span>
+          {loading && <Loader size={18} className="animate-spin" />}
         </button>
       </div>
     </form>

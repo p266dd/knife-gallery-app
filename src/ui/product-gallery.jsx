@@ -46,7 +46,7 @@ export default function ProductGallery({ product }) {
   return (
     <div
       ref={slideRef}
-      className="relative h-[65vh] bg-white rounded-xl overflow-hidden"
+      className="relative h-[65vh] sm:h-[50vh] bg-white rounded-xl overflow-hidden"
     >
       <AnimatePresence>
         <motion.div

@@ -27,8 +27,9 @@ export default function CartProduct({ cartProduct, preferences }) {
         <motion.div
           whileTap={{ scale: 0.9, backgroundColor: "#f3f3f3" }}
           className="flex items-center p-2 gap-4 rounded-xl"
+          onClick={() => setOpen((prev) => !prev)}
         >
-          <div className="relative w-1/4 h-28 rounded-xl overflow-hidden">
+          <div className="relative w-1/4 h-28 sm:h-48 rounded-xl overflow-hidden">
             <Image
               src={
                 product.thumbnail.url || "/img/product-image-placeholder.webp"
@@ -39,9 +40,11 @@ export default function CartProduct({ cartProduct, preferences }) {
             />
           </div>
 
-          <div className="w-3/4" onClick={() => setOpen((prev) => !prev)}>
-            <h3>{product.name || "Product Name"}</h3>
-            <h5 className="text-xs text-slate-600">
+          <div className="w-3/4">
+            <h3 className="sm:text-xl sm:font-semibold sm:mb-4">
+              {product.name || "Product Name"}
+            </h3>
+            <h5 className="text-xs text-slate-600 sm:text-base">
               <ul>
                 <li>Brand: {cartProduct.brand || "Standard"}</li>
                 {product.type === "knife" && (
@@ -86,7 +89,7 @@ export default function CartProduct({ cartProduct, preferences }) {
                     animate={{ opacity: 1 }}
                     exit={{ x: -60, opacity: 0 }}
                     type="submit"
-                    className="flex items-center justify-start gap-3 px-4 py-2 m-2 mt-0 bg-green-700 text-white text-sm rounded-xl cursor-pointer"
+                    className="flex items-center justify-center gap-3 px-4 py-2 m-2 mt-0 bg-green-700 text-white text-sm sm:text-lg sm:font-semibold rounded-xl cursor-pointer"
                   >
                     {pending ? (
                       <>
@@ -105,10 +108,14 @@ export default function CartProduct({ cartProduct, preferences }) {
                 <div className="py-2 px-4">
                   <table className="w-full mb-5">
                     <thead>
-                      <tr className="w-full text-xs text-white bg-slate-600">
-                        <th className="w-5/12 py-1 px-2 text-left">Size</th>
-                        <th className="w-3/12 py-1 px-2 text-center">Order</th>
-                        <th className="w-2/12 py-1 px-2 text-center">
+                      <tr className="w-full text-xs sm:text-lg sm:font-semibold text-white">
+                        <th className="w-5/12 py-1 px-2 text-left bg-slate-600 rounded-l-xl">
+                          Size
+                        </th>
+                        <th className="w-3/12 py-1 px-2 text-center bg-slate-600">
+                          Order
+                        </th>
+                        <th className="w-2/12 py-1 px-2 text-center bg-slate-600 rounded-r-xl">
                           Available
                         </th>
                       </tr>
@@ -118,17 +125,17 @@ export default function CartProduct({ cartProduct, preferences }) {
                       {product.sizes.map((size, i) => (
                         <tr key={`size_${i}`}>
                           <td className="py-2 pl-2 text-left">
-                            <span className="block text-sm mb-1">
+                            <span className="block text-sm mb-1 sm:text-lg sm:font-semibold">
                               {size.name}
                             </span>
-                            <span className="block text-xs">
+                            <span className="block text-xs sm:text-base sm:text-slate-500">
                               {size.size} mm
                             </span>
                           </td>
-                          <td className="py-2 text-center">
-                            <div className="mx-2 flex items-center gap-2 border border-slate-400 px-3 py-2 rounded-xl">
+                          <td className="py-2 text-center flex justify-center">
+                            <div className="mx-2 sm:w-20 flex items-center gap-2 border border-slate-400 px-3 py-2 rounded-xl">
                               <input
-                                className="w-full appearance-none focus-visible:outline-0 placeholder:text-slate-500"
+                                className="w-full sm:w-20 appearance-none focus-visible:outline-0 placeholder:text-slate-500"
                                 type="number"
                                 name={`size_${size.id}`}
                                 autoComplete="off"
@@ -152,9 +159,9 @@ export default function CartProduct({ cartProduct, preferences }) {
                   </table>
 
                   <div className="flex flex-col gap-3 px-2 py-3 m-2 border border-slate-300 rounded-xl">
-                    <div className="relative flex gap-2 items-center px-2 py-1 pt-6 mb-4">
+                    <div className="relative flex gap-2 items-center px-2 py-1 pt-6 sm:pt-10 mb-4">
                       <label
-                        className="absolute top-0 left-3 text-[10px] text-slate-700"
+                        className="absolute top-0 left-3 text-[10px] sm:text-base text-slate-700"
                         htmlFor="brand"
                       >
                         Choose engraving
@@ -176,7 +183,7 @@ export default function CartProduct({ cartProduct, preferences }) {
                               : setOtherField(false);
                             setShowUpdateBtn(true);
                           }}
-                          className="w-full focus-visible:outline-0 border-b border-slate-300 pb-2 pr-1 pt-1 disabled:bg-slate-100"
+                          className="w-full focus-visible:outline-0 border-b border-slate-300 pb-2 pr-1 pt-1 sm:py-2 disabled:bg-slate-100"
                         >
                           <option value="" disabled>
                             Select an engraving for this product.
@@ -221,9 +228,9 @@ export default function CartProduct({ cartProduct, preferences }) {
                     </div>
 
                     {product.type === "knife" && (
-                      <div className="relative flex gap-2 items-center px-2 py-1 pt-6 mb-6">
+                      <div className="relative flex gap-2 items-center px-2 py-1 pt-6 sm:pt-10 mb-6">
                         <label
-                          className="absolute top-0 left-3 text-[10px] text-slate-700"
+                          className="absolute top-0 left-3 text-[10px] sm:text-base text-slate-700"
                           htmlFor="handle"
                         >
                           Choose Handle
@@ -239,14 +246,14 @@ export default function CartProduct({ cartProduct, preferences }) {
                             setShowUpdateBtn(true);
                           }}
                           disabled={!product.canChangeHandle}
-                          className="focus-visible:outline-0 w-full placeholder:text-slate-500 text-sm  border-b border-slate-300 pb-2 py-1 pl-1 disabled:bg-slate-100"
+                          className="focus-visible:outline-0 w-full placeholder:text-slate-500 text-sm  border-b border-slate-300 pb-2 py-1 pl-1 sm:py-2 disabled:bg-slate-100"
                         />
                       </div>
                     )}
 
-                    <div className="relative flex gap-2 items-center px-2 py-1 pt-6 mb-6">
+                    <div className="relative flex gap-2 items-center px-2 py-1 pt-6 sm:pt-10 mb-6">
                       <label
-                        className="absolute top-0 left-3 text-[10px] text-slate-700"
+                        className="absolute top-0 left-3 text-[10px] sm:text-base text-slate-700"
                         htmlFor="request"
                       >
                         Special Request
@@ -260,7 +267,7 @@ export default function CartProduct({ cartProduct, preferences }) {
                         onChange={() => {
                           setShowUpdateBtn(true);
                         }}
-                        className="focus-visible:outline-0 w-full placeholder:text-slate-500 text-sm  border-b border-slate-300 pb-2"
+                        className="focus-visible:outline-0 w-full placeholder:text-slate-500 text-sm sm:text-base  border-b border-slate-300 pb-2"
                       />
                     </div>
                   </div>
@@ -274,7 +281,7 @@ export default function CartProduct({ cartProduct, preferences }) {
                       animate={{ opacity: 1 }}
                       exit={{ x: -60, opacity: 0 }}
                       type="submit"
-                      className="flex items-center w-full justify-start gap-3 px-4 py-2 m-2 mt-0 bg-green-700 text-white text-sm rounded-xl cursor-pointer"
+                      className="flex items-center w-full justify-center gap-3 px-4 py-2 m-2 mt-0 bg-green-700 text-white text-sm sm:text-lg sm:font-semibold rounded-xl cursor-pointer"
                     >
                       {pending ? (
                         <>
@@ -303,7 +310,7 @@ export default function CartProduct({ cartProduct, preferences }) {
                         ? await removeCart({ cartProductId: cartProduct.id })
                         : setShowDeleteBtn(true)
                     }
-                    className={`flex items-center gap-3 px-4 py-2 mb-4 transition-colors flex-grow ${showDeleteBtn ? "bg-red-700 text-white" : "bg-red-200 text-red-700"}  text-sm rounded-xl`}
+                    className={`flex items-center gap-3 px-4 py-2 sm:py-3 mb-4 transition-colors flex-grow ${showDeleteBtn ? "bg-red-700 text-white" : "bg-red-200 text-red-700"}  text-sm sm:text-base rounded-xl`}
                   >
                     <Trash2 size={16} />
                     <span>{showDeleteBtn ? "Remove" : "Remove Product"}</span>
@@ -317,7 +324,7 @@ export default function CartProduct({ cartProduct, preferences }) {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ x: -60, opacity: 0 }}
-                      className="px-3 py-2 mb-4 text-sm rounded-xl bg-slate-200"
+                      className="px-3 py-2 sm:py-3 mb-4 text-sm sm:text-base rounded-xl bg-slate-200"
                       onClick={() => setShowDeleteBtn(false)}
                     >
                       Cancel

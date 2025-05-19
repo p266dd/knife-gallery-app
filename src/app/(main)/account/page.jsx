@@ -29,14 +29,14 @@ export default async function AccountPage() {
         <h1 className="text-4xl">Account</h1>
         <Link
           href="/orders"
-          className="flex items-center px-4 py-2 bg-slate-700 text-white text-sm font-bold rounded-xl"
+          className="flex items-center px-4 py-2 sm:py-3 bg-slate-700 text-white text-sm sm:text-base font-bold rounded-xl"
         >
           <ReceiptJapaneseYen size={18} className="inline-block mr-2" />
           Order History
         </Link>
       </div>
 
-      <div className="mt-6 px-6">
+      <div className="mt-6 sm:mt-16 px-6">
         <AccountForm user={user} />
       </div>
     </main>

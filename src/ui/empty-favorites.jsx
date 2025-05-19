@@ -15,10 +15,10 @@ export default function EmptyFavorites() {
         <Star size={100} strokeWidth={0.5} />
       </motion.div>
 
-      <h5 className="text-xs text-center">
+      <h5 className="text-xs text-center sm:text-base">
         You don't have any favorites, yet.
       </h5>
-      <h4 className="text-base text-center">
+      <h4 className="text-base text-center sm:text-xl">
         Let's get started by adding some!
       </h4>
     </div>
