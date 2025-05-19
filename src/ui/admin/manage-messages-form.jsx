@@ -8,7 +8,7 @@ import { addMessage, removeMessage, updateMessage } from "@/actions/messages";
 import ConfirmModal from "../confirm-modal";
 
 export default function ManageMessagesForm({ messages }) {
-  const [newMessage, setNewMessage] = useState(null);
+  const [newMessage, setNewMessage] = useState({});
   const [edit, setEdit] = useState(false);
   const [edited, setEdited] = useState({});
 
@@ -28,7 +28,7 @@ export default function ManageMessagesForm({ messages }) {
                 onSubmit={(e) => {
                   e.preventDefault();
                   newMessage && addMessage(newMessage);
-                  setNewMessage("");
+                  setNewMessage({});
                 }}
                 className="flex flex-col gap-3"
               >
