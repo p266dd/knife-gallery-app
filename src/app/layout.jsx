@@ -23,6 +23,12 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full">
+      <head>
+        <meta name="apple-mobile-web-app-title" content="Ironclad" />
+        <meta name="application-name" content="Ironclad" />
+        <meta name="theme-color" content="#1d293d" />
+        <link rel="icon" href="/img/favicon.ico" />
+      </head>
       <body className="bg-slate-100 h-full">{children}</body>
     </html>
   );
