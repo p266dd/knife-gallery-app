@@ -83,6 +83,9 @@ Prisma.NullTypes = {
  * Enums
  */
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
+  ReadUncommitted: 'ReadUncommitted',
+  ReadCommitted: 'ReadCommitted',
+  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 });
 
@@ -222,15 +225,15 @@ exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
 exports.Prisma.JsonNullValueFilter = {
   DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
-};
-
-exports.Prisma.QueryMode = {
-  default: 'default',
-  insensitive: 'insensitive'
 };
 
 exports.Prisma.NullsOrder = {
@@ -278,10 +281,6 @@ const config = {
         "fromEnvVar": null,
         "value": "rhel-openssl-3.0.x",
         "native": true
-      },
-      {
-        "fromEnvVar": null,
-        "value": "rhel-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -289,7 +288,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
+    "rootEnvPath": "../../../../.env",
     "schemaEnvPath": "../../../../.env"
   },
   "relativePath": "../..",
@@ -298,18 +297,18 @@ const config = {
   "datasourceNames": [
     "db"
   ],
-  "activeProvider": "sqlite",
+  "activeProvider": "postgresql",
   "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
-        "fromEnvVar": null,
-        "value": "file:./data.db"
+        "fromEnvVar": "DATABASE_URL",
+        "value": null
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"prisma/client\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = \"file:./data.db\"\n}\n\nmodel User {\n  id           String    @id @default(cuid())\n  name         String\n  email        String    @unique\n  password     String\n  businessCode String?\n  businessName String\n  role         String    @default(\"user\")\n  engraving    Json?\n  orders       Order[]\n  cart         Cart?\n  favorites    Favorite?\n  token        String?\n  code         Int?\n  isActive     Boolean   @default(false)\n  createdAt    DateTime  @default(now()) @map(\"created_at\")\n  updatedAt    DateTime?\n\n  @@unique([email, token])\n  @@index([id, email(sort: Asc)])\n}\n\nmodel Order {\n  id           String         @id @default(uuid())\n  code         String         @unique\n  client       User           @relation(fields: [clientId], references: [id])\n  clientId     String\n  completedAt  DateTime?\n  isCompleted  Boolean        @default(false)\n  comment      String?\n  orderProduct OrderProduct[]\n  createdAt    DateTime       @default(now()) @map(\"created_at\")\n  updatedAt    DateTime?\n\n  @@index([code, clientId])\n}\n\nmodel OrderProduct {\n  id        Int      @id @default(autoincrement())\n  order     Order    @relation(fields: [orderId], references: [id])\n  orderId   String\n  product   Product? @relation(fields: [productId], references: [id])\n  productId String?\n  details   Json\n  brand     String\n  handle    String\n  request   String?\n}\n\nmodel Product {\n  id              String            @id @default(cuid())\n  type            String\n  name            String            @unique\n  description     String?\n  brand           String\n  handle          String\n  canChangeHandle Boolean           @default(false)\n  style           String?\n  material        String\n  media           Media[]           @relation(\"ProductMedia\")\n  thumbnail       Media?            @relation(\"ProductThumbnail\", fields: [thumbnailId], references: [id])\n  thumbnailId     Int?\n  sizes           Size[]\n  filters         Filter[]\n  orders          OrderProduct[]\n  carts           CartProduct[]\n  favorites       FavoriteProduct[]\n  createdAt       DateTime          @default(now())\n  updatedAt       DateTime?\n\n  @@index([id, name(sort: Asc)])\n}\n\nmodel Brand {\n  id   Int    @id @default(autoincrement())\n  name String @unique\n}\n\nmodel Material {\n  id   Int    @id @default(autoincrement())\n  name String @unique\n}\n\nmodel Media {\n  id           Int       @id @default(autoincrement())\n  name         String\n  url          String\n  product      Product?  @relation(\"ProductMedia\", fields: [productId], references: [id])\n  productId    String?\n  thumbnailFor Product[] @relation(\"ProductThumbnail\")\n}\n\nmodel Size {\n  id        Int      @id @default(autoincrement())\n  name      String\n  size      Int\n  price     Int\n  stock     Int\n  product   Product? @relation(fields: [productId], references: [id])\n  productId String?\n}\n\nmodel Handle {\n  id   Int    @id @default(autoincrement())\n  name String @unique\n}\n\nmodel Filter {\n  id       Int       @id @default(autoincrement())\n  name     String    @unique\n  products Product[]\n}\n\nmodel Cart {\n  id       String        @id @default(uuid())\n  client   User          @relation(fields: [clientId], references: [id])\n  clientId String        @unique\n  products CartProduct[]\n}\n\nmodel CartProduct {\n  id        Int     @id @default(autoincrement())\n  cart      Cart    @relation(fields: [cartId], references: [id])\n  cartId    String\n  product   Product @relation(fields: [productId], references: [id])\n  productId String\n  details   Json\n  brand     String\n  handle    String\n  request   String?\n}\n\nmodel Favorite {\n  id       Int               @id @default(autoincrement())\n  client   User              @relation(fields: [clientId], references: [id])\n  clientId String            @unique\n  products FavoriteProduct[]\n}\n\nmodel FavoriteProduct {\n  favorite   Favorite @relation(fields: [favoriteId], references: [id])\n  favoriteId Int\n  product    Product  @relation(fields: [productId], references: [id])\n  productId  String\n\n  @@id([favoriteId, productId])\n}\n\nmodel Message {\n  id        Int      @id @default(autoincrement())\n  title     String\n  content   String\n  link      String\n  isActive  Boolean  @default(false)\n  createdAt DateTime @default(now())\n}\n",
-  "inlineSchemaHash": "4e135277ed5bff057931ce540c296beb64842f2e1869b4206d7efed94493286d",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"prisma/client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id           String    @id @default(cuid())\n  name         String\n  email        String    @unique\n  password     String\n  businessCode String?\n  businessName String\n  role         String    @default(\"user\")\n  engraving    Json?\n  orders       Order[]\n  cart         Cart?\n  favorites    Favorite?\n  token        String?\n  code         Int?\n  isActive     Boolean   @default(false)\n  createdAt    DateTime  @default(now()) @map(\"created_at\")\n  updatedAt    DateTime?\n\n  @@unique([email, token])\n  @@index([id, email(sort: Asc)])\n}\n\nmodel Order {\n  id           String         @id @default(uuid())\n  code         String         @unique\n  client       User           @relation(fields: [clientId], references: [id])\n  clientId     String\n  completedAt  DateTime?\n  isCompleted  Boolean        @default(false)\n  comment      String?\n  orderProduct OrderProduct[]\n  createdAt    DateTime       @default(now()) @map(\"created_at\")\n  updatedAt    DateTime?\n\n  @@index([code, clientId])\n}\n\nmodel OrderProduct {\n  id        Int      @id @default(autoincrement())\n  order     Order    @relation(fields: [orderId], references: [id])\n  orderId   String\n  product   Product? @relation(fields: [productId], references: [id])\n  productId String?\n  details   Json\n  brand     String\n  handle    String\n  request   String?\n}\n\nmodel Product {\n  id              String            @id @default(cuid())\n  type            String\n  name            String            @unique\n  description     String?\n  brand           String\n  handle          String\n  canChangeHandle Boolean           @default(false)\n  style           String?\n  material        String\n  media           Media[]           @relation(\"ProductMedia\")\n  thumbnail       Media?            @relation(\"ProductThumbnail\", fields: [thumbnailId], references: [id])\n  thumbnailId     Int?\n  sizes           Size[]\n  filters         Filter[]\n  orders          OrderProduct[]\n  carts           CartProduct[]\n  favorites       FavoriteProduct[]\n  createdAt       DateTime          @default(now())\n  updatedAt       DateTime?\n\n  @@index([id, name(sort: Asc)])\n}\n\nmodel Brand {\n  id   Int    @id @default(autoincrement())\n  name String @unique\n}\n\nmodel Material {\n  id   Int    @id @default(autoincrement())\n  name String @unique\n}\n\nmodel Media {\n  id           Int       @id @default(autoincrement())\n  name         String\n  url          String\n  product      Product?  @relation(\"ProductMedia\", fields: [productId], references: [id])\n  productId    String?\n  thumbnailFor Product[] @relation(\"ProductThumbnail\")\n}\n\nmodel Size {\n  id        Int      @id @default(autoincrement())\n  name      String\n  size      Int\n  price     Int\n  stock     Int\n  product   Product? @relation(fields: [productId], references: [id])\n  productId String?\n}\n\nmodel Handle {\n  id   Int    @id @default(autoincrement())\n  name String @unique\n}\n\nmodel Filter {\n  id       Int       @id @default(autoincrement())\n  name     String    @unique\n  products Product[]\n}\n\nmodel Cart {\n  id       String        @id @default(uuid())\n  client   User          @relation(fields: [clientId], references: [id])\n  clientId String        @unique\n  products CartProduct[]\n}\n\nmodel CartProduct {\n  id        Int     @id @default(autoincrement())\n  cart      Cart    @relation(fields: [cartId], references: [id])\n  cartId    String\n  product   Product @relation(fields: [productId], references: [id])\n  productId String\n  details   Json\n  brand     String\n  handle    String\n  request   String?\n}\n\nmodel Favorite {\n  id       Int               @id @default(autoincrement())\n  client   User              @relation(fields: [clientId], references: [id])\n  clientId String            @unique\n  products FavoriteProduct[]\n}\n\nmodel FavoriteProduct {\n  favorite   Favorite @relation(fields: [favoriteId], references: [id])\n  favoriteId Int\n  product    Product  @relation(fields: [productId], references: [id])\n  productId  String\n\n  @@id([favoriteId, productId])\n}\n\nmodel Message {\n  id        Int      @id @default(autoincrement())\n  title     String\n  content   String\n  link      String\n  isActive  Boolean  @default(false)\n  createdAt DateTime @default(now())\n}\n",
+  "inlineSchemaHash": "67f80589cda5df62b9ae088dadca31b427aed3ab25af9a656329f9237a80026c",
   "copyEngine": true
 }
 config.dirname = '/'
@@ -320,7 +319,9 @@ config.engineWasm = undefined
 config.compilerWasm = undefined
 
 config.injectableEdgeEnv = () => ({
-  parsed: {}
+  parsed: {
+    DATABASE_URL: typeof globalThis !== 'undefined' && globalThis['DATABASE_URL'] || typeof process !== 'undefined' && process.env && process.env.DATABASE_URL || undefined
+  }
 })
 
 if (typeof globalThis !== 'undefined' && globalThis['DEBUG'] || typeof process !== 'undefined' && process.env && process.env.DEBUG || undefined) {
