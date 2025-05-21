@@ -48,22 +48,13 @@ export default async function addProduct(state) {
   // upload images to storage
   const imageUrls = await Promise.all(
     validatedData.media.map(async (image) => {
-      const checkIfExistsRef = ref(storage, `products/${image.name}`);
-      const checkIfExistsImage = await getMetadata(checkIfExistsRef);
-      if (checkIfExistsImage) {
-        const downloadURL = await getDownloadURL(checkIfExistsRef);
-        return {
-          name: image.name,
-          url: downloadURL,
-        };
-      } else {
-        const snapshot = await uploadBytes(checkIfExistsRef, image.blob);
-        const downloadURL = await getDownloadURL(snapshot.ref);
-        return {
-          name: image.name,
-          url: downloadURL,
-        };
-      }
+      const docRef = ref(storage, `products/${image.name}`);
+      const snapshot = await uploadBytes(docRef, image.blob);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      return {
+        name: image.name,
+        url: downloadURL,
+      };
     })
   );
 
