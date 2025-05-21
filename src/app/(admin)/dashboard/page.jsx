@@ -5,7 +5,7 @@ import DashboardOrdersTable from "@/ui/admin/orders-table";
 
 export default async function DashboardPage() {
   return (
-    <div className="py-9 pr-6 pl-4">
+    <div className="py-9 pr-6 pl-4 sm:pl-20 xl:pl-0">
       <div className="mb-10">
         <div className="mb-6 flex items-center justify-between gap-3">
           <div className="flex items-center gap-4">
@@ -25,7 +25,7 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        <div className="w-full overflow-scroll">
+        <div className="w-full">
           <DashboardOrdersTable newOnly={true} />
         </div>
       </div>
@@ -36,7 +36,7 @@ export default async function DashboardPage() {
           <h1 className="text-2xl text-slate-700">Orders History</h1>
         </div>
 
-        <div className="w-full overflow-scroll">
+        <div className="w-full">
           <DashboardOrdersTable />
         </div>
       </div>

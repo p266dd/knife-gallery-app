@@ -33,6 +33,7 @@ export async function fetchProducts({
           {
             name: {
               contains: searchQuery,
+              mode: "insensitive",
             },
           },
         ],
@@ -55,6 +56,7 @@ export async function fetchProducts({
               some: {
                 name: {
                   contains: filterType,
+                  mode: "insensitive",
                 },
               },
             },

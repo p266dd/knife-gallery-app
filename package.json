@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "email": "email dev --port 5000 --dir src/emails",
-    "prisma:generate": "prisma generate"
+    "prisma:deploy": "prisma migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",

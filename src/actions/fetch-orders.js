@@ -22,7 +22,7 @@ export async function fetchOrders({
             },
             {
               client: {
-                businessName: { contains: searchQuery },
+                businessName: { contains: searchQuery, mode: "insensitive" },
               },
             },
           ]

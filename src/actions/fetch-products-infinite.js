@@ -17,6 +17,7 @@ export async function fetchProductsInfinite({ pageIndex, filter }) {
             some: {
               name: {
                 equals: filter,
+                mode: "insensitive",
               },
             },
           },

@@ -29,6 +29,7 @@ export async function fetchUsers({
           {
             name: {
               contains: searchQuery,
+              mode: "insensitive",
             },
           },
         ],
