@@ -5,6 +5,7 @@ import {
   uploadBytes,
   getDownloadURL,
   deleteObject,
+  getMetadata,
 } from "firebase/storage";
 import { isEqual } from "lodash";
 import prisma from "@/data/prisma";
@@ -81,13 +82,22 @@ export default async function updateProduct(state, current) {
   if (newImages.length > 0) {
     newImages = await Promise.all(
       newImages.map(async (image) => {
-        const storageRef = ref(storage, `products/${image.name}`);
-        const snapshot = await uploadBytes(storageRef, image.blob);
-        const downloadURL = await getDownloadURL(snapshot.ref);
-        return {
-          name: image.name,
-          url: downloadURL,
-        };
+        const checkIfExistsRef = ref(storage, `products/${image.name}`);
+        const checkIfExistsImage = await getMetadata(checkIfExistsRef);
+        if (checkIfExistsImage) {
+          const downloadURL = await getDownloadURL(checkIfExistsRef);
+          return {
+            name: image.name,
+            url: downloadURL,
+          };
+        } else {
+          const snapshot = await uploadBytes(checkIfExistsRef, image.blob);
+          const downloadURL = await getDownloadURL(snapshot.ref);
+          return {
+            name: image.name,
+            url: downloadURL,
+          };
+        }
       })
     );
   }
