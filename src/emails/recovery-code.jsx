@@ -1,10 +1,6 @@
 import { mailer } from "./mailer";
 
-export async function RecoveryCodeEmail({ code, name, email, request }) {
-  const protocol = request.headers.get("x-forwarded-proto") || "http";
-  const host = request.headers.get("host");
-  const baseUrl = `${protocol}://${host}`;
-
+export async function RecoveryCodeEmail({ code, name, email }) {
   // * Format the code to be displayed in the email.
   let codeDisplay = "";
   const codeArray = code.toString().split("");
@@ -69,7 +65,7 @@ export async function RecoveryCodeEmail({ code, name, email, request }) {
           <p class="code">
             ${codeDisplay}
           </p>
-          <p><a href="'${baseUrl}/reset-password'" target="_blank">Click here </a>to go to the reset page.</p>
+          <p><a href="https://knife-gallery-app.vercel.app/reset-password" target="_blank">Click here </a>to go to the reset page.</p>
           <p>If you didn't request this, you can safely ignore this email.</p>
           <p class="footer">Best, <br> Ironclad</p>
         </div>
