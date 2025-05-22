@@ -5,7 +5,6 @@ import { motion } from "motion/react";
 import { Trash2, Circle, CircleCheck } from "lucide-react";
 
 export default function ImageUpload({ data, setData }) {
-  console.log(data);
   // * Resize the selected image to save storage space.
   const resizeImage = (file, index, maxWidth, maxHeight) => {
     return new Promise((resolve, reject) => {

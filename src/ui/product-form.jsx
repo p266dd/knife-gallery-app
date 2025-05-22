@@ -274,7 +274,7 @@ export default function ProductForm({ product, preferences, cart }) {
           <p className="text-slate-500 w-11/12 text-xs">
             ** Please note <strong>if you don't</strong> change{" "}
             <u>preferable engraving</u>, change
-            <u>handle</u> or add any <u>specific request</u>, we will proceed
+            <u> handle</u> or add any <u>specific request</u>, we will proceed
             with the standard configuration.
           </p>
         </div>
