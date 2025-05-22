@@ -45,6 +45,8 @@ export default function ProductModal({ product, children }) {
 
     triggerRef.current.addEventListener("touchend", () => {
       clearTimeout(timer);
+      // clear any selection
+      window.getSelection().removeAllRanges();
 
       const ended = new Date();
       const duration = (ended - started) / 100;
@@ -73,9 +75,9 @@ export default function ProductModal({ product, children }) {
     <>
       <div
         ref={triggerRef}
-        className="relative z-0 block w-full h-full min-h-48 hover:cursor-pointer"
+        className="relative z-0 block w-full h-full min-h-48 hover:cursor-pointer select-none"
       >
-        <span className="block w-full h-full absolute top-0 left-0 bg-transparent z-10"></span>
+        <span className="block w-full h-full absolute top-0 left-0 bg-transparent z-10 select-none"></span>
         {children}
       </div>
 
@@ -85,7 +87,7 @@ export default function ProductModal({ product, children }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 w-full h-full z-50 overflow-hidden flex items-center justify-center bg-black/70"
+            className="fixed inset-0 w-full h-full z-50 overflow-hidden flex items-center justify-center bg-black/70 select-none"
           >
             <motion.div
               initial={{ opacity: 0, y: 50 }}

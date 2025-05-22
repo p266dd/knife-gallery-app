@@ -85,7 +85,7 @@ export default function ProductsGrid({ filter }) {
                     width={1080}
                     height={1080}
                     alt="Placeholder"
-                    className="w-full h-full min-h-[200px] object-cover"
+                    className="w-full h-full min-h-[200px] object-cover select-none"
                   />
                 </ProductModal>
               </motion.div>

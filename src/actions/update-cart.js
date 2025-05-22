@@ -24,7 +24,7 @@ export async function updateCart(state, formData) {
     },
     data: {
       brand: data.brandOther ? data.brandOther : data.brand,
-      handle: data.handle,
+      handle: data.handleOther ? data.handleOther : data.handle,
       request: data.request,
       details: JSON.stringify(sizes),
     },

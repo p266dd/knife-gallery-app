@@ -96,7 +96,7 @@ export default function DashboardNavigation() {
             className="w-full"
           >
             <motion.div
-              className={`w-full flex items-center justify-start gap-3 text-xs font-bold ${open ? "p-2" : "p-1"}`}
+              className={`w-full flex items-center justify-start gap-3 text-xs font-bold py-2 ${open ? "p-2" : "p-1"}`}
             >
               <motion.span
                 className={`${link.url === path ? "bg-white text-slate-700 rounded-full p-1" : "rounded-full"}`}

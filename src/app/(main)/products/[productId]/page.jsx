@@ -58,18 +58,21 @@ export default async function ProductSinglePage({ params }) {
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-start gap-16">
+      <div className="flex flex-col sm:flex-row sm:items-start gap-9">
         <div className="relative flex-grow mx-3 mb-9 sm:w-1/2">
           <AddToFavortite productId={product.id} />
           <ProductGallery product={product} />
         </div>
 
         <div className="px-6 flex-grow sm:w-1/2">
-          <div className="mb-6">
-            <p className="text-slate-600 whitespace-pre-line">
-              {product.description}
-            </p>
-          </div>
+          {product?.description && (
+            <div className="mb-6">
+              <p className="text-slate-600 whitespace-pre-line">
+                {product?.description}
+              </p>
+            </div>
+          )}
+
           <ProductForm
             product={product}
             preferences={userPreferences}

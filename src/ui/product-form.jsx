@@ -18,6 +18,7 @@ import { updateCart } from "@/actions/update-cart";
 
 export default function ProductForm({ product, preferences, cart }) {
   const [otherField, setOtherField] = useState(false);
+  const [otherHandle, setOtherHandle] = useState(false);
 
   let currentProduct;
 
@@ -58,51 +59,55 @@ export default function ProductForm({ product, preferences, cart }) {
             </tr>
           </thead>
           <tbody>
-            {product.sizes.map((size, i) => (
-              <tr
-                className="text-sm border-b border-slate-200 last:border-b-0"
-                key={`cell-${i}`}
-              >
-                <td className="w-3/12 py-2">
-                  {size.name}
-                  <br />
-                  <span className="text-xs text-slate-500">{size.size} mm</span>
-                </td>
-                <td className="w-3/12 py-2">
-                  ¥ {size.price}{" "}
-                  <span className="text-[10px] text-slate-500">ea.</span>
-                </td>
-                <td className="w-3/12 py-2">
-                  <div className="flex items-center gap-1">
-                    {size.stock}
-                    {Number(size.stock) === 0 && (
-                      <XCircle size={14} className="text-red-600" />
-                    )}
-                  </div>
-                </td>
-                <td className="w-3/12 py-2">
-                  <div className="flex items-center gap-2 border border-slate-300 px-3 py-2 rounded-xl">
-                    <Pencil size={12} className="text-slate-500" />
-                    <input
-                      type="number"
-                      max={size.stock}
-                      min="0"
-                      step={1}
-                      name={`size_${size.id}`}
-                      placeholder="0"
-                      autoComplete="off"
-                      defaultValue={
-                        currentProduct &&
-                        JSON.parse(currentProduct.details).find(
-                          (d) => Number(d.id) === Number(size.id)
-                        ).quantity
-                      }
-                      className="w-full appearance-none focus-visible:outline-0 placeholder:text-slate-500"
-                    />
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {product.sizes.map((size, i) => {
+              return Number(size.stock) !== 0 ? (
+                <tr
+                  className="text-sm border-b border-slate-200 last:border-b-0"
+                  key={`cell-${i}`}
+                >
+                  <td className="w-3/12 py-2">
+                    {size.name}
+                    <br />
+                    <span className="text-xs text-slate-500">
+                      {size.size} mm
+                    </span>
+                  </td>
+                  <td className="w-3/12 py-2">
+                    ¥ {size.price}{" "}
+                    <span className="text-[10px] text-slate-500">ea.</span>
+                  </td>
+                  <td className="w-3/12 py-2">
+                    <div className="flex items-center gap-1">
+                      {size.stock}
+                      {Number(size.stock) === 0 && (
+                        <XCircle size={14} className="text-red-600" />
+                      )}
+                    </div>
+                  </td>
+                  <td className="w-3/12 py-2">
+                    <div className="flex items-center gap-2 border border-slate-300 px-3 py-2 rounded-xl">
+                      <Pencil size={12} className="text-slate-500" />
+                      <input
+                        type="number"
+                        max={size.stock}
+                        min="0"
+                        step={1}
+                        name={`size_${size.id}`}
+                        placeholder="0"
+                        autoComplete="off"
+                        defaultValue={
+                          currentProduct &&
+                          JSON.parse(currentProduct.details).find(
+                            (d) => Number(d.id) === Number(size.id)
+                          ).quantity
+                        }
+                        className="w-full appearance-none focus-visible:outline-0 placeholder:text-slate-500"
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ) : null;
+            })}
           </tbody>
         </table>
       </div>
@@ -110,7 +115,7 @@ export default function ProductForm({ product, preferences, cart }) {
       <div className="flex flex-col gap-4 mb-6">
         <div>
           <div
-            className={`relative flex gap-3 items-center px-3 py-2 pt-6 border  border-slate-300 rounded-xl ${!product.canChangeHandle ? "bg-slate-200" : "bg-white"}`}
+            className={`relative flex gap-3 items-center px-3 py-2 pt-6 border  border-slate-300 rounded-xl ${product.brand !== "OEM" ? "bg-slate-200" : "bg-white"}`}
           >
             <label
               className="absolute top-2 left-3 text-xs text-slate-400"
@@ -189,7 +194,7 @@ export default function ProductForm({ product, preferences, cart }) {
         {product && product.type === "knife" && (
           <div>
             <div
-              className={`relative flex gap-3 items-center px-3 py-2 pt-6 border  border-slate-300 rounded-xl ${!product.canChangeHandle ? "bg-slate-200" : "bg-white"}`}
+              className={`relative flex gap-3 items-center px-3 py-2 pt-6 border  border-slate-300 rounded-xl ${product.canChangeHandle ? "bg-white" : "bg-slate-200"}`}
             >
               <label
                 className="absolute top-2 left-3 text-xs text-slate-400"
@@ -198,18 +203,48 @@ export default function ProductForm({ product, preferences, cart }) {
                 Choose a different handle
               </label>
               <Pencil size={14} className="text-slate-500" />
-              <input
-                type="text"
-                name="handle"
-                id="handle"
-                autoComplete="off"
-                placeholder={product.handle}
-                defaultValue={
-                  (currentProduct && currentProduct.handle) || product.handle
-                }
-                disabled={!product.canChangeHandle}
-                className="focus-visible:outline-0 w-full placeholder:text-slate-500"
-              />
+              <div className="flex-grow">
+                <select
+                  name="handle"
+                  id="handle"
+                  defaultValue={
+                    (currentProduct && currentProduct.handle) || product.handle
+                  }
+                  onChange={(e) => {
+                    e.target.value === "other"
+                      ? setOtherHandle(true)
+                      : setOtherHandle(false);
+                  }}
+                  className="w-full focus-visible:outline-0"
+                  disabled={!product.canChangeHandle}
+                >
+                  <option
+                    value={
+                      (currentProduct && currentProduct.handle) ||
+                      product.handle
+                    }
+                  >
+                    {(currentProduct && currentProduct.handle) ||
+                      product.handle}
+                  </option>
+                  <option value="No Handle">No Handle</option>
+                  <option value="other">Type Other</option>
+                </select>
+                {otherHandle && (
+                  <input
+                    type="text"
+                    name="handleOther"
+                    autoComplete="off"
+                    placeholder="Type handle name here."
+                    className="focus-visible:outline-0 w-full placeholder:text-slate-500 px-4 py-2 bg-slate-100 rounded-xl"
+                  />
+                )}
+              </div>
+            </div>
+            <div className="pt-2 pl-2">
+              <p className="text-xs text-slate-500">
+                Price will be changed depending on the handles you choose.
+              </p>
             </div>
           </div>
         )}
@@ -237,8 +272,10 @@ export default function ProductForm({ product, preferences, cart }) {
 
         <div>
           <p className="text-slate-500 w-11/12 text-xs">
-            ** Please note if you leave these fields in blank, your order will
-            be processed with the standard configuration.
+            ** Please note <strong>if you don't</strong> change{" "}
+            <u>preferable engraving</u>, change
+            <u>handle</u> or add any <u>specific request</u>, we will proceed
+            with the standard configuration.
           </p>
         </div>
 

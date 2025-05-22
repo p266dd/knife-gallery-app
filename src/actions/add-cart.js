@@ -72,7 +72,9 @@ export async function addToCart(state, formData) {
           brand:
             (data.brandOther ? data.brandOther : data.brand) ||
             productDetails.brand,
-          handle: data.handle || productDetails.handle || "No handle.",
+          handle:
+            (data.handleOther ? data.handleOther : data.handle) ||
+            productDetails.handle,
           request: data.request,
           details: JSON.stringify(sizes),
         },

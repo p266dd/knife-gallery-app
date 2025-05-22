@@ -133,29 +133,6 @@ export default function SearchForm({
 
         <div>
           <label
-            htmlFor="stockonly"
-            className="block w-full px-3 py-2 pb-1 bg-slate-50 rounded-lg"
-          >
-            <input
-              id="stockonly"
-              name="stock"
-              type="radio"
-              className="mr-3"
-              defaultChecked={
-                currentSearch?.stock && currentSearch.stock.includes("inStock")
-              }
-              onChange={(e) => {
-                e.target.checked
-                  ? (searchData.stock = "inStock")
-                  : (searchData.stock = "");
-              }}
-            />
-            Only items in stock
-          </label>
-        </div>
-
-        <div>
-          <label
             htmlFor="largeStock"
             className="block w-full px-3 py-2 pb-1 bg-slate-50 rounded-lg"
           >
