@@ -118,6 +118,7 @@ export async function searchProduct(term) {
     where: {
       name: {
         contains: term,
+        mode: "insensitive",
       },
     },
     select: {

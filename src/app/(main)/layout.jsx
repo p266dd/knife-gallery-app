@@ -10,7 +10,7 @@ export default async function MainLayout({ children }) {
   const { cartCount } = await fetchCart();
 
   return (
-    <div className="h-full max-w-5xl mx-auto">
+    <div className="relative z-10 h-full max-w-5xl mx-auto">
       <DisplayMessage />
       <Header userRole={session.role} cartCount={cartCount} />
       {children}

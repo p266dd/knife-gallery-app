@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { useState, useActionState } from "react";
+import { useState, useActionState, useRef } from "react";
 import { LoaderCircle, Eye, EyeOff } from "lucide-react";
 
 import BrandIcon from "@/ui/brand-icon";
@@ -11,9 +11,9 @@ import LinkLoading from "@/ui/link-loading";
 import LoginAction from "./action";
 import Button from "@/ui/button";
 
-import { InstallPrompt, PushNotificationManager } from "../pwa";
-
 export default function LoginPage() {
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
   const [state, action, pending] = useActionState(LoginAction, {
     errors: [],
@@ -45,8 +45,6 @@ export default function LoginPage() {
 
   return (
     <>
-      <InstallPrompt />
-      {/* <PushNotificationManager /> */}
       <main className="flex h-full overflow-hidden">
         <div className="w-full h-full flex flex-col justify-center items-center">
           <div className="w-11/12 max-w-96">
@@ -99,6 +97,7 @@ export default function LoginPage() {
                         type="text"
                         name="email"
                         id="email"
+                        ref={emailRef}
                         autoComplete="email"
                         defaultValue={state?.data?.email || null}
                         className={`rounded-lg border-1 px-3 py-2 text-sm ${
@@ -121,6 +120,7 @@ export default function LoginPage() {
                           type={showPassword ? "text" : "password"}
                           name="password"
                           id="password"
+                          ref={passwordRef}
                           defaultValue={state?.data?.password || null}
                           className={`w-full rounded-lg border-1 px-3 py-2 text-sm ${
                             state?.errors && state?.errors?.name
@@ -161,6 +161,10 @@ export default function LoginPage() {
                         type="submit"
                         size="lg"
                         variant={pending ? "loading" : "primary"}
+                        onClick={() => {
+                          emailRef.current.blur();
+                          passwordRef.current.blur();
+                        }}
                       >
                         {pending ? (
                           <span>

@@ -23,7 +23,7 @@ export default async function HomePage({ searchParams }) {
   const filters = await fetchFilters();
 
   return (
-    <main className="pb-40 sm:pb-56">
+    <main className="pb-44 sm:pb-56">
       <div className="px-6 pt-8 mb-8 sm:mb-12">
         <Image
           priority

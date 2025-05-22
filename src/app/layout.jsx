@@ -1,5 +1,8 @@
+import { cookies } from "next/headers";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
+
+import { InstallPrompt } from "./pwa";
 
 const openSans = Open_Sans({
   subsets: ["latin"],
@@ -20,7 +23,10 @@ export const viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const cookieStore = await cookies();
+  const doNotDisplayPrompt = cookieStore.get("doNotDisplayPrompt");
+
   return (
     <html lang="en" className="h-full">
       <head>
@@ -29,7 +35,10 @@ export default function RootLayout({ children }) {
         <meta name="theme-color" content="#1d293d" />
         <link rel="icon" href="/img/favicon.ico" />
       </head>
-      <body className="bg-slate-100 h-full">{children}</body>
+      <body className="bg-slate-100 h-full">
+        {!doNotDisplayPrompt && <InstallPrompt />}
+        {children}
+      </body>
     </html>
   );
 }
