@@ -64,7 +64,7 @@ export default function ProductGallery({ product }) {
             }
             alt="Gallery Image"
             placeholder="blur"
-            blurDataURL="/img/product-image-placeholder-blur.webp"
+            blurDataURL="/img/image-blur.gif"
           />
         </motion.div>
 

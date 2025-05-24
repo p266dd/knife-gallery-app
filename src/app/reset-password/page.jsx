@@ -20,7 +20,8 @@ export default function ResetPassword() {
 
   const router = useRouter();
 
-  if (state.success) {
+  // Redirect user to login page after 2 seconds.
+  if (state?.success) {
     setTimeout(() => {
       router.push("/login");
     }, 2000);
@@ -79,7 +80,7 @@ export default function ResetPassword() {
                   action={action}
                   className="text-sm text-slate-700 flex flex-col gap-3"
                 >
-                  {state && state.message && (
+                  {state && state?.message && (
                     <div className="px-3 py-2 text-xs font-semibold bg-blue-200 text-blue-900 rounded-xl">
                       {state.message}
                     </div>
@@ -92,9 +93,10 @@ export default function ResetPassword() {
                     <input
                       type="text"
                       name="code"
+                      id="code"
                       autoComplete="off"
                       max={6}
-                      defaultValue={state?.data?.code || null}
+                      defaultValue={state?.data && state.data?.code}
                       className={`w-full rounded-lg border-1 border-slate-300 bg-white px-3 py-2 text-sm ${
                         state?.errors && state?.errors?.code
                           ? "border-red-500"
@@ -117,7 +119,7 @@ export default function ResetPassword() {
                           <input
                             type={showPassword ? "text" : "password"}
                             name="password"
-                            defaultValue={state?.data?.password || null}
+                            defaultValue={state?.data && state?.data?.password}
                             className={`w-full rounded-lg border-1 px-3 py-2 text-sm ${
                               state?.errors && state?.errors?.password
                                 ? "border-red-500"
@@ -148,7 +150,9 @@ export default function ResetPassword() {
                           <input
                             type={showPassword ? "text" : "password"}
                             name="confirmPassword"
-                            defaultValue={state?.data?.confirmPassword || null}
+                            defaultValue={
+                              state?.data && state?.data?.confirmPassword
+                            }
                             className={`w-full rounded-lg border-1 border-slate-300 px-3 py-2 text-sm ${
                               state?.errors && state?.errors?.confirmPassword
                                 ? "border-red-500"
@@ -189,7 +193,7 @@ export default function ResetPassword() {
                           />{" "}
                           Loading
                         </span>
-                      ) : state.sent ? (
+                      ) : state?.sent ? (
                         "Reset Password"
                       ) : (
                         "Confirm Code"
@@ -199,7 +203,7 @@ export default function ResetPassword() {
                     <Button
                       size="lg"
                       variant="flat"
-                      onClick={() => router.back()}
+                      onClick={() => router.push("/login")}
                     >
                       Cancel
                     </Button>

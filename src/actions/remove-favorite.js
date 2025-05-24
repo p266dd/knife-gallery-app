@@ -7,31 +7,36 @@ import { getSession } from "@/utils/session";
 export async function removeFavorite(productId) {
   const session = await getSession();
 
-  const favorite = await prisma.favorite.findUnique({
-    where: {
-      clientId: session.id,
-    },
-  });
+  try {
+    const favorite = await prisma.favorite.findUnique({
+      where: {
+        clientId: session.id,
+      },
+    });
 
-  const deleted = await prisma.favorite.update({
-    where: {
-      clientId: session.id,
-    },
-    data: {
-      products: {
-        delete: {
-          favoriteId_productId: {
-            favoriteId: favorite.id,
-            productId: productId,
+    const deleted = await prisma.favorite.update({
+      where: {
+        clientId: session.id,
+      },
+      data: {
+        products: {
+          delete: {
+            favoriteId_productId: {
+              favoriteId: favorite.id,
+              productId: productId,
+            },
           },
         },
       },
-    },
-  });
+    });
 
-  revalidatePath("/favorites", "page");
-  revalidatePath("/products/" + productId, "page");
-  revalidatePath("/", "page");
+    revalidatePath("/favorites", "page");
+    revalidatePath("/products/" + productId, "page");
+    revalidatePath("/", "page");
 
-  return deleted;
+    return deleted;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 }

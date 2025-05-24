@@ -16,7 +16,7 @@ export async function createSession({ id, name, email, role }) {
     secure: true,
     expires: expiration,
     maxAge: 30 * 24 * 60 * 60,
-    sameSite: "strict",
+    sameSite: "lax",
     path: "/",
   });
 }

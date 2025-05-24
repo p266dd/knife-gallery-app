@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useSWR from "swr";
 import { AnimatePresence, motion } from "motion/react";
 import { Star } from "lucide-react";
@@ -10,29 +10,24 @@ import { addFavorite } from "@/actions/add-favorite";
 import { removeFavorite } from "@/actions/remove-favorite";
 
 export default function AddToFavortite({ productId }) {
-  const [found, setFound] = useState(false);
   const [active, setActive] = useState(false);
 
-  // * This data contains favoritesCount and favorites
-  const { data } = useSWR("fetchFavorites", fetchFavorites);
+  const { data, error, isLoading } = useSWR("fetchFavorites", fetchFavorites);
 
-  data &&
-    !found &&
-    data?.favorites?.products?.map((f) => {
-      if (f.productId === productId) {
-        // only set active if id is inside the favorite products.
-        setActive(true);
-        // set found to true so it prevents infinit render loop.
-        setFound(true);
-      }
-    });
+  useEffect(() => {
+    !isLoading &&
+      data.favorites.products.map((f) => {
+        if (f.productId === productId) {
+          // only set active if id is inside the favorite products.
+          setActive(true);
+        }
+      });
+  }, [isLoading]);
 
   const handleClick = () => {
     // * Check if current product is already in favorites.
-    // then add or remove based on it.
-    active
-      ? removeFavorite(productId).catch((e) => console.log(e))
-      : addFavorite(productId).catch((e) => console.log(e));
+    active ? removeFavorite(productId) : addFavorite(productId);
+    // Toggle the state.
     setActive((prev) => !prev);
   };
 
@@ -85,7 +80,7 @@ export default function AddToFavortite({ productId }) {
     );
   };
 
-  return (
+  return !error ? (
     <button
       onClick={handleClick}
       className="absolute block right-6 top-6 z-40 cursor-pointer sm:right-9 sm:top-9"
@@ -94,5 +89,5 @@ export default function AddToFavortite({ productId }) {
         {active ? <StarFilledIcon /> : <StarIcon />}
       </AnimatePresence>
     </button>
-  );
+  ) : null;
 }

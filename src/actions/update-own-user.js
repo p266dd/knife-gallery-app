@@ -8,20 +8,17 @@ import { revalidatePath } from "next/cache";
 
 export default async function updateOwnUser(state, formData) {
   const session = await verifyUserSession();
-  const data = Object.fromEntries(formData);
-
-  state.message = null;
-  state.errors = null;
+  const newState = { ...state, data: Object.fromEntries(formData) };
 
   const user = {
-    name: data.name,
-    email: data.email,
-    businessCode: data.businessCode,
-    businessName: data.businessName,
-    engraving: data.engraving,
+    name: newState?.data?.name,
+    email: newState?.data?.email,
+    businessCode: newState?.data?.businessCode,
+    businessName: newState?.data?.businessName,
+    engraving: newState?.data?.engraving,
   };
 
-  if (data.password) {
+  if (newState?.data.password) {
     // * Hash password and add to data object.
     user["password"] = hashSync(data.password, 10);
   }
@@ -48,14 +45,22 @@ export default async function updateOwnUser(state, formData) {
     console.log(error);
   }
 
-  const newUser = await prisma.user.update({
-    where: {
-      id: session.id,
-    },
-    data: user,
-  });
+  try {
+    const newUser = await prisma.user.update({
+      where: {
+        id: session.id,
+      },
+      data: user,
+    });
 
-  revalidatePath("/account", "page");
+    revalidatePath("/account", "page");
 
-  return { ...state, message: "User updated successfully!" };
+    return { ...state, message: "User updated successfully!" };
+  } catch (error) {
+    console.log(error);
+    return {
+      ...state,
+      error: "Could not update user, refresh page and try again!",
+    };
+  }
 }

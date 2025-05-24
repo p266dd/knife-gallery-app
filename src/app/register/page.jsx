@@ -107,7 +107,7 @@ export default function RegisterPage() {
                   action={action}
                   className="text-sm text-slate-700 flex flex-col gap-3"
                 >
-                  {state && state.message && (
+                  {state && state?.message && (
                     <div className="px-3 py-2 text-xs font-semibold bg-blue-200 text-blue-900 rounded-xl">
                       {state.message}
                     </div>
@@ -120,8 +120,9 @@ export default function RegisterPage() {
                     <input
                       type="text"
                       name="name"
+                      id="name"
                       autoComplete="name"
-                      defaultValue={state?.data?.name || null}
+                      defaultValue={state?.data && state?.data?.name}
                       className={`rounded-lg border-1 px-3 py-2 text-sm ${
                         state?.errors && state?.errors?.name
                           ? "border-red-500"
@@ -142,8 +143,9 @@ export default function RegisterPage() {
                     <input
                       type="text"
                       name="email"
+                      id="email"
                       autoComplete="email"
-                      defaultValue={state?.data?.email || null}
+                      defaultValue={state?.data && state?.data?.email}
                       className={`rounded-lg border-1 px-3 py-2 text-sm ${
                         state?.errors && state?.errors?.email
                           ? "border-red-500"
@@ -163,7 +165,8 @@ export default function RegisterPage() {
                       <input
                         type={showPassword ? "text" : "password"}
                         name="password"
-                        defaultValue={state?.data?.password || null}
+                        id="password"
+                        defaultValue={state?.data && state?.data?.password}
                         className={`w-full rounded-lg border-1 px-3 py-2 text-sm ${
                           state?.errors && state?.errors?.password
                             ? "border-red-500"
@@ -195,8 +198,9 @@ export default function RegisterPage() {
                     <input
                       type="text"
                       name="businessName"
+                      id="businessName"
                       autoComplete="off"
-                      defaultValue={state?.data?.businessName || null}
+                      defaultValue={state?.data && state?.data?.businessName}
                       className={`rounded-lg border-1 px-3 py-2 text-sm ${
                         state?.errors && state?.errors?.businessName
                           ? "border-red-500"
@@ -217,8 +221,9 @@ export default function RegisterPage() {
                     <input
                       type="text"
                       name="businessCode"
+                      id="businessCode"
                       autoComplete="off"
-                      defaultValue={state?.data?.businessCode || null}
+                      defaultValue={state?.data && state?.data?.businessCode}
                       className={`rounded-lg px-3 py-2 text-sm border-1 ${
                         state?.errors && state?.errors?.businessCode
                           ? "border-red-500"

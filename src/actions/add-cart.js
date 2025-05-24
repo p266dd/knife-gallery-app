@@ -56,33 +56,38 @@ export async function addToCart(state, formData) {
     },
   });
 
-  // * Add item to cart collection.
-  const cart = await prisma.cart.update({
-    where: {
-      clientId: session.id,
-    },
-    data: {
-      products: {
-        create: {
-          product: {
-            connect: {
-              id: data.productId,
+  try {
+    // * Add item to cart collection.
+    const cart = await prisma.cart.update({
+      where: {
+        clientId: session.id,
+      },
+      data: {
+        products: {
+          create: {
+            product: {
+              connect: {
+                id: data.productId,
+              },
             },
+            brand:
+              (data.brandOther ? data.brandOther : data.brand) ||
+              productDetails.brand,
+            handle:
+              (data.handleOther ? data.handleOther : data.handle) ||
+              productDetails.handle,
+            request: data.request,
+            details: JSON.stringify(sizes),
           },
-          brand:
-            (data.brandOther ? data.brandOther : data.brand) ||
-            productDetails.brand,
-          handle:
-            (data.handleOther ? data.handleOther : data.handle) ||
-            productDetails.handle,
-          request: data.request,
-          details: JSON.stringify(sizes),
         },
       },
-    },
-  });
+    });
 
-  revalidatePath(`/products/${data.productId}`, "page");
+    revalidatePath(`/products/${data.productId}`, "page");
 
-  return cart;
+    return cart;
+  } catch (error) {
+    console.log(error);
+    return { ...state, generalError: "Something went wrong." };
+  }
 }

@@ -8,18 +8,21 @@ import { Info, Loader, Pencil, Save, Trash2, X } from "lucide-react";
 
 import { updateCart } from "@/actions/update-cart";
 import { removeCart } from "@/actions/remove-cart";
-import { set } from "lodash";
 
 export default function CartProduct({ cartProduct, preferences }) {
-  const product = cartProduct.product;
-
   const [open, setOpen] = useState(false);
 
   const [showUpdateBtn, setShowUpdateBtn] = useState(false);
   const [showDeleteBtn, setShowDeleteBtn] = useState(false);
   const [otherField, setOtherField] = useState(false);
+  const [otherHandle, setOtherHandle] = useState(false);
 
-  const [state, action, pending] = useActionState(updateCart, {});
+  const [state, action, pending] = useActionState(updateCart, {
+    message: "",
+    errors: "",
+    product: cartProduct?.product,
+    cartProduct: cartProduct,
+  });
 
   return (
     <div className="relative">
@@ -32,9 +35,12 @@ export default function CartProduct({ cartProduct, preferences }) {
           <div className="relative w-1/4 h-28 sm:h-48 rounded-xl overflow-hidden">
             <Image
               src={
-                product.thumbnail.url || "/img/product-image-placeholder.webp"
+                state.product?.thumbnail?.url ||
+                "/img/product-image-placeholder.webp"
               }
-              alt={product.name || "Product Image"}
+              placeholder="blur"
+              blurDataURL="/img/image-blur.gif"
+              alt={state.product?.name || "Product Image"}
               className="object-cover"
               fill
             />
@@ -42,21 +48,25 @@ export default function CartProduct({ cartProduct, preferences }) {
 
           <div className="w-3/4">
             <h3 className="sm:text-xl sm:font-semibold sm:mb-4">
-              {product.name || "Product Name"}
+              {state.product?.name || "Product Name"}
             </h3>
             <h5 className="text-xs text-slate-600 sm:text-base">
               <ul>
-                <li>Brand: {cartProduct.brand || "Standard"}</li>
-                {product.type === "knife" && (
-                  <li>Handle: {cartProduct.handle || "Standard"}</li>
+                <li>
+                  Brand: {state?.cartProduct?.brand || state?.product?.brand}
+                </li>
+                {state?.product.type === "knife" && (
+                  <li>
+                    Handle:{" "}
+                    {state.cartProduct?.handle || state?.product?.handle}
+                  </li>
                 )}
                 <li>
                   Request:{" "}
-                  {(cartProduct?.request &&
-                    cartProduct.request.substring(0, 20)) ||
+                  {(state?.cartProduct?.request &&
+                    state?.cartProduct.request.substring(0, 20)) ||
                     "No special request."}
                 </li>
-                {/* Change the above to css. */}
               </ul>
             </h5>
           </div>
@@ -79,10 +89,10 @@ export default function CartProduct({ cartProduct, preferences }) {
                 <input
                   type="hidden"
                   name="productCartId"
-                  value={cartProduct.id}
+                  value={state?.cartProduct.id}
                 />
 
-                {showUpdateBtn && (
+                {showUpdateBtn && !pending && (
                   <motion.button
                     whileTap={{ scale: 0.9 }}
                     initial={{ opacity: 0 }}
@@ -91,21 +101,52 @@ export default function CartProduct({ cartProduct, preferences }) {
                     type="submit"
                     className="flex items-center justify-center gap-3 px-4 py-2 m-2 mt-0 bg-green-700 text-white text-sm sm:text-lg sm:font-semibold rounded-xl cursor-pointer"
                   >
-                    {pending ? (
-                      <>
-                        <Loader size={18} className="animate-spin" />
-                        <span>Saving</span>
-                      </>
-                    ) : (
-                      <>
-                        <Save size={18} />
-                        <span>Save Changes</span>
-                      </>
-                    )}
+                    <Save size={18} />
+                    <span>Save Changes</span>
                   </motion.button>
                 )}
 
-                <div className="py-2 px-4">
+                {!showUpdateBtn && pending && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ x: -60, opacity: 0 }}
+                    className="flex items-center justify-center gap-3 px-4 py-2 m-2 mt-0 bg-green-700 text-white text-sm sm:text-lg sm:font-semibold rounded-xl cursor-pointer"
+                  >
+                    <Loader size={18} className="animate-spin" />
+                    <span>Saving</span>
+                  </motion.div>
+                )}
+
+                {state?.message && (
+                  <motion.div
+                    key="responseMessageTop"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex items-center gap-3 text-sm p-3 mx-5 mb-3 rounded-xl bg-blue-200 text-blue-900"
+                  >
+                    <Info size={18} />
+                    {state.message}
+                  </motion.div>
+                )}
+
+                {state?.generalError && (
+                  <motion.div
+                    key="responseErrorTop"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex items-center gap-3 text-sm p-3 mx-5 mb-3 rounded-xl bg-red-200 text-red-900"
+                  >
+                    <Info size={18} />
+                    {state.generalError}
+                  </motion.div>
+                )}
+
+                <div className="py-2 px-4 mb-3">
                   <table className="w-full mb-5">
                     <thead>
                       <tr className="w-full text-xs sm:text-lg sm:font-semibold text-white">
@@ -122,104 +163,121 @@ export default function CartProduct({ cartProduct, preferences }) {
                     </thead>
 
                     <tbody>
-                      {product.sizes.map((size, i) => (
-                        <tr key={`size_${i}`}>
-                          <td className="py-2 pl-2 text-left">
-                            <span className="block text-sm mb-1 sm:text-lg sm:font-semibold">
-                              {size.name}
-                            </span>
-                            <span className="block text-xs sm:text-base sm:text-slate-500">
-                              {size.size} mm
-                            </span>
-                          </td>
-                          <td className="py-2 text-center flex justify-center">
-                            <div className="mx-2 sm:w-20 flex items-center gap-2 border border-slate-400 px-3 py-2 rounded-xl">
-                              <input
-                                className="w-full sm:w-20 appearance-none focus-visible:outline-0 placeholder:text-slate-500"
-                                type="number"
-                                name={`size_${size.id}`}
-                                autoComplete="off"
-                                defaultValue={
-                                  JSON.parse(cartProduct.details).find(
-                                    (d) => Number(d.id) === Number(size.id)
-                                  ).quantity
-                                }
-                                max={size.stock}
-                                step={1}
-                                onChange={() => {
-                                  setShowUpdateBtn(true);
-                                }}
-                              />
-                            </div>
-                          </td>
-                          <td className="py-2 text-center">{size.stock}</td>
-                        </tr>
-                      ))}
+                      {state?.product?.sizes &&
+                        state?.product?.sizes.length > 0 &&
+                        state?.product?.sizes.map(
+                          (size, i) =>
+                            Number(size?.stock) > 0 && (
+                              <tr key={`size_${i}`}>
+                                <td className="py-2 pl-2 text-left">
+                                  <span className="block text-sm mb-1 sm:text-lg sm:font-semibold">
+                                    {size?.name || "No Name"}
+                                  </span>
+                                  <span className="block text-xs sm:text-base sm:text-slate-500">
+                                    {size?.size || "00"} mm
+                                  </span>
+                                </td>
+                                <td className="py-2 text-center flex justify-center">
+                                  <div className="mx-4 sm:w-20 flex items-center gap-2 border border-slate-400 px-3 py-2 rounded-xl">
+                                    <input
+                                      className="w-full sm:w-20 appearance-none focus-visible:outline-0 placeholder:text-slate-500"
+                                      type="number"
+                                      name={`size_${size.id}`}
+                                      autoComplete="off"
+                                      defaultValue={
+                                        JSON.parse(cartProduct?.details).find(
+                                          (d) =>
+                                            Number(d.id) === Number(size.id)
+                                        ).quantity
+                                      }
+                                      max={size?.stock || 0}
+                                      step={1}
+                                      onChange={() => {
+                                        setShowUpdateBtn(true);
+                                      }}
+                                    />
+                                  </div>
+                                </td>
+                                <td className="py-2 text-center">
+                                  {size?.stock || "0"}
+                                </td>
+                              </tr>
+                            )
+                        )}
                     </tbody>
                   </table>
 
-                  <div className="flex flex-col gap-3 px-2 py-3 m-2 border border-slate-300 rounded-xl">
-                    <div className="relative flex gap-2 items-center px-2 py-1 pt-6 sm:pt-10 mb-4">
+                  <div className="flex flex-col gap-3">
+                    <div
+                      className={`relative flex gap-3 items-center px-3 py-2 pt-6 border  border-slate-300 rounded-xl ${state.product?.brand !== "OEM" ? "bg-slate-200" : "bg-white"}`}
+                    >
                       <label
-                        className="absolute top-0 left-3 text-[10px] sm:text-base text-slate-700"
+                        className="absolute top-2 left-3 text-xs text-slate-400"
                         htmlFor="brand"
                       >
                         Choose engraving
                       </label>
-                      <Pencil size={14} />
+                      <Pencil size={14} className="text-slate-500" />
 
                       <div className="flex-grow">
                         <select
                           name="brand"
                           id="brand"
                           defaultValue={
-                            (cartProduct && cartProduct.brand) ||
-                            product.brand.toLowerCase()
+                            (state?.cartProduct && state?.cartProduct.brand) ||
+                            state?.product?.brand
                           }
-                          disabled={product.brand !== "OEM"}
                           onChange={(e) => {
+                            setShowUpdateBtn(true);
                             e.target.value === "other"
                               ? setOtherField(true)
                               : setOtherField(false);
-                            setShowUpdateBtn(true);
                           }}
-                          className="w-full focus-visible:outline-0 border-b border-slate-300 pb-2 pr-1 pt-1 sm:py-2 disabled:bg-slate-100"
+                          disabled={state.product?.brand !== "OEM"}
+                          className="w-full focus-visible:outline-0"
                         >
                           <option value="" disabled>
                             Select an engraving for this product.
                           </option>
 
-                          {cartProduct && (
-                            <option value={cartProduct.brand}>
-                              *{cartProduct.brand}
-                            </option>
+                          {/* This is cart product config. */}
+                          {state?.cartProduct &&
+                            state?.cartProduct.brand !==
+                              state?.product.brand && (
+                              <option value={state?.cartProduct.brand}>
+                                {state?.cartProduct.brand}
+                              </option>
+                            )}
+
+                          {/* This is the default products brand. */}
+                          <option value={state?.product.brand}>
+                            {state?.product.brand}
+                          </option>
+
+                          {state?.product.brand === "OEM" && (
+                            <option value="other">Other</option>
                           )}
 
-                          {preferences.engraving &&
-                            preferences.engraving.map((val, i) => {
-                              return (
-                                <option
-                                  key={`preference-${i}`}
-                                  value={val.name.toLowerCase()}
-                                >
-                                  {val.name}
-                                </option>
-                              );
-                            })}
-
-                          <option
-                            className="capitalize"
-                            value={product.brand.toLowerCase()}
-                          >
-                            {product.brand}
-                          </option>
-                          <option value="other">Other</option>
+                          {/* This is user's own preferences. */}
+                          {preferences.engraving.length > 0 &&
+                            product.brand === "OEM" && (
+                              <optgroup label="Preferences">
+                                {preferences.engraving.map((val, i) => {
+                                  return (
+                                    <option key={i} value={val.name}>
+                                      {val.name}
+                                    </option>
+                                  );
+                                })}
+                              </optgroup>
+                            )}
                         </select>
 
-                        {otherField && (
+                        {otherField && state?.product.brand === "OEM" && (
                           <input
                             type="text"
                             name="brandOther"
+                            autoComplete="off"
                             placeholder="What do you want engraved?"
                             className="focus-visible:outline-0 w-full placeholder:text-slate-500 px-4 py-2 bg-slate-100 rounded-xl"
                           />
@@ -227,75 +285,149 @@ export default function CartProduct({ cartProduct, preferences }) {
                       </div>
                     </div>
 
-                    {product.type === "knife" && (
-                      <div className="relative flex gap-2 items-center px-2 py-1 pt-6 sm:pt-10 mb-6">
-                        <label
-                          className="absolute top-0 left-3 text-[10px] sm:text-base text-slate-700"
-                          htmlFor="handle"
+                    {state?.product && state?.product.type === "knife" && (
+                      <div>
+                        <div
+                          className={`relative flex gap-3 items-center px-3 py-2 pt-6 border  border-slate-300 rounded-xl ${state?.product.canChangeHandle ? "bg-white" : "bg-slate-200"}`}
                         >
-                          Choose Handle
-                        </label>
-                        <Pencil size={14} />
-                        <input
-                          type="text"
-                          name="handle"
-                          id="handle"
-                          placeholder={product.handle}
-                          defaultValue={cartProduct.handle || null}
-                          onChange={() => {
-                            setShowUpdateBtn(true);
-                          }}
-                          disabled={!product.canChangeHandle}
-                          className="focus-visible:outline-0 w-full placeholder:text-slate-500 text-sm  border-b border-slate-300 pb-2 py-1 pl-1 sm:py-2 disabled:bg-slate-100"
-                        />
+                          <label
+                            className="absolute top-2 left-3 text-xs text-slate-400"
+                            htmlFor="handle"
+                          >
+                            Choose a different handle
+                          </label>
+                          <Pencil size={14} className="text-slate-500" />
+                          <div className="flex-grow">
+                            <select
+                              name="handle"
+                              id="handle"
+                              defaultValue={
+                                (state?.cartProduct &&
+                                  state?.cartProduct.handle) ||
+                                state?.product.handle
+                              }
+                              onChange={(e) => {
+                                setShowUpdateBtn(true);
+                                e.target.value === "other"
+                                  ? setOtherHandle(true)
+                                  : setOtherHandle(false);
+                              }}
+                              className="w-full focus-visible:outline-0"
+                              disabled={!state?.product.canChangeHandle}
+                            >
+                              <option
+                                value={
+                                  (state?.cartProduct &&
+                                    state?.cartProduct.handle) ||
+                                  state?.product.handle
+                                }
+                              >
+                                {(state?.cartProduct &&
+                                  state?.cartProduct.handle) ||
+                                  state?.product.handle}
+                              </option>
+                              <option value="No Handle">No Handle</option>
+                              <option value="other">Type Other</option>
+                            </select>
+                            {otherHandle && (
+                              <input
+                                type="text"
+                                name="handleOther"
+                                autoComplete="off"
+                                placeholder="Type handle name here."
+                                className="focus-visible:outline-0 w-full placeholder:text-slate-500 px-4 py-2 bg-slate-100 rounded-xl"
+                              />
+                            )}
+                          </div>
+                        </div>
+                        <div className="pt-2 pl-2">
+                          <p className="text-xs text-slate-500">
+                            Price will be changed depending on the handles you
+                            choose.
+                          </p>
+                        </div>
                       </div>
                     )}
 
-                    <div className="relative flex gap-2 items-center px-2 py-1 pt-6 sm:pt-10 mb-6">
+                    <div className="relative flex gap-3 items-center px-3 py-2 pt-6 bg-white border border-slate-300 rounded-xl">
                       <label
-                        className="absolute top-0 left-3 text-[10px] sm:text-base text-slate-700"
+                        className="absolute top-2 left-3 text-xs text-slate-400"
                         htmlFor="request"
                       >
-                        Special Request
+                        Specific request for this product
                       </label>
-                      <Pencil size={14} />
-                      <textarea
+                      <Pencil size={14} className="text-slate-500" />
+                      <input
+                        type="text"
                         name="request"
                         id="request"
-                        placeholder="No special request."
-                        defaultValue={cartProduct.request || null}
+                        placeholder={"No special requests."}
+                        autoComplete="off"
+                        defaultValue={
+                          (state?.cartProduct && state?.cartProduct.request) ||
+                          ""
+                        }
                         onChange={() => {
                           setShowUpdateBtn(true);
                         }}
-                        className="focus-visible:outline-0 w-full placeholder:text-slate-500 text-sm sm:text-base  border-b border-slate-300 pb-2"
+                        className="focus-visible:outline-0 w-full placeholder:text-slate-500"
                       />
                     </div>
                   </div>
                 </div>
 
-                {showUpdateBtn && (
-                  <div className="px-3 pr-6 mb-3">
-                    <motion.button
-                      whileTap={{ scale: 0.9 }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ x: -60, opacity: 0 }}
-                      type="submit"
-                      className="flex items-center w-full justify-center gap-3 px-4 py-2 m-2 mt-0 bg-green-700 text-white text-sm sm:text-lg sm:font-semibold rounded-xl cursor-pointer"
-                    >
-                      {pending ? (
-                        <>
-                          <Loader size={18} className="animate-spin" />
-                          <span>Saving</span>
-                        </>
-                      ) : (
-                        <>
-                          <Save size={18} />
-                          <span>Save Changes</span>
-                        </>
-                      )}
-                    </motion.button>
-                  </div>
+                {state?.message && (
+                  <motion.div
+                    key="responseMessageBottom"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex items-center gap-3 text-sm p-3 mx-6 mb-3 rounded-xl bg-blue-200 text-blue-900"
+                  >
+                    <Info size={18} />
+                    {state.message}
+                  </motion.div>
+                )}
+
+                {state?.generalError && (
+                  <motion.div
+                    key="responseErrorBottom"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex items-center gap-3 text-sm p-3 mx-6 mb-3 rounded-xl bg-red-200 text-red-900"
+                  >
+                    <Info size={18} />
+                    {state.generalError}
+                  </motion.div>
+                )}
+
+                {showUpdateBtn && !pending && (
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ x: -60, opacity: 0 }}
+                    type="submit"
+                    className="flex items-center justify-center gap-3 px-4 py-2 m-2 mt-0 bg-green-700 text-white text-sm sm:text-lg sm:font-semibold rounded-xl cursor-pointer"
+                  >
+                    <Save size={18} />
+                    <span>Save Changes</span>
+                  </motion.button>
+                )}
+
+                {!showUpdateBtn && pending && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ x: -60, opacity: 0 }}
+                    className="flex items-center justify-center gap-3 px-4 py-2 m-2 mt-0 bg-green-700 text-white text-sm sm:text-lg sm:font-semibold rounded-xl cursor-pointer"
+                  >
+                    <Loader size={18} className="animate-spin" />
+                    <span>Saving</span>
+                  </motion.div>
                 )}
 
                 <div className="flex items-center gap-2 px-6 mb-2">
@@ -307,15 +439,19 @@ export default function CartProduct({ cartProduct, preferences }) {
                     type="button"
                     onClick={async () =>
                       showDeleteBtn
-                        ? await removeCart({ cartProductId: cartProduct.id })
+                        ? await removeCart({
+                            cartProductId: state?.cartProduct.id,
+                          })
                         : setShowDeleteBtn(true)
                     }
                     className={`flex items-center gap-3 px-4 py-2 sm:py-3 mb-4 transition-colors flex-grow ${showDeleteBtn ? "bg-red-700 text-white" : "bg-red-200 text-red-700"}  text-sm sm:text-base rounded-xl`}
                   >
                     <Trash2 size={16} />
-                    <span>{showDeleteBtn ? "Remove" : "Remove Product"}</span>
+                    <span>
+                      {showDeleteBtn ? "Are you sure?" : "Remove Product"}
+                    </span>
                     {showDeleteBtn && (
-                      <span className="text-white/60">Are you sure?</span>
+                      <span className="text-white/60">Yes!</span>
                     )}
                   </motion.button>
                   {showDeleteBtn && (

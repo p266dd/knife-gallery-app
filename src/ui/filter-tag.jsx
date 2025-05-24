@@ -6,19 +6,20 @@ import { CircleX } from "lucide-react";
 
 export default function FilterTag({ filter, active }) {
   const router = useRouter();
-  const isActive = filter.name.toLowerCase() === active;
+  const isActive = filter.name.toLowerCase() === active.toLowerCase();
 
   return (
     <motion.span
       whileTap={{ scale: 0.9 }}
-      onClick={() =>
-        isActive
-          ? router.push("/")
-          : router.push("/?filter=" + filter.name.toLowerCase())
+      onClick={
+        () =>
+          isActive
+            ? router.push("/") // Clean filter from searchParams.
+            : router.push("/?filter=" + filter.name.toLowerCase()) // Add filter to searchParams.
       }
       className={`
         cursor-pointer flex felx-row gap-2 items-center
-        px-4 py-2 text-sm rounded-xl border border-transparent
+        px-4 py-2 text-sm capitalize rounded-xl border border-transparent
         ${
           isActive
             ? "text-white bg-slate-800 hover:bg-slate-700"
@@ -26,7 +27,7 @@ export default function FilterTag({ filter, active }) {
         }`}
     >
       {filter.name}
-      {isActive ? <CircleX size={14} /> : null}
+      {isActive && <CircleX size={14} />}
     </motion.span>
   );
 }

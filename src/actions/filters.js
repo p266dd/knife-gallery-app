@@ -4,15 +4,20 @@ import prisma from "@/data/prisma";
 import { revalidatePath } from "next/cache";
 
 export async function fetchFilters() {
-  // * return filters.
-  const filters = await prisma.filter.findMany({
-    select: {
-      id: true,
-      name: true,
-    },
-  });
-
-  return filters;
+  // * returns an array.
+  let filters;
+  try {
+    filters = await prisma.filter.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+    return filters;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
 }
 
 export async function addFilter(filterName) {

@@ -73,7 +73,7 @@ export default function ForgotPassword() {
                   action={action}
                   className="text-sm text-slate-700 flex flex-col gap-3"
                 >
-                  {state && state.message && (
+                  {state && state?.message && (
                     <div className="px-3 py-2 text-xs font-semibold bg-blue-200 text-blue-900 rounded-xl">
                       {state.message}
                     </div>
@@ -86,8 +86,9 @@ export default function ForgotPassword() {
                     <input
                       type="email"
                       name="email"
+                      id="email"
                       autoComplete="email"
-                      defaultValue={state?.data?.email || null}
+                      defaultValue={state?.data && state.data?.email}
                       className={`rounded-lg border-1 px-3 py-2 text-sm ${
                         state?.errors && state?.errors?.email
                           ? "border-red-500"

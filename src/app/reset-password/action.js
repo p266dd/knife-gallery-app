@@ -7,9 +7,8 @@ import prisma from "@/data/prisma";
 import { resetPasswordSchema } from "@/data/validation/reset-password-form";
 
 export default async function ResetPasswordAction(state, formData) {
-  // * Reset state errors and message.
-  // * Set state data from formData.
-  state = {
+  // * Set newState data from formData.
+  const newState = {
     ...state,
     errors: {},
     message: "",
@@ -17,14 +16,13 @@ export default async function ResetPasswordAction(state, formData) {
   };
 
   const recoverData = {
-    code: formData.get("code"),
-    password: formData.get("password"),
-    confirmPassword: formData.get("confirmPassword"),
+    code: newState?.code,
+    password: newState?.password,
+    confirmPassword: newState?.confirmPassword,
   };
 
-  // * Will hold valid data.
+  // * Holds the validated data.
   let validData;
-
   try {
     validData = await resetPasswordSchema.validate(recoverData, {
       abortEarly: false,
@@ -36,52 +34,57 @@ export default async function ResetPasswordAction(state, formData) {
       for (const fieldError of error.inner) {
         fieldErrors[fieldError.path] = fieldError.message;
       }
-      return { ...state, errors: fieldErrors };
+      return { ...newState, errors: fieldErrors };
     }
 
     // * Log any other error.
     console.log(error);
   }
 
-  // * Fetch user by the valid code.
+  // * Fetch user by the provided code.
   const user = await prisma.user.findFirst({
     where: { code: Number(validData.code) },
   });
 
-  if (!state.sent) {
+  // The function below will only run if the user
+  // have not yet sent the code.
+  if (!state?.sent) {
     const codesMatch = Number(user.code) === Number(validData.code);
     if (!codesMatch) {
-      return (state = {
-        ...state,
+      return {
+        ...newState,
         sent: false,
         message: "The code you entered is incorrect.",
-      });
+      };
     } else {
-      return (state = {
-        ...state,
+      return {
+        ...newState,
         sent: true,
         message: "Please type your new password.",
-      });
+      };
     }
   }
 
   const passwordHash = hashSync(validData.password, 10);
 
-  const updatedUser = await prisma.user.update({
-    where: { id: user.id },
-    data: { password: passwordHash, code: null },
-  });
-
-  if (!updatedUser)
-    return (state = {
-      ...state,
-      message: "Password could not be updated.",
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: { password: passwordHash, code: null },
     });
 
-  return (state = {
-    errors: {},
-    sent: false,
-    message: "Your password has been updated.",
-    success: true,
-  });
+    return {
+      errors: {},
+      sent: false,
+      message: "Your password has been updated.",
+      success: true,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      ...newState,
+      sent: true,
+      message: "Password could not be updated.",
+    };
+  }
 }

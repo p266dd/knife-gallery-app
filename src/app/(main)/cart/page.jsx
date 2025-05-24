@@ -1,10 +1,10 @@
-import { ShoppingBag } from "lucide-react";
 import prisma from "@/data/prisma";
 import { getSession } from "@/utils/session";
 import { fetchCart } from "@/actions/fetch-cart";
 import ClearCartButton from "@/ui/clear-cart-button";
 import CartProduct from "@/ui/cart-product";
 import EmptyCart from "@/ui/empty-cart";
+import OrderNowButton from "@/ui/order-now-button";
 
 export default async function CartPage() {
   const cart = await fetchCart();
@@ -21,8 +21,14 @@ export default async function CartPage() {
   });
 
   const userPreferences = {
-    engraving: user.engraving ? JSON.parse(user.engraving) : [],
-    id: user.id,
+    engraving: user?.engraving ? JSON.parse(user.engraving) : [],
+    id: user?.id,
+  };
+
+  const processOrder = async () => {
+    "use server";
+    console.log("Processing order...");
+    return true;
   };
 
   return (
@@ -31,17 +37,17 @@ export default async function CartPage() {
         <h1 className="text-4xl mb-2">Shopping Cart</h1>
         {cart && (
           <p className="text-sm text-slate-400">
-            You have {cart.cartCount} {cart.cartCount == 1 ? "item" : "items"}{" "}
+            You have {cart.cartCount} {cart.cartCount == 1 ? "item " : "items "}
             in your cart.
           </p>
         )}
       </div>
 
-      <div className="px-6 flex flex-col gap-4 sm:flex-row">
+      <div className="px-6 flex flex-col gap-4 sm:flex-row sm:items-start">
         <div
           className={`flex-grow ${cart?.cartCount !== 0 ? "sm:w-3/4" : ""} `}
         >
-          {cart && cart.cartCount !== 0 ? (
+          {cart && cart?.cartCount !== 0 ? (
             cart.data.products.map((product, i) => (
               <CartProduct
                 key={i}
@@ -54,13 +60,10 @@ export default async function CartPage() {
           )}
         </div>
 
-        {cart && cart.cartCount !== 0 && (
+        {cart && cart?.cartCount !== 0 && (
           <div className="flex-grow sm:w-1/4">
             <div className="my-4 flex flex-col gap-2">
-              <button className="flex items-center justify-center gap-3 w-full px-4 py-2 bg-slate-800 text-white font-bold rounded-xl">
-                <ShoppingBag size={18} />
-                <span>Order Now</span>
-              </button>
+              <OrderNowButton processOrder={processOrder} />
 
               <ClearCartButton />
             </div>

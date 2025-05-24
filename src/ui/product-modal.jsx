@@ -1,19 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { CircleX } from "lucide-react";
 
 import ProductGallery from "./product-gallery";
 import AddToFavortite from "./add-to-favorite";
 
-import { CircleX } from "lucide-react";
-
 export default function ProductModal({ product, children }) {
   const [isOpen, setIsOpen] = useState(false);
-  const triggerRef = useRef(undefined);
+  const triggerRef = useRef(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -21,19 +20,19 @@ export default function ProductModal({ product, children }) {
     let started;
     let hasMoved;
 
-    // * Disabled context menu for the entire component.
+    // Disabled context menu for the entire component.
     document.addEventListener("contextmenu", function (e) {
       e.preventDefault();
     });
 
-    // hide the default context menu on mobile browsers [iOS issue]
+    // Hide the default context menu on mobile browsers [iOS issue].
     triggerRef.current.addEventListener("contextmenu", (e) => {
       e.preventDefault();
       return;
     });
 
     triggerRef.current.addEventListener("touchstart", () => {
-      // simulate long press
+      // Simulate long press.
       timer = setTimeout(() => {
         if (navigator?.vibrate) navigator?.vibrate([50]);
         setIsOpen(true);
@@ -45,7 +44,7 @@ export default function ProductModal({ product, children }) {
 
     triggerRef.current.addEventListener("touchend", () => {
       clearTimeout(timer);
-      // clear any selection
+      // Clear any selection.
       window.getSelection().removeAllRanges();
 
       const ended = new Date();
@@ -53,14 +52,14 @@ export default function ProductModal({ product, children }) {
       const durationMs = Math.round(duration);
 
       if (durationMs <= 3 && !hasMoved) {
-        // treat as a click
+        // Treat as a click if very short hold.
         router.push("/products/" + product.id);
       }
       return;
     });
 
     triggerRef.current.addEventListener("touchmove", (e) => {
-      // cancel long hold and cancel tap
+      // Cancel long hold and cancel tap if finger moves.
       clearTimeout(timer);
       hasMoved = true;
       return;
@@ -112,7 +111,7 @@ export default function ProductModal({ product, children }) {
                   <ProductGallery product={product} />
                 </div>
 
-                <Link href={"/products/" + product.id || "#"}>
+                <Link href={"/products/" + product.id}>
                   <div className="bg-white rounded-xl p-4 capitalize">
                     {product.name}
                   </div>

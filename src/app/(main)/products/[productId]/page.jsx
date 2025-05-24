@@ -1,3 +1,5 @@
+import { string } from "yup";
+import { redirect } from "next/navigation";
 import prisma from "@/data/prisma";
 import { getSession } from "@/utils/session";
 
@@ -9,9 +11,15 @@ export default async function ProductSinglePage({ params }) {
   const getParams = await params;
   const session = await getSession();
 
+  // * Clean productId.
+  const sanitizedProductId = await string()
+    .default("")
+    .trim()
+    .validate(getParams.productId);
+
   const product = await prisma.product.findUnique({
     where: {
-      id: getParams.productId,
+      id: sanitizedProductId,
     },
     include: {
       media: true,
@@ -32,7 +40,7 @@ export default async function ProductSinglePage({ params }) {
   });
 
   const userPreferences = {
-    engraving: user.engraving ? JSON.parse(user.engraving) : [],
+    engraving: user?.engraving ? JSON.parse(user.engraving) : [],
     id: user.id,
   };
 
@@ -48,6 +56,10 @@ export default async function ProductSinglePage({ params }) {
       },
     },
   });
+
+  if (!product) {
+    return redirect("/");
+  }
 
   return (
     <main className="pt-16 pb-40">

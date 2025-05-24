@@ -10,18 +10,20 @@ import { createSession } from "@/utils/session";
 import { loginFormSchema } from "@/data/validation/login-form";
 
 export default async function LoginAction(state, formData) {
-  // * Reset state errors and message.
-  // * Set state data from formData.
-  state = { errors: [], message: "", data: Object.fromEntries(formData) };
-
-  const loginData = {
-    email: formData.get("email"),
-    password: formData.get("password"),
+  // * Holds the new state.
+  const newState = {
+    errors: [],
+    message: "",
+    data: Object.fromEntries(formData),
   };
 
-  // * Will hold valid data.
-  let validData;
+  const loginData = {
+    email: newState.data["email"],
+    password: newState.data["password"],
+  };
 
+  // * Holds valid data.
+  let validData;
   try {
     validData = await loginFormSchema.validate(loginData, {
       abortEarly: false,
@@ -33,40 +35,48 @@ export default async function LoginAction(state, formData) {
       for (const fieldError of error.inner) {
         fieldErrors[fieldError.path] = fieldError.message;
       }
-      return { ...state, errors: fieldErrors };
+      return { ...newState, errors: fieldErrors };
     }
 
     // * Log any other error.
     console.log(error);
   }
 
-  // * Fetch user by its email
+  // * Holds the user's return information.
   let user;
   try {
     user = await prisma.user.findFirst({
       where: { email: validData.email },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: true,
+        role: true,
+        isActive: true,
+      },
     });
   } catch (error) {
-    return (state = { ...state, message: "An error occured." });
+    return { ...newState, message: "An error occured." };
   }
 
-  if (!user) return (state = { ...state, message: "User does not exist." });
+  if (!user) return { ...newState, message: "User does not exist." };
 
-  // * Check if password is correct.
+  // * Check password.
   const passwordsMatch = compareSync(validData.password, user.password);
-
   if (!passwordsMatch)
-    return (state = { ...state, message: "Incorrect email or password." });
+    return { ...newState, message: "Incorrect email or password." };
 
+  console.log(user);
   // * Check if user is currently active.
   if (!user.isActive)
-    return (state = {
-      ...state,
+    return {
+      ...newState,
       message: "User is not active. Please wait while we review.",
-    });
+    };
 
   // * Create session for the user.
-  // session will be stored in a httpOnly cookie.
+  // session will be stored in a httpOnly and user's localStorage.
   await createSession({
     id: user.id,
     name: user.name,

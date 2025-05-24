@@ -14,6 +14,7 @@ export default async function HomePage({ searchParams }) {
 
   let { filter } = await searchParams;
 
+  // * Clean filter.
   const sanitizedFilter = await string()
     .default("")
     .lowercase()
@@ -40,16 +41,14 @@ export default async function HomePage({ searchParams }) {
           <h3 className="text-lg mb-3 sm:text-2xl sm:mb-9">Welcome back,</h3>
           <h1 className="text-2xl font-bold flex items-center gap-3 sm:text-4xl">
             <LogoutButton logout={fnLogout} />
-            {session.name}
+            {session?.name}
           </h1>
         </div>
       </div>
 
       <div>
-        {filters && filters.length > 0 && (
+        {filters.length > 0 && (
           <div className="relative px-6 mb-3">
-            <span className="block absolute top-0 right-0 h-full w-10 bg-linear-270 from-white from-30% to-white/0"></span>
-
             <div className="w-full overflow-auto">
               <div className="flex flex-row gap-2 py-3">
                 {filters.map((filter, i) => (

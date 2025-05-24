@@ -3,15 +3,7 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import {
-  Info,
-  ArrowRight,
-  Pencil,
-  ShoppingCart,
-  Save,
-  XCircle,
-  Loader,
-} from "lucide-react";
+import { Info, ArrowRight, Pencil, ShoppingCart, Loader } from "lucide-react";
 
 import { addToCart } from "@/actions/add-cart";
 import { updateCart } from "@/actions/update-cart";
@@ -20,27 +12,25 @@ export default function ProductForm({ product, preferences, cart }) {
   const [otherField, setOtherField] = useState(false);
   const [otherHandle, setOtherHandle] = useState(false);
 
-  let currentProduct;
+  let cartProduct;
 
-  cart &&
-    cart?.products.map((prod) => {
-      if (prod.productId === product.id) return (currentProduct = prod);
-      return;
-    });
+  if (cart && cart.products.length > 0) {
+    cartProduct = cart.products.find((prod) => prod.productId === product.id);
+  }
 
   const [state, action, isPending] = useActionState(
-    currentProduct ? updateCart : addToCart,
+    cartProduct ? updateCart : addToCart,
     {}
   );
 
   return (
     <form action={action}>
       <input type="hidden" name="productId" value={product.id} />
-      {currentProduct && (
-        <input type="hidden" name="productCartId" value={currentProduct.id} />
+      {cartProduct && (
+        <input type="hidden" name="productCartId" value={cartProduct.id} />
       )}
 
-      {currentProduct && (
+      {cartProduct && (
         <div className="flex items-center justify-start gap-3 px-3 py-2 mb-3 text-xs bg-blue-100 rounded-xl">
           <Info size={16} />
           This product is in your cart.
@@ -59,55 +49,62 @@ export default function ProductForm({ product, preferences, cart }) {
             </tr>
           </thead>
           <tbody>
-            {product.sizes.map((size, i) => {
-              return Number(size.stock) !== 0 ? (
-                <tr
-                  className="text-sm border-b border-slate-200 last:border-b-0"
-                  key={`cell-${i}`}
-                >
-                  <td className="w-3/12 py-2">
-                    {size.name}
-                    <br />
-                    <span className="text-xs text-slate-500">
-                      {size.size} mm
-                    </span>
-                  </td>
-                  <td className="w-3/12 py-2">
-                    ¥ {size.price}{" "}
-                    <span className="text-[10px] text-slate-500">ea.</span>
-                  </td>
-                  <td className="w-3/12 py-2">
-                    <div className="flex items-center gap-1">
-                      {size.stock}
-                      {Number(size.stock) === 0 && (
-                        <XCircle size={14} className="text-red-600" />
-                      )}
-                    </div>
-                  </td>
-                  <td className="w-3/12 py-2">
-                    <div className="flex items-center gap-2 border border-slate-300 px-3 py-2 rounded-xl">
-                      <Pencil size={12} className="text-slate-500" />
-                      <input
-                        type="number"
-                        max={size.stock}
-                        min="0"
-                        step={1}
-                        name={`size_${size.id}`}
-                        placeholder="0"
-                        autoComplete="off"
-                        defaultValue={
-                          currentProduct &&
-                          JSON.parse(currentProduct.details).find(
-                            (d) => Number(d.id) === Number(size.id)
-                          ).quantity
-                        }
-                        className="w-full appearance-none focus-visible:outline-0 placeholder:text-slate-500"
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ) : null;
-            })}
+            {product.sizes && product.sizes.length > 0 ? (
+              product.sizes.map((size, i) => {
+                return (
+                  Number(size.stock) > 0 && (
+                    <tr
+                      className="text-sm border-b border-slate-200 last:border-b-0"
+                      key={`cell-${i}`}
+                    >
+                      <td className="w-3/12 py-2">
+                        {size?.name || "No Name"}
+                        <br />
+                        <span className="text-xs text-slate-500">
+                          {size?.size || "0"} mm
+                        </span>
+                      </td>
+                      <td className="w-3/12 py-2">
+                        ¥ {size?.price || "XX"}
+                        <span className="text-[10px] text-slate-500"> ea.</span>
+                      </td>
+                      <td className="w-3/12 py-2">
+                        <div className="flex items-center gap-1">
+                          {size?.stock}
+                        </div>
+                      </td>
+                      <td className="w-3/12 py-2">
+                        <div className="flex items-center gap-2 border border-slate-300 px-3 py-2 rounded-xl">
+                          <Pencil size={12} className="text-slate-500" />
+                          <input
+                            type="number"
+                            max={size.stock}
+                            min={0}
+                            step={1}
+                            name={`size_${size.id}`}
+                            placeholder="0"
+                            autoComplete="off"
+                            defaultValue={
+                              cartProduct &&
+                              JSON.parse(cartProduct.details).find(
+                                (d) => Number(d.id) === Number(size.id)
+                              ).quantity
+                            }
+                            className="w-full appearance-none focus-visible:outline-0 placeholder:text-slate-500"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan={4} className="py-3 text-center">
+                  No registered sizes.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -130,8 +127,7 @@ export default function ProductForm({ product, preferences, cart }) {
                 name="brand"
                 id="brand"
                 defaultValue={
-                  (currentProduct && currentProduct.brand) ||
-                  product.brand.toLowerCase()
+                  (cartProduct && cartProduct.brand) || product.brand
                 }
                 onChange={(e) => {
                   e.target.value === "other"
@@ -145,37 +141,31 @@ export default function ProductForm({ product, preferences, cart }) {
                   Select an engraving for this product.
                 </option>
 
-                {/* This is the product from the cart. */}
-                {currentProduct && currentProduct.brand !== product.brand && (
-                  <option value={currentProduct.brand}>
-                    {currentProduct.brand}
-                  </option>
+                {/* This is cart product config. */}
+                {cartProduct && cartProduct.brand !== product.brand && (
+                  <option value={cartProduct.brand}>{cartProduct.brand}</option>
                 )}
 
                 {/* This is the default products brand. */}
-                <option
-                  className="capitalize"
-                  value={product.brand.toLowerCase()}
-                >
-                  {product.brand}
-                </option>
+                <option value={product.brand}>{product.brand}</option>
 
                 {product.brand === "OEM" && (
                   <option value="other">Other</option>
                 )}
 
                 {/* This is user's own preferences. */}
-                {preferences.engraving && product.brand === "OEM" && (
-                  <optgroup label="Preferences">
-                    {preferences.engraving.map((val, i) => {
-                      return (
-                        <option key={i} value={val.name.toLowerCase()}>
-                          {val.name}
-                        </option>
-                      );
-                    })}
-                  </optgroup>
-                )}
+                {preferences.engraving.length > 0 &&
+                  product.brand === "OEM" && (
+                    <optgroup label="Preferences">
+                      {preferences.engraving.map((val, i) => {
+                        return (
+                          <option key={i} value={val.name}>
+                            {val.name}
+                          </option>
+                        );
+                      })}
+                    </optgroup>
+                  )}
               </select>
 
               {otherField && product.brand === "OEM" && (
@@ -208,7 +198,7 @@ export default function ProductForm({ product, preferences, cart }) {
                   name="handle"
                   id="handle"
                   defaultValue={
-                    (currentProduct && currentProduct.handle) || product.handle
+                    (cartProduct && cartProduct.handle) || product.handle
                   }
                   onChange={(e) => {
                     e.target.value === "other"
@@ -220,12 +210,10 @@ export default function ProductForm({ product, preferences, cart }) {
                 >
                   <option
                     value={
-                      (currentProduct && currentProduct.handle) ||
-                      product.handle
+                      (cartProduct && cartProduct.handle) || product.handle
                     }
                   >
-                    {(currentProduct && currentProduct.handle) ||
-                      product.handle}
+                    {(cartProduct && cartProduct.handle) || product.handle}
                   </option>
                   <option value="No Handle">No Handle</option>
                   <option value="other">Type Other</option>
@@ -264,7 +252,7 @@ export default function ProductForm({ product, preferences, cart }) {
               id="request"
               placeholder={"No special requests."}
               autoComplete="off"
-              defaultValue={(currentProduct && currentProduct.request) || ""}
+              defaultValue={(cartProduct && cartProduct.request) || ""}
               className="focus-visible:outline-0 w-full placeholder:text-slate-500"
             />
           </div>
@@ -310,7 +298,7 @@ export default function ProductForm({ product, preferences, cart }) {
             )}
 
             <div className="mt-3">
-              {currentProduct ? (
+              {cartProduct ? (
                 <>
                   <div className="flex items-center justify-start gap-3 px-3 py-2 mb-3 text-xs bg-blue-100 rounded-xl">
                     <Info size={16} />

@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { useActionState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Eye, EyeOff, PlusCircle, SaveAll, Trash2 } from "lucide-react";
+import { Eye, EyeOff, Loader, PlusCircle, SaveAll, Trash2 } from "lucide-react";
 
 import updateOwnUser from "@/actions/update-own-user";
 
@@ -12,7 +12,7 @@ export default function AccountForm({ user }) {
   const [showEngravingSave, setShowEngravingSave] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [engravingPreferences, setEngravingPreferences] = useState(
-    user?.engraving ? JSON.parse(user.engraving) : []
+    user && user?.engraving ? JSON.parse(user.engraving) : []
   );
 
   const engravingInputRef = useRef(null);
@@ -35,11 +35,15 @@ export default function AccountForm({ user }) {
     );
   };
 
-  const [state, action] = useActionState(updateOwnUser, {});
+  const [state, action, pending] = useActionState(updateOwnUser, {
+    message: "",
+    errors: {},
+    user: user,
+  });
 
   return (
     <form action={action} onChange={() => setShowFormSave(true)}>
-      {state && state.message && (
+      {state && state?.message && (
         <div className="px-3 py-2 sm:py-3 mb-4 text-xs sm:text-base font-semibold bg-blue-200 text-blue-900 rounded-xl">
           {state.message}
         </div>
@@ -62,6 +66,19 @@ export default function AccountForm({ user }) {
             </motion.button>
           </div>
         )}
+        {pending && (
+          <div className="mb-4 flex justify-end sm:hidden">
+            <motion.div
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className={`w-full sm:w-40 flex items-center justify-center gap-3 py-3 bg-green-600 text-white text-sm sm:text-base font-bold rounded-xl cursor-pointer`}
+            >
+              <Loader size={18} className="animate-spin" />
+              <span>Saving</span>
+            </motion.div>
+          </div>
+        )}
       </AnimatePresence>
 
       <div className="flex flex-col gap-4 sm:gap-10 sm:flex-row">
@@ -80,7 +97,7 @@ export default function AccountForm({ user }) {
               name="name"
               id="name"
               autoComplete="off"
-              defaultValue={user && user.name}
+              defaultValue={state?.user && state?.user.name}
               className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
             />
             {state?.errors && state?.errors?.name && (
@@ -100,7 +117,7 @@ export default function AccountForm({ user }) {
               name="email"
               id="email"
               autoComplete="email"
-              defaultValue={user && user.email}
+              defaultValue={state?.user && state?.user.email}
               className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
             />
             {state?.errors && state?.errors?.email && (
@@ -153,7 +170,7 @@ export default function AccountForm({ user }) {
                   type="text"
                   name="businessName"
                   id="businessName"
-                  defaultValue={user && user.businessName}
+                  defaultValue={state?.user && state?.user?.businessName}
                   autoComplete="off"
                   className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
                 />
@@ -173,7 +190,7 @@ export default function AccountForm({ user }) {
                   type="text"
                   name="businessCode"
                   id="businessCode"
-                  defaultValue={user && user.businessCode}
+                  defaultValue={state?.user && state?.user?.businessCode}
                   autoComplete="off"
                   className="w-full px-2 py-3 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white shadow-xs"
                 />
@@ -273,7 +290,7 @@ export default function AccountForm({ user }) {
             )}
 
             {state && state.message && (
-              <div className="sm:hidden px-3 py-2 mt-5 text-xs font-semibold bg-blue-200 text-blue-900 rounded-xl">
+              <div className="sm:hidden px-3 py-2 text-xs font-semibold bg-blue-200 text-blue-900 rounded-xl">
                 {state.message}
               </div>
             )}
@@ -293,6 +310,17 @@ export default function AccountForm({ user }) {
                     <SaveAll size={18} />
                     <span>Save</span>
                   </motion.button>
+                )}
+                {pending && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className={`w-full sm:w-40 flex items-center justify-center gap-3 py-3 bg-green-600 text-white text-sm sm:text-base font-bold rounded-xl cursor-pointer`}
+                  >
+                    <Loader size={18} className="animate-spin" />
+                    <span>Saving</span>
+                  </motion.div>
                 )}
               </AnimatePresence>
             </div>
