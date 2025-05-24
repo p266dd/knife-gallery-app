@@ -9,20 +9,20 @@ import { verifyAdminSession } from "@/utils/session";
 import { knifeSchema } from "@/data/validation/knife";
 import { otherProductSchema } from "@/data/validation/other-product";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
-export default async function addProduct(state) {
+export default async function addProduct(formData) {
   await verifyAdminSession();
 
   let validatedData;
-
   // * Validate product data or return validation error.
   try {
     validatedData =
-      state.type == "other"
-        ? await otherProductSchema.validate(state, {
+      formData.type == "other"
+        ? await otherProductSchema.validate(formData, {
             abortEarly: false,
           })
-        : await knifeSchema.validate(state, {
+        : await knifeSchema.validate(formData, {
             abortEarly: false,
           });
   } catch (error) {
@@ -38,7 +38,7 @@ export default async function addProduct(state) {
         }
       }
       // console.log("Errors: ", fieldErrors);
-      return { ...state, errors: fieldErrors };
+      return { errors: fieldErrors };
     }
 
     // * Log any other error.
@@ -131,9 +131,8 @@ export default async function addProduct(state) {
     return { errors: [error.message] };
   }
 
-  let updatedProduct;
   try {
-    updatedProduct = await prisma.product.update({
+    const updatedProduct = await prisma.product.update({
       where: {
         id: product.id,
       },
@@ -149,6 +148,8 @@ export default async function addProduct(state) {
     console.log(error);
     return { errors: [error.message] };
   }
+
+  revalidatePath("/dashboard/products");
 
   return redirect("/dashboard/products");
 }

@@ -32,9 +32,9 @@ export default function ProductsTable({ filters }) {
 
   // * Pagination settings.
   const [page, setPage] = useState(1);
-  const itemsPerPage = perPage || 10;
+  const itemsPerPage = perPage;
 
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading, isValidating } = useSWR(
     { searchQuery, filterType, page, itemsPerPage, table: "products" },
     (config) => fetchProducts(config)
   );
@@ -144,7 +144,7 @@ export default function ProductsTable({ filters }) {
                   filters.map((filter) => {
                     return (
                       <label
-                        key={filter + "-filter"}
+                        key={filter.name + "-filter"}
                         htmlFor={filter.id}
                         className="w-full text-sm flex justify-between items-center gap-3"
                       >
@@ -256,6 +256,8 @@ export default function ProductsTable({ filters }) {
                             (product?.thumbnail && product?.thumbnail.url) ||
                             "/img/product-image-placeholder.webp"
                           }
+                          placeholder="blur"
+                          blurDataURL="/img/image-blur.gif"
                           alt={product.name}
                           fill
                         />

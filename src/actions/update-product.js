@@ -5,7 +5,6 @@ import {
   uploadBytes,
   getDownloadURL,
   deleteObject,
-  getMetadata,
 } from "firebase/storage";
 import { isEqual } from "lodash";
 import prisma from "@/data/prisma";
@@ -17,19 +16,18 @@ import { knifeSchema } from "@/data/validation/knife";
 import { otherProductSchema } from "@/data/validation/other-product";
 import { revalidatePath } from "next/cache";
 
-export default async function updateProduct(state, current) {
+export default async function updateProduct(formData, currentProduct) {
   await verifyAdminSession();
 
   let validatedData;
-
   // * Validate product data or return validation error.
   try {
     validatedData =
-      state.type == "knife"
-        ? await knifeSchema.validate(state, {
+      formData.type == "knife"
+        ? await knifeSchema.validate(formData, {
             abortEarly: false,
           })
-        : await otherProductSchema.validate(state, {
+        : await otherProductSchema.validate(formData, {
             abortEarly: false,
           });
   } catch (error) {
@@ -39,7 +37,7 @@ export default async function updateProduct(state, current) {
       for (const fieldError of error.inner) {
         fieldErrors[fieldError.path] = fieldError.message;
       }
-      return { ...state, errors: fieldErrors };
+      return { errors: fieldErrors };
     }
 
     // * Log any other error.
@@ -49,7 +47,7 @@ export default async function updateProduct(state, current) {
   // * Return an object with only the fields that aren't same.
   const updatedData = Object.fromEntries(
     Object.entries(validatedData).filter(
-      ([key, value]) => !isEqual(value, current[key])
+      ([key, value]) => !isEqual(value, currentProduct[key])
     )
   );
 
@@ -60,21 +58,28 @@ export default async function updateProduct(state, current) {
   let newImages = [];
 
   // * Handle the deleted, added and keept images.
-  keptImages = state.media.filter((m) =>
-    current.media.some((v) => v.name === m.name)
+  keptImages = formData.media.filter((m) =>
+    currentProduct.media.some((v) => v.name === m.name)
   );
-  deletedImages = current.media.filter(
-    (m) => !state.media.some((v) => v.name === m.name)
+  deletedImages = currentProduct.media.filter(
+    (m) => !formData.media.some((v) => v.name === m.name)
   );
-  newImages = state.media.filter(
-    (m) => !current.media.some((v) => v.name === m.name)
+  newImages = formData.media.filter(
+    (m) => !currentProduct.media.some((v) => v.name === m.name)
   );
 
   // * Delete unused images.
   if (deletedImages.length > 0) {
     deletedImages.map(async (image) => {
       const storageRef = ref(storage, `products/${image.name}`);
-      return await deleteObject(storageRef);
+      try {
+        await deleteObject(storageRef);
+        await prisma.media.delete({
+          where: { id: image.id },
+        });
+      } catch (error) {
+        console.log(error);
+      }
     });
   }
 
@@ -100,72 +105,19 @@ export default async function updateProduct(state, current) {
     };
   }
 
-  if (deletedImages.length > 0) {
-    newMediaObject = {
-      ...newMediaObject,
-      disconnect: deletedImages.map((image) => ({ id: image.id })),
-    };
-
-    // * Delete images from database.
-    deletedImages.map(
-      async (image) =>
-        await prisma.media.delete({
-          where: { id: image.id },
-        })
-    );
-  }
-
-  // * Prepare the sizes object to help create and connect sizes to product.
-  // Only if sizes object has changed
-  let keptSizes, deletedSizes, newSizes;
-  let newSizeObject = {};
-
-  keptSizes = state.sizes.filter((m) =>
-    current.sizes.some((v) => v.name === m.name)
-  );
-  deletedSizes = current.sizes.filter(
-    (m) => !state.sizes.some((v) => v.name === m.name)
-  );
-  newSizes = state.sizes.filter(
-    (m) => !current.sizes.some((v) => v.name === m.name)
-  );
-
-  // * Delete unused sizes.
-  if (deletedSizes.length > 0) {
-    deletedSizes.map(
-      async (size) =>
-        await prisma.size.delete({
-          where: { id: Number(size.id) },
-        })
-    );
-
-    newSizeObject = {
-      ...newSizeObject,
-      disconnect: deletedSizes.map((size) => ({ id: Number(size.id) })),
-    };
-  }
-
-  // * Create new sizes
-  if (newSizes.length > 0) {
-    newSizeObject = {
-      ...newSizeObject,
-      create: newSizes,
-    };
-  }
-
   // * Prepare the filters object to help create and connect filters to product.
   // Only if the filter object has changed.
   let keptFilters, deletedFilters, newFilters;
   let newFilterObject = {};
 
-  keptFilters = state.filters.filter((m) =>
-    current.filters.some((v) => v.name === m.name)
+  keptFilters = formData.filters.filter((m) =>
+    currentProduct.filters.some((v) => v.name === m.name)
   );
-  deletedFilters = current.filters.filter(
-    (m) => !state.filters.some((v) => v.name === m.name)
+  deletedFilters = currentProduct.filters.filter(
+    (m) => !formData.filters.some((v) => v.name === m.name)
   );
-  newFilters = state.filters.filter(
-    (m) => !current.filters.some((v) => v.name === m.name)
+  newFilters = formData.filters.filter(
+    (m) => !currentProduct.filters.some((v) => v.name === m.name)
   );
 
   // * Unlink unused filters.
@@ -184,12 +136,11 @@ export default async function updateProduct(state, current) {
     };
   }
 
-  let product;
   try {
     // * Create media, sizes when adding product.
-    product = await prisma.product.update({
+    const product = await prisma.product.update({
       where: {
-        id: current.id,
+        id: currentProduct.id,
       },
       data: {
         type: validatedData.type,
@@ -240,7 +191,7 @@ export default async function updateProduct(state, current) {
           thumbnailId: newThumbnail.id,
         },
         where: {
-          id: current.id,
+          id: currentProduct.id,
         },
       });
     } catch (error) {
@@ -249,5 +200,7 @@ export default async function updateProduct(state, current) {
     }
   }
 
-  return { ...state, message: "Product changes saved." };
+  revalidatePath("/admin/products");
+
+  return { message: "Product changes saved." };
 }

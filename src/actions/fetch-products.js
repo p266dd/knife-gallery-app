@@ -8,7 +8,6 @@ export async function fetchProducts({
   page,
   itemsPerPage,
 }) {
-  // * return paginated results.
   let config = {
     select: {
       id: true,

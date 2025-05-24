@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import prisma from "@/data/prisma";
 import ProductForm from "@/ui/admin/product-form";
 import BackButton from "@/ui/back-button";
+import LinkLoading from "@/ui/link-loading";
 
 export default async function SingleProductPage({ params }) {
   const { productId } = await params;
@@ -17,6 +19,11 @@ export default async function SingleProductPage({ params }) {
       filters: true,
     },
   });
+
+  if (!product) {
+    redirect("/dashboard/products");
+  }
+
   const handles = await prisma.handle.findMany({ orderBy: { name: "asc" } });
   const filters = await prisma.filter.findMany({ orderBy: { name: "asc" } });
   const brands = await prisma.brand.findMany({ orderBy: { name: "asc" } });
@@ -33,7 +40,7 @@ export default async function SingleProductPage({ params }) {
             className="px-4 py-2 text-sm text-slate-500 border border-slate-300 rounded-xl"
             href={`/dashboard/products/add?starter=${product.id}`}
           >
-            Create a Copy
+            Create a Copy <LinkLoading />
           </Link>
         </div>
       </div>

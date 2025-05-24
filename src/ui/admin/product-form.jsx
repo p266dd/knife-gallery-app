@@ -42,9 +42,9 @@ export default function ProductForm({
       : {}
   );
 
-  const [state, action, isPending] = useActionState(
+  const [state, action, pending] = useActionState(
     edit ? () => updateProduct(formData, product) : () => addProduct(formData),
-    formData
+    {}
   );
 
   return (
@@ -432,9 +432,9 @@ export default function ProductForm({
           <motion.button
             whileTap={{ scale: 0.9 }}
             type="submit"
-            className={`w-full px-3 py-2 ${isPending ? "bg-slate-200 text-slate-700" : "bg-slate-700 text-white"} font-semibold rounded-xl`}
+            className={`w-full px-3 py-2 ${pending ? "bg-slate-200 text-slate-700" : "bg-slate-700 text-white"} font-semibold rounded-xl`}
           >
-            {isPending ? (
+            {pending ? (
               edit ? (
                 <span>Saving...</span>
               ) : (

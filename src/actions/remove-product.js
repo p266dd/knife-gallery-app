@@ -8,13 +8,16 @@ import { redirect } from "next/navigation";
 export async function removeProduct(productId) {
   await verifyAdminSession();
 
-  const deletedProduct = await prisma.product.delete({
-    where: {
-      id: productId,
-    },
-  });
+  try {
+    const deletedProduct = await prisma.product.delete({
+      where: {
+        id: productId,
+      },
+    });
 
-  revalidatePath("/dashboard/products", "page");
-
-  return redirect("/dashboard/products");
+    revalidatePath("/dashboard/products", "page");
+    return redirect("/dashboard/products", "push");
+  } catch (error) {
+    console.error("Error removing product:", error);
+  }
 }

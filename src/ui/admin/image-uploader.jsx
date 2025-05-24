@@ -87,7 +87,7 @@ export default function ImageUpload({ data, setData }) {
     <div className="grid grid-cols-4 gap-2">
       <motion.div
         layout
-        className={`${data.media && data.media.length >= 1 ? "" : "col-span-4 row-span-2"} flex items-start justify-center`}
+        className={`${data.media && data.media.length >= 1 ? "" : "row-span-2"} flex items-start justify-center`}
       >
         <div>
           <label
