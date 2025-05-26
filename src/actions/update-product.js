@@ -152,7 +152,7 @@ export default async function updateProduct(formData, currentProduct) {
         style: validatedData.style,
         material: validatedData.material,
         media: newMediaObject,
-        sizes: newSizeObject,
+        // sizes: newSizeObject,
         filters: newFilterObject,
       },
     });
