@@ -20,12 +20,12 @@ export default function manifest() {
     ],
     icons: [
       {
-        src: "/img/web-app-manifest-192x192.png",
+        src: "/img/web-app-manifest-192x192_v2.png",
         sizes: "192x192",
         type: "image/png",
       },
       {
-        src: "/img/web-app-manifest-512x512.png",
+        src: "/img/web-app-manifest-512x512_v2.png",
         sizes: "512x512",
         type: "image/png",
       },

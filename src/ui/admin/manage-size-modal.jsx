@@ -260,7 +260,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
         </motion.div>
       </div>
 
-      {data && data?.sizes && (
+      {data && data?.sizes && data?.sizes.length > 0 && (
         <div className="px-1 py-3 text-sm bg-white">
           <table className="w-full">
             <thead>

@@ -38,6 +38,9 @@ export default function ImageUpload({ data, setData }) {
               blob,
               name: (
                 index +
+                // timestamp
+                "-" +
+                new Date().getTime() +
                 "-" +
                 file.name.toLowerCase().replace(/\s+/g, "-")
               ).split(".")[0],

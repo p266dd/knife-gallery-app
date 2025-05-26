@@ -250,7 +250,10 @@ export default function ProductsTable({ filters }) {
                 >
                   <td>
                     <div className="relative w-16 h-28 my-2 rounded-xl overflow-hidden">
-                      <Link href={"/dashboard/products/" + product.id}>
+                      <Link
+                        className="relative block w-full h-full"
+                        href={"/dashboard/products/" + product.id}
+                      >
                         <Image
                           src={
                             (product?.thumbnail && product?.thumbnail.url) ||
@@ -259,6 +262,7 @@ export default function ProductsTable({ filters }) {
                           placeholder="blur"
                           blurDataURL="/img/image-blur.gif"
                           alt={product.name}
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 40vw, 33vw"
                           fill
                         />
                       </Link>

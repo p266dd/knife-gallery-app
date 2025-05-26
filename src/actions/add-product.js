@@ -45,24 +45,27 @@ export default async function addProduct(formData) {
     console.log(error);
   }
 
-  // upload images to storage
-  const imageUrls = await Promise.all(
-    validatedData.media.map(async (image) => {
-      const docRef = ref(storage, `products/${image.name}`);
-      const snapshot = await uploadBytes(docRef, image.blob);
-      const downloadURL = await getDownloadURL(snapshot.ref);
-      return {
-        name: image.name,
-        url: downloadURL,
-      };
-    })
-  );
+  let mediaObject;
+  if (validatedData?.media && validatedData?.media.length > 0) {
+    // upload images to storage
+    const imageUrls = await Promise.all(
+      validatedData.media.map(async (image) => {
+        const docRef = ref(storage, `products/${image.name}`);
+        const snapshot = await uploadBytes(docRef, image.blob);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        return {
+          name: image.name,
+          url: downloadURL,
+        };
+      })
+    );
 
-  // * Prepare the media object to help create and connect medias to product.
-  const mediaObject = imageUrls.map((image) => ({
-    name: image.name,
-    url: image.url,
-  }));
+    // * Prepare the media object to help create and connect medias to product.
+    mediaObject = imageUrls.map((image) => ({
+      name: image.name,
+      url: image.url,
+    }));
+  }
 
   // * Prepare the sizes object to help create and connect sizes to product.
   const sizesObject = validatedData.sizes.map((size) => ({
@@ -113,40 +116,41 @@ export default async function addProduct(formData) {
 
   // * Now, we only need to connect the thumbail
   // based on the media's id that matches the thumbnail name.
-
   let thumbnailId;
-  try {
-    thumbnailId = await prisma.media.findFirst({
-      where: {
-        name: {
-          equals: validatedData.thumbnail.name,
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    return { errors: [error.message] };
-  }
-
-  try {
-    const updatedProduct = await prisma.product.update({
-      where: {
-        id: product.id,
-      },
-      data: {
-        thumbnail: {
-          connect: {
-            id: thumbnailId.id,
+  if (validatedData?.thumbnail) {
+    try {
+      thumbnailId = await prisma.media.findFirst({
+        where: {
+          name: {
+            equals: validatedData.thumbnail.name,
           },
         },
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    return { errors: [error.message] };
+        select: {
+          id: true,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      return { errors: [error.message] };
+    }
+
+    try {
+      const updatedProduct = await prisma.product.update({
+        where: {
+          id: product.id,
+        },
+        data: {
+          thumbnail: {
+            connect: {
+              id: thumbnailId.id,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      return { errors: [error.message] };
+    }
   }
 
   revalidatePath("/dashboard/products");

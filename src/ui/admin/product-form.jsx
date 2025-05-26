@@ -37,7 +37,7 @@ export default function ProductForm({
           sizes: product?.sizes || copy?.sizes || [],
           filters: product?.filters || copy?.filters || [],
           media: product?.media || copy?.media || [],
-          thumbnail: product?.thumbnail || copy?.thumbnail || "",
+          thumbnail: product?.thumbnail || copy?.thumbnail || null,
         }
       : {}
   );

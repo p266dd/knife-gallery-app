@@ -14,7 +14,7 @@ import { verifyAdminSession } from "@/utils/session";
 
 import { knifeSchema } from "@/data/validation/knife";
 import { otherProductSchema } from "@/data/validation/other-product";
-import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export default async function updateProduct(formData, currentProduct) {
   await verifyAdminSession();
@@ -200,7 +200,5 @@ export default async function updateProduct(formData, currentProduct) {
     }
   }
 
-  revalidatePath("/admin/products");
-
-  return { message: "Product changes saved." };
+  return redirect("/dashboard/products");
 }
