@@ -10,27 +10,31 @@ export async function updateOrderProductDetailsRow({ docId, newData }) {
 
   const details = JSON.parse(orderProduct.details);
 
-  const newObject = [...details];
+  const newObject = [];
 
-  if (details.some((detail) => detail.id === newObject.id)) {
-    details.map((detail) => {
-      if (detail.id === newData.id) return newObject.push(newData);
-      return;
-    });
+  for (const detail of details) {
+    if (Number(detail.id) === newData.id) {
+      newObject.push(newData);
+    } else {
+      newObject.push(detail);
+    }
   }
 
-  newObject.push(newData);
+  try {
+    const updatedDoc = await prisma.orderProduct.update({
+      where: {
+        id: docId,
+      },
+      data: {
+        details: JSON.stringify(newObject),
+      },
+    });
 
-  const updatedDoc = await prisma.orderProduct.update({
-    where: {
-      id: docId,
-    },
-    data: {
-      details: JSON.stringify(newObject),
-    },
-  });
-
-  return updatedDoc;
+    return updatedDoc;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
 
 export async function updateOrderProductDetailsProduct({ docId, newData }) {

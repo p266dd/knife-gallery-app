@@ -11,6 +11,8 @@ export default function Button({
   const styles = {
     primary:
       "bg-slate-800 text-white active:bg-slate-900 cursor-pointer rounded-lg",
+    danger:
+      "bg-red-200 text-red-600 active:bg-red-300 cursor-pointer rounded-lg",
     flat: "rounded-lg cursor-pointer bg-slate-100 text-slate-500 border-1 border-slate-300",
     loading:
       "rounded-lg cursor-pointer bg-slate-300 text-slate-600 border-1 border-slate-500",

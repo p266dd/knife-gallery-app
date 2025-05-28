@@ -148,7 +148,7 @@ export default function OrdersTable() {
                   <td className="py-2 w-3/12">
                     <span className="text-sm">
                       <Link href={"/orders/" + order.id}>
-                        {order.id.split("-")[0]}
+                        {order.code.split("-")[(0, 1)]}
                       </Link>
                     </span>
                   </td>

@@ -7,24 +7,28 @@ import Button from "@/ui/button";
 import { updateOrderProductDetailsRow } from "@/actions/update-order-details";
 
 export default function OrderAccordionRow({ details, docId }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [active, setActive] = useState(false);
-  const [value, setValue] = useState(Number(details.ordered));
+  const [value, setValue] = useState(details.ordered);
 
   const handleSave = () => {
+    setLoading(true);
+
     const newData = {
       id: details.id,
-      ordered: value,
+      quantity: value,
     };
 
     setActive(false);
 
     // * Update details where id is docId - id is details.id
-    const update = updateOrderProductDetailsRow({
+    updateOrderProductDetailsRow({
       docId,
       newData,
     })
-      .then((res) => null)
-      .catch((e) => console.log("Error:", e));
+      .then((res) => setLoading(false))
+      .catch((e) => setError("Something went wrong."));
   };
 
   const styles = {
@@ -52,7 +56,7 @@ export default function OrderAccordionRow({ details, docId }) {
         <span>
           <input
             type="number"
-            value={value || 0}
+            value={value}
             name="ordered"
             className={`${styles.default} ${active && styles.active}`}
             disabled={!active}
@@ -71,23 +75,27 @@ export default function OrderAccordionRow({ details, docId }) {
       </div>
 
       <div className="w-3/12">
-        {active ? (
+        {active || loading ? (
           <Button
             size="sm"
+            disabled={loading}
             onClick={() => {
               // * Only allow to add what is available.
-              if (value > details.stock) return setValue(details.stock);
-              handleSave();
+              if (value > details.stock) {
+                setValue(details.stock);
+              } else {
+                return handleSave();
+              }
             }}
           >
             <span className="flex items-center gap-2">
-              Save
+              {loading ? "..." : "Save"}
               <Save size={12} />
             </span>
           </Button>
         ) : (
           <Button
-            variant="flat"
+            variant={error ? "danger" : "flat"}
             size="sm"
             onClick={() => setActive((prev) => !prev)}
           >

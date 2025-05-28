@@ -8,11 +8,19 @@ import OrderAccordion from "@/ui/admin/order-accordion";
 export default async function OrderPage({ params }) {
   const { orderId } = await params;
 
+  const handles = await prisma.handle.findMany({ orderBy: { id: "asc" } });
+
   const order = await prisma.order.findUnique({
     where: {
       id: orderId,
     },
-    include: {
+    select: {
+      id: true,
+      code: true,
+      completedAt: true,
+      isCompleted: true,
+      comment: true,
+      createdAt: true,
       client: {
         select: {
           id: true,
@@ -30,9 +38,7 @@ export default async function OrderPage({ params }) {
           product: {
             include: {
               sizes: true,
-              brand: true,
               media: true,
-              thumbnail: true,
             },
           },
         },
@@ -55,7 +61,9 @@ export default async function OrderPage({ params }) {
       <div className="mb-8 flex items-end justify-start gap-10">
         <div>
           <h5 className="text-sm font-semibold mb-2">Order Reference</h5>
-          <h4 className="text-2xl font-light mb-1">{order.code}</h4>
+          <h4 className="text-2xl font-light mb-1">
+            {order.code.split("-")[1]}
+          </h4>
           <h6 className="text-xs text-slate-500">
             {new Date(order.createdAt)
               .toISOString()
@@ -80,7 +88,7 @@ export default async function OrderPage({ params }) {
 
         <div className="flex flex-col gap-3">
           {order.orderProduct.map((product, i) => (
-            <OrderAccordion key={i} orderProduct={product} />
+            <OrderAccordion key={i} orderProduct={product} handles={handles} />
           ))}
         </div>
       </div>

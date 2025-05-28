@@ -124,13 +124,13 @@ export default function DashboardOrdersTable({ newOnly = false }) {
                 </td>
                 <td className="px-2 mr-2 py-1">
                   <Link href={"/dashboard/orders/" + order.id}>
-                    <div>{order.code}</div>
+                    <div>{order.code.split("-")[(0, 1)]}</div>
                   </Link>
                 </td>
                 <td className="pl-2 py-1">
                   <div>
                     <button
-                      className={`flex items-center gap-2 px-3 py-1 text-xs ${newOrders ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-700"}  rounded-xl`}
+                      className={`flex items-center gap-2 px-3 py-1 text-xs bg-slate-100 text-slate-700 rounded-xl`}
                     >
                       <PrinterIcon
                         size={14}

@@ -8,22 +8,29 @@ export async function fetchOrders({
   searchQuery,
   page,
   itemsPerPage,
-  newOnly,
+  newOnly = false,
 }) {
   await verifyAdminSession();
   // * return only new orders, and shallow query.
   const orders = await prisma.order.findMany({
+    take: itemsPerPage,
+    skip: (page - 1) * itemsPerPage,
     where: {
-      isCompleted: newOnly,
-      OR: searchQuery
+      isCompleted: !newOnly,
+      AND: searchQuery
         ? [
             {
-              code: { contains: searchQuery },
-            },
-            {
-              client: {
-                businessName: { contains: searchQuery, mode: "insensitive" },
-              },
+              OR: [
+                { code: { contains: searchQuery } },
+                {
+                  client: {
+                    businessName: {
+                      contains: searchQuery,
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              ],
             },
           ]
         : [],
@@ -40,12 +47,10 @@ export async function fetchOrders({
     },
   });
 
-  const startIndex = (page - 1) * itemsPerPage;
-  const paginatedData = orders.slice(startIndex, startIndex + itemsPerPage);
   const totalCount = orders.length;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  return { data: paginatedData, totalCount, totalPages, currentPage: page };
+  return { data: orders, totalCount, totalPages, currentPage: page };
 }
 
 export async function fetchOrdersClient({ searchQuery, page, itemsPerPage }) {
