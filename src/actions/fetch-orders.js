@@ -52,6 +52,8 @@ export async function fetchOrdersClient({ searchQuery, page, itemsPerPage }) {
   const { id } = await verifyUserSession();
 
   const orders = await prisma.order.findMany({
+    take: itemsPerPage,
+    skip: (page - 1) * itemsPerPage,
     where: {
       clientId: id,
     },
@@ -69,12 +71,10 @@ export async function fetchOrdersClient({ searchQuery, page, itemsPerPage }) {
     },
   });
 
-  const startIndex = (page - 1) * itemsPerPage;
-  const paginatedData = orders.slice(startIndex, startIndex + itemsPerPage);
   const totalCount = orders.length;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-  return { data: paginatedData, totalCount, totalPages, currentPage: page };
+  return { data: orders, totalCount, totalPages, currentPage: page };
 }
 
 export async function fetchSingleOrder({ orderId }) {

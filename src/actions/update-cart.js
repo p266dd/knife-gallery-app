@@ -15,7 +15,30 @@ export async function updateCart(state, formData) {
       const sizeId = key.split("_")[1];
       sizes.push({ id: sizeId, quantity: val });
     }
-  });
+  }); // * Check if all quantities are zero.
+  const allQuantitiesZero = sizes.every((size) => Number(size.quantity) === 0);
+
+  if (allQuantitiesZero) {
+    try {
+      // * Delete the cart product if all quantities are zero.
+      await prisma.cartProduct.delete({
+        where: {
+          id: Number(newState.data.productCartId),
+        },
+      });
+
+      revalidatePath(`/products/${newState.data.productId}`, "page");
+      revalidatePath("/cart", "page");
+
+      return { ...newState, message: "Product removed from cart." };
+    } catch (error) {
+      console.log(error);
+      return {
+        ...state,
+        generalError: "Could not remove product. Try refreshing page.",
+      };
+    }
+  }
 
   try {
     // * Update specific product in cart collection.

@@ -4,12 +4,17 @@ import Image from "next/image";
 import { useState } from "react";
 import { useActionState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Info, Loader, Pencil, Save, Trash2, X } from "lucide-react";
+import { Info, Loader, Pencil, Save, Trash2, X, XCircle } from "lucide-react";
 
 import { updateCart } from "@/actions/update-cart";
 import { removeCart } from "@/actions/remove-cart";
 
-export default function CartProduct({ cartProduct, preferences }) {
+export default function CartProduct({
+  cartProduct,
+  preferences,
+  hasError,
+  setHasError,
+}) {
   const [open, setOpen] = useState(false);
 
   const [showUpdateBtn, setShowUpdateBtn] = useState(false);
@@ -165,45 +170,57 @@ export default function CartProduct({ cartProduct, preferences }) {
                     <tbody>
                       {state?.product?.sizes &&
                         state?.product?.sizes.length > 0 &&
-                        state?.product?.sizes.map(
-                          (size, i) =>
-                            Number(size?.stock) > 0 && (
-                              <tr key={`size_${i}`}>
-                                <td className="py-2 pl-2 text-left">
-                                  <span className="block text-sm mb-1 sm:text-lg sm:font-semibold">
-                                    {size?.name || "No Name"}
-                                  </span>
-                                  <span className="block text-xs sm:text-base sm:text-slate-500">
-                                    {size?.size || "00"} mm
-                                  </span>
-                                </td>
-                                <td className="py-2 text-center flex justify-center">
-                                  <div className="mx-4 sm:w-20 flex items-center gap-2 border border-slate-400 px-3 py-2 rounded-xl">
-                                    <input
-                                      className="w-full sm:w-20 appearance-none focus-visible:outline-0 placeholder:text-slate-500"
-                                      type="number"
-                                      name={`size_${size.id}`}
-                                      autoComplete="off"
-                                      defaultValue={
-                                        JSON.parse(cartProduct?.details).find(
-                                          (d) =>
-                                            Number(d.id) === Number(size.id)
-                                        ).quantity
-                                      }
-                                      max={size?.stock || 0}
-                                      step={1}
-                                      onChange={() => {
-                                        setShowUpdateBtn(true);
-                                      }}
-                                    />
-                                  </div>
-                                </td>
-                                <td className="py-2 text-center">
-                                  {size?.stock || "0"}
-                                </td>
-                              </tr>
-                            )
-                        )}
+                        state?.product?.sizes.map((size, i) => {
+                          // Extract the ordered amount for th current size.
+                          const orderedSizeAmount =
+                            JSON.parse(cartProduct?.details).find(
+                              (d) => Number(d.id) === Number(size.id)
+                            )?.quantity || 0;
+
+                          return orderedSizeAmount > 0 ? (
+                            <tr key={`size_${i}`}>
+                              <td className="py-2 pl-2 text-left">
+                                <span className="block text-sm mb-1 sm:text-lg sm:font-semibold">
+                                  {size?.name || "No Name"}
+                                </span>
+                                <span className="block text-xs sm:text-base sm:text-slate-500">
+                                  {size?.size || "00"} mm
+                                </span>
+                              </td>
+                              <td className="py-2 text-center flex justify-center">
+                                <div
+                                  className={`relative mx-4 sm:w-20 flex items-center gap-2 border ${orderedSizeAmount > size.stock ? "border-red-400" : "border-slate-400"}  px-3 py-2 rounded-xl`}
+                                >
+                                  {orderedSizeAmount > size.stock && (
+                                    <span className="absolute top-1 right-1">
+                                      <XCircle
+                                        size={14}
+                                        className="stroke-red-400"
+                                      />
+                                    </span>
+                                  )}
+                                  <input
+                                    className="w-full sm:w-20 appearance-none focus-visible:outline-0 placeholder:text-slate-500"
+                                    type="number"
+                                    name={`size_${size.id}`}
+                                    autoComplete="off"
+                                    defaultValue={orderedSizeAmount}
+                                    max={size?.stock || 0}
+                                    step={1}
+                                    onChange={() => {
+                                      setShowUpdateBtn(true);
+                                    }}
+                                  />
+                                </div>
+                              </td>
+                              <td
+                                className={`py-2 text-center ${Number(size.stock) === 0 || (orderedSizeAmount > size.stock && "text-red-400")}`}
+                              >
+                                {size?.stock || "0"}
+                              </td>
+                            </tr>
+                          ) : null;
+                        })}
                     </tbody>
                   </table>
 

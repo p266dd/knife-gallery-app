@@ -1,10 +1,7 @@
 import prisma from "@/data/prisma";
 import { getSession } from "@/utils/session";
 import { fetchCart } from "@/actions/fetch-cart";
-import ClearCartButton from "@/ui/clear-cart-button";
-import CartProduct from "@/ui/cart-product";
-import EmptyCart from "@/ui/empty-cart";
-import OrderNowButton from "@/ui/order-now-button";
+import CartProductList from "@/ui/cart-product-list";
 
 export default async function CartPage() {
   const cart = await fetchCart();
@@ -25,12 +22,6 @@ export default async function CartPage() {
     id: user?.id,
   };
 
-  const processOrder = async () => {
-    "use server";
-    console.log("Processing order...");
-    return true;
-  };
-
   return (
     <main className="pt-16 pb-40">
       <div className="px-6 mt-9 mb-12">
@@ -43,33 +34,7 @@ export default async function CartPage() {
         )}
       </div>
 
-      <div className="px-6 flex flex-col gap-4 sm:flex-row sm:items-start">
-        <div
-          className={`flex-grow ${cart?.cartCount !== 0 ? "sm:w-3/4" : ""} `}
-        >
-          {cart && cart?.cartCount !== 0 ? (
-            cart.data.products.map((product, i) => (
-              <CartProduct
-                key={i}
-                cartProduct={product}
-                preferences={userPreferences}
-              />
-            ))
-          ) : (
-            <EmptyCart />
-          )}
-        </div>
-
-        {cart && cart?.cartCount !== 0 && (
-          <div className="flex-grow sm:w-1/4">
-            <div className="my-4 flex flex-col gap-2">
-              <OrderNowButton processOrder={processOrder} />
-
-              <ClearCartButton />
-            </div>
-          </div>
-        )}
-      </div>
+      <CartProductList cart={cart} userPreferences={userPreferences} />
     </main>
   );
 }

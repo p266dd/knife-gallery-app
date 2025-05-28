@@ -5,8 +5,6 @@ export default async function SingleOrderPage({ params }) {
   const { orderId } = await params;
   const order = await fetchSingleOrder({ orderId });
 
-  console.log(order.orderProduct);
-
   return (
     <main className="pt-16 pb-40">
       <div className="px-6 mt-9 mb-12">
@@ -15,7 +13,7 @@ export default async function SingleOrderPage({ params }) {
           <div className="flex flex-col gap-2">
             <span className="text-xs text-slate-500">Order Reference</span>
             <span className="text-xl font-light text-slate-800">
-              {order.id}
+              {order.id.split("-")[0]}
             </span>
           </div>
 

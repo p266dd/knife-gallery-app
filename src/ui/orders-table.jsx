@@ -49,7 +49,7 @@ export default function OrdersTable() {
   const totalOrdered = (products) => {
     let total = 0;
     products.forEach((product) => {
-      product.details.forEach((detail) => {
+      JSON.parse(product.details).forEach((detail) => {
         total += Number(detail.quantity);
       });
     });
@@ -147,7 +147,9 @@ export default function OrdersTable() {
                 >
                   <td className="py-2 w-3/12">
                     <span className="text-sm">
-                      <Link href={"/orders/" + order.id}>{order.id}</Link>
+                      <Link href={"/orders/" + order.id}>
+                        {order.id.split("-")[0]}
+                      </Link>
                     </span>
                   </td>
                   <td className="py-2 w-3/12">
@@ -160,11 +162,7 @@ export default function OrdersTable() {
                   <td className="py-2 w-2/12">
                     <span className="text-sm">
                       <Link href={"/orders/" + order.id}>
-                        {totalOrdered(
-                          JSON.parse(
-                            order?.orderProduct ? order.orderProduct : "[]"
-                          )
-                        )}
+                        {totalOrdered(order.orderProduct)}
                       </Link>
                     </span>
                   </td>
