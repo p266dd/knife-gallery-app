@@ -1,5 +1,10 @@
+.invoiceWrapperForPrint {
+  padding: 2vh 2vw 2vh 0;
+}
+
 .a4Page {
   background: white;
+  border-radius: 12px;
   width: 210mm;
   min-height: 297mm; /* Allow content to flow for screen preview */
   padding: 15mm; /* Standard A4 margins */
@@ -154,7 +159,7 @@
 
 .printButtonContainer {
   text-align: center;
-  margin-bottom: 3em;
+  margin-bottom: 2em;
   justify-self: start;
   display: flex;
   flex-direction: row;
@@ -162,13 +167,16 @@
 }
 
 .printButton {
-  padding: 10px 20px;
-  font-size: 10pt;
+  padding: 8px 16px;
+  font-size: 9pt;
   cursor: pointer;
   background-color: #1d293d;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .returnButton {

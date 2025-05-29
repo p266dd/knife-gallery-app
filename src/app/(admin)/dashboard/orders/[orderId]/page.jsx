@@ -2,8 +2,10 @@ import Link from "next/link";
 import prisma from "@/data/prisma";
 import Button from "@/ui/button";
 
-import { Printer } from "lucide-react";
+import { CheckCircle, Printer, Trash2 } from "lucide-react";
 import OrderAccordion from "@/ui/admin/order-accordion";
+import BackButton from "@/ui/back-button";
+import OrderDetailsButtons from "@/ui/admin/order-details-buttons";
 
 export default async function OrderPage({ params }) {
   const { orderId } = await params;
@@ -46,13 +48,20 @@ export default async function OrderPage({ params }) {
     },
   });
 
+  if (!order) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="py-12 pr-3 pl-4">
+      <div className="mb-5">
+        <BackButton />
+      </div>
       <div className="mb-10 flex items-center justify-between">
         <h1 className="text-2xl text-slate-700">Order Details</h1>
-        <Link href={"/dashboard/orders/" + order.id + "/print"}>
+        <Link href={"/dashboard/orders/" + order?.id + "/print"}>
           <Button size="md">
-            <Printer size={18} className="inline-block mr-3" />
+            <Printer size={18} />
             Print
           </Button>
         </Link>
@@ -64,13 +73,23 @@ export default async function OrderPage({ params }) {
           <h4 className="text-2xl font-light mb-1">
             {order.code.split("-")[1]}
           </h4>
-          <h6 className="text-xs text-slate-500">
+          <h6 className="text-xs text-slate-500 mb-1">
+            <strong>Ordered: </strong>
             {new Date(order.createdAt)
               .toISOString()
               .substring(0, 16)
               .split("T")
               .join(" at ")}
           </h6>
+          {order?.completedAt && (
+            <div className="text-xs text-slate-500">
+              <strong>Completed: </strong>
+              {new Date(order.completedAt)
+                .toISOString()
+                .substring(0, 11)
+                .split("T")}
+            </div>
+          )}
         </div>
 
         <div>
@@ -86,11 +105,16 @@ export default async function OrderPage({ params }) {
           <h3>Ordered Products</h3>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 mb-8">
           {order.orderProduct.map((product, i) => (
             <OrderAccordion key={i} orderProduct={product} handles={handles} />
           ))}
         </div>
+
+        <OrderDetailsButtons
+          orderId={order.id}
+          isOrderCompleted={order.isCompleted}
+        />
       </div>
     </div>
   );

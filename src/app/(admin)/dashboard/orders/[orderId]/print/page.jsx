@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import styles from "./PrintOrderPage.module.css";
 import { fetchSingleOrder } from "@/actions/fetch-orders";
+import { CheckCircle, ChevronLeft, Printer } from "lucide-react";
+
+import { updateOrder } from "@/actions/update-order";
 
 // Placeholder for company details (replace with your actual data source)
 const companyDetails = {
@@ -19,6 +22,11 @@ export default function PrintOrderPage() {
   const params = useParams();
   const { orderId } = params;
   const router = useRouter();
+
+  const handleComplete = () => {
+    updateOrder({ orderId, status: "completed" });
+    router.push("/dashboard/orders/" + orderId);
+  };
 
   const { data, error, isLoading } = useSWR({ orderId }, fetchSingleOrder);
 
@@ -48,15 +56,31 @@ export default function PrintOrderPage() {
 
   return (
     <div className={styles.invoiceWrapperForPrint}>
+      <div className={styles.printButtonContainer}>
+        <button
+          className={styles.printButton}
+          style={{
+            backgroundColor: "transparent",
+            color: "#1d293d",
+            padding: 0,
+          }}
+          onClick={() => router.back()}
+        >
+          <ChevronLeft className="w-[1.5em] h-[1.5em]" />
+          <span className="text-sm">Back</span>
+        </button>
+        <button className={styles.printButton} onClick={() => window.print()}>
+          <Printer size={16} strokeWidth={1.5} />
+          Print
+        </button>
+        {!data.isCompleted ? (
+          <button className={styles.printButton} onClick={handleComplete}>
+            <CheckCircle size={16} strokeWidth={1.5} />
+            Complete Order
+          </button>
+        ) : null}
+      </div>
       <div className={styles.a4Page}>
-        <div className={styles.printButtonContainer}>
-          <button className={styles.printButton} onClick={() => window.print()}>
-            Print Invoice
-          </button>
-          <button className={styles.returnButton} onClick={() => router.back()}>
-            Back
-          </button>
-        </div>
         <header className={styles.invoiceHeader}>
           <div className={styles.companyDetails}>
             {companyDetails.logoUrl && (
@@ -119,12 +143,12 @@ export default function PrintOrderPage() {
                   <div className="mb-2">
                     <h5 className="font-semibold">Sizes</h5>
                   </div>
-                  <div className="flex flex-col gap-1 mb-4">
+                  <div className="flex flex-col mb-4">
                     {JSON.parse(item.details).map((detail, index) => {
                       return (
                         <div
                           key={index}
-                          className="flex gap-9 py-1 px-2 even:bg-gray-100"
+                          className="flex gap-9 py-1 px-2 even:bg-gray-100 border-b border-gray-200"
                         >
                           <div>
                             {

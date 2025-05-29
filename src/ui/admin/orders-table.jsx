@@ -14,6 +14,7 @@ import {
 import Button from "@/ui/button";
 
 import { fetchOrders } from "@/actions/fetch-orders";
+import LinkLoading from "../link-loading";
 
 export default function DashboardOrdersTable({ newOnly = false }) {
   // * User's search input content.
@@ -89,7 +90,7 @@ export default function DashboardOrdersTable({ newOnly = false }) {
             <th className="pl-2">{/* Used for action buttons. */}</th>
           </tr>
         </thead>
-        <tbody className="text-sm">
+        <tbody className="text-sm border border-slate-300">
           {isLoading && (
             <tr>
               <td>Loading data...</td>
@@ -105,8 +106,8 @@ export default function DashboardOrdersTable({ newOnly = false }) {
           {data &&
             data.data &&
             data.data.map((order, i) => (
-              <tr key={i}>
-                <td className="pr-2 mr-2 py-1">
+              <tr key={i} className="odd:bg-white even:bg-gray-50">
+                <td className="pr-2 mr-2 py-2 pl-1">
                   <div className="text-xs">
                     {new Date(order.createdAt)
                       .toISOString()
@@ -115,30 +116,32 @@ export default function DashboardOrdersTable({ newOnly = false }) {
                       .substring(2, 7)}
                   </div>
                 </td>
-                <td className="px-2 mr-2 py-1">
+                <td className="px-2 mr-2 py-2">
                   <Link href={"/dashboard/orders/" + order.id}>
                     <div className="max-w-28 overflow-hidden overflow-ellipsis">
                       {order.client.businessName}
                     </div>
                   </Link>
                 </td>
-                <td className="px-2 mr-2 py-1">
+                <td className="px-2 mr-2 py-2">
                   <Link href={"/dashboard/orders/" + order.id}>
                     <div>{order.code.split("-")[(0, 1)]}</div>
                   </Link>
                 </td>
-                <td className="pl-2 py-1">
+                <td className="pl-2 pr-1 py-2">
                   <div>
-                    <button
-                      className={`flex items-center gap-2 px-3 py-1 text-xs bg-slate-100 text-slate-700 rounded-xl`}
+                    <Link
+                      href={"/dashboard/orders/" + order.id + "/print"}
+                      className={`flex items-center gap-2 text-xs text-slate-700`}
                     >
                       <PrinterIcon
                         size={14}
                         strokeWidth={1}
                         className="inline-block"
                       />
+                      <LinkLoading />
                       <span className="hidden sm:block">Print</span>
-                    </button>
+                    </Link>
                   </div>
                 </td>
               </tr>
