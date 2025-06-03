@@ -1,17 +1,11 @@
 import { mailer } from "./mailer";
 
-export async function RecoveryCodeEmail({ code, name, email }) {
-  // * Format the code to be displayed in the email.
-  let codeDisplay = "";
-  const codeArray = code.toString().split("");
-  codeArray.map((number) => {
-    codeDisplay += `<span>${number}</span>`;
-  });
-
+export async function NewRegisterUserEmail({ name, email }) {
   const text = `
-    Hello ${name},\n
-    Someone has requested a password recovery for your account! Please use the code below to reset your password.\n\n
-    [code] ${code}\n\n
+    Hello ${name},\n\n
+    We have successfully received your registration request.\n
+    Our staff will review your application and get back to you shortly. You will receive a confirmation email when your request has been approved.\n\n\n
+  
     If you didn't request this, you can safely ignore this email.\n\n
     Best,\n
     Ironclad
@@ -28,18 +22,6 @@ export async function RecoveryCodeEmail({ code, name, email }) {
             margin: auto;
             padding: 20px;
             text-align: center;
-          }
-          .code {
-              margin: 30px 0;
-          }
-          .code span {
-            display: inline-block;
-            padding: 8px 10px;
-            margin-right: 4px;
-            background-color: #f1f1f1;
-            color: #aaaaaa;
-            font-size: 30px;
-            border-radius: 8px;
           }
           .button {
             display: inline-block;
@@ -60,12 +42,12 @@ export async function RecoveryCodeEmail({ code, name, email }) {
       </head>
       <body>
         <div class="container">
-          <h2>Password Recovery Code</h2>
-          <p>Someone has requested a password recovery for your account! Please use the code below to reset your password.</p>
-          <p class="code">
-            ${codeDisplay}
+          <h2 style="font-size: 22px; margin-bottom: 30px; ">New User Registration</h2>
+          <p>Hello ${name}, We have successfully received your registration request.<br />
+            Our staff will review your application and get back to you shortly. 
+            You will receive a confirmation email when your request has been approved.
           </p>
-          <p><a href="https://knife-gallery-app.vercel.app/reset-password" target="_blank">Click here </a>to go to the reset page.</p>
+          <br />
           <p>If you didn't request this, you can safely ignore this email.</p>
           <p class="footer">Best, <br> Ironclad</p>
         </div>
@@ -76,7 +58,7 @@ export async function RecoveryCodeEmail({ code, name, email }) {
   return await mailer.sendMail({
     from: `'Ironclad' <${process.env.NODEMAILER_USER}>`,
     to: email,
-    subject: "Password recovery code from Ironclad",
+    subject: "New User Registration",
     text: text,
     html: html,
   });

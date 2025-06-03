@@ -16,9 +16,9 @@ export default async function ResetPasswordAction(state, formData) {
   };
 
   const recoverData = {
-    code: newState?.code,
-    password: newState?.password,
-    confirmPassword: newState?.confirmPassword,
+    code: newState?.data?.code,
+    password: newState?.data?.password,
+    confirmPassword: newState?.data?.confirmPassword,
   };
 
   // * Holds the validated data.

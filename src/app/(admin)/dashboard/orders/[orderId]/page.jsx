@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import prisma from "@/data/prisma";
 import Button from "@/ui/button";
 
@@ -70,32 +71,21 @@ export default async function OrderPage({ params }) {
       <div className="mb-8 flex items-end justify-start gap-10">
         <div>
           <h5 className="text-sm font-semibold mb-2">Order Reference</h5>
-          <h4 className="text-2xl font-light mb-1">
-            {order.code.split("-")[1]}
-          </h4>
+          <h4 className="text-2xl font-light mb-1">{order.code.split("-")[1]}</h4>
           <h6 className="text-xs text-slate-500 mb-1">
             <strong>Ordered: </strong>
-            {new Date(order.createdAt)
-              .toISOString()
-              .substring(0, 16)
-              .split("T")
-              .join(" at ")}
+            {new Date(order.createdAt).toISOString().substring(0, 16).split("T").join(" at ")}
           </h6>
           {order?.completedAt && (
             <div className="text-xs text-slate-500">
               <strong>Completed: </strong>
-              {new Date(order.completedAt)
-                .toISOString()
-                .substring(0, 11)
-                .split("T")}
+              {new Date(order.completedAt).toISOString().substring(0, 11).split("T")}
             </div>
           )}
         </div>
 
         <div>
-          <h4 className="text-2xl font-light mb-1">
-            {order.client.businessName}
-          </h4>
+          <h4 className="text-2xl font-light mb-1">{order.client.businessName}</h4>
           <h6 className="text-xs text-slate-500">{order.client.name}</h6>
         </div>
       </div>
@@ -111,10 +101,7 @@ export default async function OrderPage({ params }) {
           ))}
         </div>
 
-        <OrderDetailsButtons
-          orderId={order.id}
-          isOrderCompleted={order.isCompleted}
-        />
+        <OrderDetailsButtons orderId={order.id} isOrderCompleted={order.isCompleted} />
       </div>
     </div>
   );

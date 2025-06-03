@@ -14,10 +14,11 @@ export default async function ProductSinglePage({ params }) {
   // * Clean productId.
   const sanitizedProductId = await string()
     .default("")
+    .min(1, "Product ID is required")
     .trim()
     .validate(getParams.productId);
 
-  const product = await prisma.product.findUnique({
+  const productPromise = prisma.product.findUnique({
     where: {
       id: sanitizedProductId,
     },
@@ -29,45 +30,52 @@ export default async function ProductSinglePage({ params }) {
     },
   });
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session.id,
-    },
-    select: {
-      engraving: true,
-      id: true,
-    },
-  });
-
-  const userPreferences = {
-    engraving: user?.engraving ? JSON.parse(user.engraving) : [],
-    id: user.id,
-  };
-
-  const cart = await prisma.cart.findUnique({
-    where: {
-      clientId: user.id,
-    },
-    select: {
-      products: {
-        include: {
-          product: true,
-        },
+  let userPromise;
+  if (session?.id) {
+    userPromise = await prisma.user.findUnique({
+      where: {
+        id: session.id,
       },
-    },
-  });
+      select: {
+        engraving: true,
+        id: true,
+      },
+    });
+  } else {
+    userPromise = Promise.resolve(null);
+  }
+
+  const [product, user] = await Promise.all([productPromise, userPromise]);
 
   if (!product) {
     return redirect("/");
+  }
+
+  // Initialize userPreferences and cart with defaults.
+  let userPreferences = { engraving: [], id: null };
+  let cart = null;
+
+  if (user) {
+    // User exists, attempt to parse engraving and fetch cart
+    try {
+      userPreferences.engraving = user.engraving ? JSON.parse(user.engraving) : [];
+    } catch (error) {
+      console.error("Failed to parse user engraving data for user:", user.id, error);
+      // Engraving remains default empty array
+    }
+    userPreferences.id = user.id;
+
+    cart = await prisma.cart.findUnique({
+      where: { clientId: user.id },
+      select: { products: { include: { product: true } } },
+    });
   }
 
   return (
     <main className="pt-16 pb-40">
       <div className="px-6 mt-9 mb-9 sm:mb-16">
         <h1 className="text-3xl mb-2 capitalize sm:text-4xl">{product.name}</h1>
-        <p className="text-xs text-slate-400 sm:text-sm">
-          Product ID: {product.id}
-        </p>
+        <p className="text-xs text-slate-400 sm:text-sm">Product ID: {product.id}</p>
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-start gap-9">
@@ -79,17 +87,11 @@ export default async function ProductSinglePage({ params }) {
         <div className="px-6 flex-grow sm:w-1/2">
           {product?.description && (
             <div className="mb-6">
-              <p className="text-slate-600 whitespace-pre-line">
-                {product?.description}
-              </p>
+              <p className="text-slate-600 whitespace-pre-line">{product?.description}</p>
             </div>
           )}
 
-          <ProductForm
-            product={product}
-            preferences={userPreferences}
-            cart={cart}
-          />
+          <ProductForm product={product} preferences={userPreferences} cart={cart} />
         </div>
       </div>
     </main>

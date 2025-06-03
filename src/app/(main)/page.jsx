@@ -37,12 +37,16 @@ export default async function HomePage({ searchParams }) {
       </div>
 
       <div className="px-6 mb-6 flex flex-row items-center justify-between sm:mb-12">
-        <div>
-          <h3 className="text-lg mb-3 sm:text-2xl sm:mb-9">Welcome back,</h3>
-          <h1 className="text-2xl font-bold flex items-center gap-3 sm:text-4xl">
+        <div className="flex items-center gap-4">
+          <div className="text-3xl">
             <LogoutButton logout={fnLogout} />
-            {session?.name}
-          </h1>
+          </div>
+          <div>
+            <h3 className="text-xl sm:text-3xl sm:mb-4">Welcome back,</h3>
+            <h1 className="text-3xl font-bold flex items-center gap-3 sm:text-4xl">
+              {session?.name}
+            </h1>
+          </div>
         </div>
       </div>
 

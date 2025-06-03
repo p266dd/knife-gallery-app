@@ -63,10 +63,10 @@ export default function LoginPage() {
                 </div>
 
                 <div className="mb-8">
-                  <h1 className="text-2xl font-semibold mb-3">
+                  <h1 className="text-3xl font-semibold mb-3">
                     Sign in to your account.
                   </h1>
-                  <h4 className="text-sm text-slate-500">
+                  <h4 className="text-slate-500">
                     Not a member?
                     <Link
                       href="/register"
@@ -81,18 +81,16 @@ export default function LoginPage() {
                 <div>
                   <form
                     action={action}
-                    className="text-sm text-slate-700 flex flex-col gap-3"
+                    className="text-slate-700 flex flex-col gap-3"
                   >
                     {state && state.message && (
-                      <div className="px-3 py-2 text-xs font-semibold bg-blue-200 text-blue-900 rounded-xl">
+                      <div className="px-3 py-2 text-xs bg-blue-200 text-blue-900 rounded-xl">
                         {state.message}
                       </div>
                     )}
 
                     <div className="flex flex-col gap-2">
-                      <label htmlFor="email" className="text-sm">
-                        Email address
-                      </label>
+                      <label htmlFor="email">Email address</label>
                       <input
                         type="text"
                         name="email"
@@ -100,14 +98,14 @@ export default function LoginPage() {
                         ref={emailRef}
                         autoComplete="email"
                         defaultValue={state?.data?.email || null}
-                        className={`rounded-lg border-1 px-3 py-2 text-sm ${
-                          state?.errors && state?.errors?.name
+                        className={`rounded-lg border-1 px-3 py-2 ${
+                          state?.errors && state?.errors?.email
                             ? "border-red-500"
                             : "border-slate-300"
                         }`}
                       />
                       {state?.errors && state?.errors?.email && (
-                        <span className="text-red-600 text-xs font-semibold">
+                        <span className="text-red-600 text-sm">
                           {state.errors.email}
                         </span>
                       )}
@@ -122,8 +120,8 @@ export default function LoginPage() {
                           id="password"
                           ref={passwordRef}
                           defaultValue={state?.data?.password || null}
-                          className={`w-full rounded-lg border-1 px-3 py-2 text-sm ${
-                            state?.errors && state?.errors?.name
+                          className={`w-full rounded-lg border-1 px-3 py-2 ${
+                            state?.errors && state?.errors?.password
                               ? "border-red-500"
                               : "border-slate-300"
                           }`}
@@ -140,8 +138,8 @@ export default function LoginPage() {
                         </span>
                       </div>
                       {state?.errors && state?.errors?.password && (
-                        <span className="text-red-600 text-xs font-semibold">
-                          {state.errors.password}
+                        <span className="text-red-600 text-sm">
+                          Password is incorrect.
                         </span>
                       )}
                     </div>

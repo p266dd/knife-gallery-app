@@ -112,7 +112,7 @@ export default function ProductModal({ product, children }) {
                 </div>
 
                 <Link href={"/products/" + product.id}>
-                  <div className="bg-white rounded-xl p-4 capitalize">
+                  <div className="bg-white rounded-xl p-4 text-lg capitalize">
                     {product.name}
                   </div>
                 </Link>

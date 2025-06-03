@@ -5,6 +5,9 @@ import { redirect } from "next/navigation";
 import { userSchema } from "@/data/validation/user";
 import { verifyAdminSession } from "@/utils/session";
 
+import { UserActivationEmail } from "@/emails/user-activation";
+import { revalidatePath } from "next/cache";
+
 export default async function updateUser(state, formData) {
   await verifyAdminSession();
 
@@ -39,12 +42,41 @@ export default async function updateUser(state, formData) {
     console.log(error);
   }
 
-  const newUser = await prisma.user.update({
+  const currentActiveStatus = await prisma.user.findUnique({
     where: {
       id: data.userId,
     },
-    data: user,
+    select: {
+      isActive: true,
+    },
   });
 
-  return redirect("/dashboard/users");
+  // Send email if the isActive is changing from false to true.
+  if (currentActiveStatus.isActive === false && user.isActive === true) {
+    try {
+      // Send email to user.
+      const sendActivationEmail = await UserActivationEmail({
+        name: user.name,
+        email: user.email,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  // Update User
+  try {
+    const newUser = await prisma.user.update({
+      where: {
+        id: data.userId,
+      },
+      data: user,
+    });
+
+    revalidatePath("/dashboard/users");
+    revalidatePath("/users/" + data.userId);
+    revalidatePath("/account");
+  } catch (error) {
+    console.log(error);
+  }
 }

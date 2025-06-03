@@ -21,22 +21,22 @@ export default function Header({ userRole = "user", cartCount = 0 }) {
     {
       title: "Favorites",
       url: "/favorites",
-      icon: <Star strokeWidth={1.5} size={22} />,
+      icon: <Star strokeWidth={1.5} size={28} />,
     },
     {
       title: "Search",
       url: "/search",
-      icon: <Search strokeWidth={1.5} size={22} />,
+      icon: <Search strokeWidth={1.5} size={28} />,
     },
     {
       title: "Cart",
       url: "/cart",
-      icon: <ShoppingBag strokeWidth={1.5} size={22} />,
+      icon: <ShoppingBag strokeWidth={1.5} size={28} />,
     },
     {
       title: "Account",
       url: "/account",
-      icon: <CircleUserRound strokeWidth={1.5} size={22} />,
+      icon: <CircleUserRound strokeWidth={1.5} size={28} />,
     },
   ];
 
@@ -63,7 +63,7 @@ export default function Header({ userRole = "user", cartCount = 0 }) {
                       {cartCount}
                     </span>
                   ) : null}
-                  <span className="text-sm md:sm"> {link.title}</span>
+                  <span className="tracking-wider"> {link.title}</span>
                 </Link>
               </motion.div>
             );

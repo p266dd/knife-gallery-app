@@ -3,15 +3,16 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-export default function Accordion({ title, children }) {
+export default function Accordion({ title, icon, children }) {
   const [open, setOpen] = useState(false);
 
   return (
     <div className="relative">
       <div
-        className={`flex items-center justify-between px-3 py-2 text-white bg-slate-500 rounded-xl hover:cursor-pointer ${open ? "rounded-b-none" : ""}`}
+        className={`flex items-center justify-between px-3 py-2 gap-3 text-white bg-slate-600 hover:cursor-pointer ${open ? "rounded-b-none" : ""}`}
         onClick={() => setOpen((prev) => !prev)}
       >
+        {icon && <span>{icon}</span>}
         <h5 className="flex-grow">{title || "Heading"}</h5>
         <span>
           {open ? <ChevronUp size={18} /> : <ChevronDown size={18} />}

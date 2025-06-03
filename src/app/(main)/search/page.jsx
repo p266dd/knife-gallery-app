@@ -18,7 +18,7 @@ export default async function SearchPage() {
   });
 
   return (
-    <main className="pt-16 pb-44">
+    <main className="pt-16 pb-48">
       <div className="px-6 mt-9 mb-7">
         <h1 className="text-4xl mb-2">Search</h1>
       </div>

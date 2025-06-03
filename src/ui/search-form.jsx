@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { isArray, set } from "lodash";
+import { isArray } from "lodash";
 import { redirect, RedirectType } from "next/navigation";
-import { Loader, Search } from "lucide-react";
+import { ArrowDownRight, Loader, Search } from "lucide-react";
 
 import SearchPreview from "./search-preview";
 import RangeSlider from "./range-slider";
@@ -201,8 +201,8 @@ export default function SearchForm({
         </div>
       </div>
 
-      <div className="relative mb-5">
-        <Accordion title="Brand">
+      <div className="relative mb-2">
+        <Accordion title="Brand" icon={<ArrowDownRight size={16} />}>
           <div className="grid grid-cols-2 gap-3">
             {brands.map((brand, i) => (
               <label
@@ -235,7 +235,7 @@ export default function SearchForm({
       </div>
 
       <div className="relative mb-5">
-        <Accordion title="Material">
+        <Accordion title="Material" icon={<ArrowDownRight size={16} />}>
           <div className="grid grid-cols-2 gap-3">
             {materials.map((material, i) => (
               <label
@@ -271,9 +271,9 @@ export default function SearchForm({
       <div>
         <button
           type="submit"
-          className="w-full flex items-center justify-center gap-3 px-3 py-3 bg-slate-800 text-white rounded-xl hover:cursor-pointer"
+          className="w-full flex items-center justify-center gap-3 px-7 py-3 mx-auto bg-slate-800 text-white rounded-xl hover:cursor-pointer"
         >
-          <Search size={20} />
+          <Search className="stroke-white/40" size={20} />
           <span>Search</span>
           {loading && <Loader size={18} className="animate-spin" />}
         </button>

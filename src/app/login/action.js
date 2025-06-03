@@ -67,7 +67,6 @@ export default async function LoginAction(state, formData) {
   if (!passwordsMatch)
     return { ...newState, message: "Incorrect email or password." };
 
-  console.log(user);
   // * Check if user is currently active.
   if (!user.isActive)
     return {

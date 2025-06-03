@@ -4,6 +4,9 @@ import { verifyUserSession } from "@/utils/session";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { ClientNewOrderEmail } from "@/emails/client-new-order";
+import { StaffNewOrderEmail } from "@/emails/staff-new-order";
+
 export default async function processOrder() {
   // Get the user's id stored in the session cookie.
   const session = await verifyUserSession();
@@ -39,9 +42,7 @@ export default async function processOrder() {
     // 2. Loop through products, parse details, validate stock, and prepare order data
     for (const cartProduct of cart.products) {
       if (!cartProduct.product || !cartProduct.product.sizes) {
-        console.log(
-          `Product data or sizes missing for cartProduct ID: ${cartProduct.id}`
-        );
+        console.log(`Product data or sizes missing for cartProduct ID: ${cartProduct.id}`);
       }
 
       // 3. Each product has a details field that needs to be parsed
@@ -57,9 +58,7 @@ export default async function processOrder() {
           continue; // Skip items with no valid quantity
         }
 
-        const sizeInfo = cartProduct.product.sizes.find(
-          (s) => s.id === Number(sizeId)
-        );
+        const sizeInfo = cartProduct.product.sizes.find((s) => s.id === Number(sizeId));
 
         if (!sizeInfo) {
           return redirect("/cart?error");
@@ -130,6 +129,23 @@ export default async function processOrder() {
         });
       }
 
+      // Send email to client and staff.
+      try {
+        ClientNewOrderEmail({
+          name: session.name,
+          email: session.email,
+          orderDetails: orderProductCreateInputs,
+        });
+
+        StaffNewOrderEmail({
+          name: session.name,
+          email: session.email,
+          orderDetails: orderProductCreateInputs,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+
       // Clear the user's cart
       await tx.cart.update({
         where: { id: cart.id },
@@ -148,22 +164,19 @@ export default async function processOrder() {
     revalidatePath("/account/orders", "page"); // Assuming a user-specific orders page
     revalidatePath(`/account/orders/${newOrder.id}`, "page"); // Specific order page
 
-    const uniqueProductIds = [
-      ...new Set(stockUpdateOperations.map((op) => op.productId)),
-    ];
+    const uniqueProductIds = [...new Set(stockUpdateOperations.map((op) => op.productId))];
     for (const productId of uniqueProductIds) {
       revalidatePath(`/products/${productId}`, "page"); // Revalidate product pages due to stock changes
     }
     revalidatePath("/", "page"); // Revalidate homepage if it shows product stock/listings
 
     // Redirect to an order success page or the user's order history
-    return redirect("/orders");
+    return redirect("/orders?successfullOrder=true");
   } catch (error) {
     console.log("Failed to process order:", error);
     // Redirect back to cart with an error message
     // Ensure the error message is URL-encoded to be safe.
-    const errorMessage =
-      error instanceof Error ? error.message : "An unexpected error occurred.";
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred.";
     return console.log("/cart?error=" + errorMessage);
   }
 }

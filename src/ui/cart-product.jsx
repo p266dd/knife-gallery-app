@@ -58,19 +58,26 @@ export default function CartProduct({
             <h5 className="text-xs text-slate-600 sm:text-base">
               <ul>
                 <li>
-                  Brand: {state?.cartProduct?.brand || state?.product?.brand}
+                  Brand:{" "}
+                  <strong>
+                    {state?.cartProduct?.brand || state?.product?.brand}
+                  </strong>
                 </li>
                 {state?.product.type === "knife" && (
                   <li>
                     Handle:{" "}
-                    {state.cartProduct?.handle || state?.product?.handle}
+                    <strong>
+                      {state.cartProduct?.handle || state?.product?.handle}
+                    </strong>
                   </li>
                 )}
                 <li>
                   Request:{" "}
-                  {(state?.cartProduct?.request &&
-                    state?.cartProduct.request.substring(0, 20)) ||
-                    "No special request."}
+                  <strong>
+                    {(state?.cartProduct?.request &&
+                      state?.cartProduct.request.substring(0, 20)) ||
+                      "No special request."}
+                  </strong>
                 </li>
               </ul>
             </h5>
@@ -277,7 +284,7 @@ export default function CartProduct({
 
                           {/* This is user's own preferences. */}
                           {preferences.engraving.length > 0 &&
-                            product.brand === "OEM" && (
+                            state?.product.brand === "OEM" && (
                               <optgroup label="Preferences">
                                 {preferences.engraving.map((val, i) => {
                                   return (

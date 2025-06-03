@@ -2,11 +2,15 @@
 
 import { hashSync } from "bcryptjs";
 import prisma from "@/data/prisma";
+import { generateRandomString } from "@/utils/generate-random-string";
 
 // * Validation schema.
 import { registerFormSchema } from "@/data/validation/register-form";
+import { NewRegisterUserEmail } from "@/emails/register";
 
 export default async function RegisterAction(state, formData) {
+  const newBusinessCode = generateRandomString("businessCode");
+
   // * Set newState data from formData.
   const newState = {
     errors: [],
@@ -19,7 +23,7 @@ export default async function RegisterAction(state, formData) {
     email: newState.data.email,
     password: newState.data.password,
     businessName: newState.data.businessName,
-    businessCode: newState.data.businessCode,
+    businessCode: newBusinessCode,
   };
 
   // * Holds the validated data.
@@ -72,12 +76,26 @@ export default async function RegisterAction(state, formData) {
       };
     }
 
+    // Send email to user.
+    const sendRegisterEmail = await NewRegisterUserEmail({
+      name: newUser.name,
+      email: newUser.email,
+    });
+
+    // * Return message if email was not sent.
+    if (!sendRegisterEmail) {
+      return {
+        ...newState,
+        message:
+          "We had problems sending a copy to your email. Please wait while we review your application",
+      };
+    }
+
     // * Set state with a success message.
     return {
       ...newState,
       success: true,
-      message:
-        "You account has been created. Please wait while we review your application.",
+      message: "You account has been created. Please wait while we review your application.",
     };
   } catch (error) {
     console.log(error);

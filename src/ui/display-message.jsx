@@ -65,7 +65,7 @@ export default function DisplayMessage() {
                       className="px-4 py-2 bg-slate-800 text-slate-100 text-sm rounded-xl"
                       href={message.link}
                     >
-                      Link
+                      Go!
                     </Link>
                   )}
                   <button

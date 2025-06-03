@@ -27,7 +27,7 @@ export default async function CartPage() {
       <div className="px-6 mt-9 mb-12">
         <h1 className="text-4xl mb-2">Shopping Cart</h1>
         {cart && (
-          <p className="text-sm text-slate-400">
+          <p className="text-slate-400">
             You have {cart.cartCount} {cart.cartCount == 1 ? "item " : "items "}
             in your cart.
           </p>

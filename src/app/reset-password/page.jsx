@@ -67,10 +67,10 @@ export default function ResetPassword() {
               </div>
 
               <div className="mb-8 flex flex-col items-center gap-2">
-                <h1 className="text-2xl font-semibold mb-3">
+                <h1 className="text-3xl text-center font-semibold mb-3">
                   Reset your password.
                 </h1>
-                <h3 className="text-sm text-slate-500">
+                <h3 className="text-slate-500 text-center">
                   Please enter the code sent to your email.
                 </h3>
               </div>
@@ -78,18 +78,16 @@ export default function ResetPassword() {
               <div>
                 <form
                   action={action}
-                  className="text-sm text-slate-700 flex flex-col gap-3"
+                  className="text-slate-700 flex flex-col gap-3"
                 >
                   {state && state?.message && (
-                    <div className="px-3 py-2 text-xs font-semibold bg-blue-200 text-blue-900 rounded-xl">
+                    <div className="px-3 py-2 bg-blue-200 text-blue-900 rounded-xl">
                       {state.message}
                     </div>
                   )}
 
                   <div className="flex flex-row items-center gap-4 p-4 rounded-lg">
-                    <label htmlFor="code" className="text-sm">
-                      Code
-                    </label>
+                    <label htmlFor="code">Code</label>
                     <input
                       type="text"
                       name="code"
@@ -97,16 +95,14 @@ export default function ResetPassword() {
                       autoComplete="off"
                       max={6}
                       defaultValue={state?.data && state.data?.code}
-                      className={`w-full rounded-lg border-1 border-slate-300 bg-white px-3 py-2 text-sm ${
+                      className={`w-full rounded-lg border-1 border-slate-300 bg-white px-3 py-2 ${
                         state?.errors && state?.errors?.code
                           ? "border-red-500"
                           : "border-slate-300"
                       }`}
                     />
                     {state?.errors && state?.errors?.code && (
-                      <span className="text-red-600 text-xs font-semibold">
-                        {state.errors.code}
-                      </span>
+                      <span className="text-red-600">{state.errors.code}</span>
                     )}
                   </div>
 
@@ -120,7 +116,7 @@ export default function ResetPassword() {
                             type={showPassword ? "text" : "password"}
                             name="password"
                             defaultValue={state?.data && state?.data?.password}
-                            className={`w-full rounded-lg border-1 px-3 py-2 text-sm ${
+                            className={`w-full rounded-lg border-1 px-3 py-2 ${
                               state?.errors && state?.errors?.password
                                 ? "border-red-500"
                                 : "border-slate-300"
@@ -138,7 +134,7 @@ export default function ResetPassword() {
                           </span>
                         </div>
                         {state?.errors && state?.errors?.password && (
-                          <span className="text-red-600 text-xs font-semibold">
+                          <span className="text-red-600">
                             {state.errors.password}
                           </span>
                         )}
@@ -153,7 +149,7 @@ export default function ResetPassword() {
                             defaultValue={
                               state?.data && state?.data?.confirmPassword
                             }
-                            className={`w-full rounded-lg border-1 border-slate-300 px-3 py-2 text-sm ${
+                            className={`w-full rounded-lg border-1 border-slate-300 px-3 py-2 ${
                               state?.errors && state?.errors?.confirmPassword
                                 ? "border-red-500"
                                 : "border-slate-300"
@@ -171,7 +167,7 @@ export default function ResetPassword() {
                           </span>
                         </div>
                         {state?.errors && state?.errors?.confirmPassword && (
-                          <span className="text-red-600 text-xs font-semibold">
+                          <span className="text-red-600">
                             {state.errors.confirmPassword}
                           </span>
                         )}
@@ -202,7 +198,7 @@ export default function ResetPassword() {
 
                     <Button
                       size="lg"
-                      variant="flat"
+                      variant="ghost"
                       onClick={() => router.push("/login")}
                     >
                       Cancel

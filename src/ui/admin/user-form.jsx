@@ -13,17 +13,11 @@ import ConfirmModal from "../confirm-modal";
 
 export default function UserForm({ user, edit = false }) {
   const generatedPassword = useMemo(() => generateRandomString("password"), []);
-  const generatedBusinessCode = useMemo(
-    () => generateRandomString("businessCode"),
-    []
-  );
-  const [state, formAction, isPending] = useActionState(
-    edit ? updateUser : addUser,
-    {
-      errors: null,
-      message: null,
-    }
-  );
+  const generatedBusinessCode = useMemo(() => generateRandomString("businessCode"), []);
+  const [state, formAction, isPending] = useActionState(edit ? updateUser : addUser, {
+    errors: null,
+    message: null,
+  });
 
   return (
     <div>
@@ -32,9 +26,7 @@ export default function UserForm({ user, edit = false }) {
         <div className="mb-3 flex items-center gap-3">
           <div
             className={`flex-grow flex items-center gap-3 px-3 py-2 bg-white border rounded-xl ${
-              state?.errors && state?.errors?.role
-                ? "border-red-500"
-                : "border-slate-300"
+              state?.errors && state?.errors?.role ? "border-red-500" : "border-slate-300"
             }`}
           >
             <input
@@ -42,11 +34,7 @@ export default function UserForm({ user, edit = false }) {
               id="user-role"
               type="radio"
               value="user"
-              defaultChecked={
-                (user && user.role === "user") ||
-                state?.role === "user" ||
-                false
-              }
+              defaultChecked={(user && user.role === "user") || state?.role === "user" || false}
             />
             <label className="flex-grow" htmlFor="user-role">
               User
@@ -55,9 +43,7 @@ export default function UserForm({ user, edit = false }) {
 
           <div
             className={`flex-grow flex items-center gap-3 px-3 py-2 bg-white border rounded-xl ${
-              state?.errors && state?.errors?.role
-                ? "border-red-500"
-                : "border-slate-300"
+              state?.errors && state?.errors?.role ? "border-red-500" : "border-slate-300"
             }`}
           >
             <input
@@ -65,11 +51,7 @@ export default function UserForm({ user, edit = false }) {
               id="admin-role"
               type="radio"
               value="admin"
-              defaultChecked={
-                (user && user.role === "admin") ||
-                state?.role === "admin" ||
-                false
-              }
+              defaultChecked={(user && user.role === "admin") || state?.role === "admin" || false}
             />
             <label className="flex-grow" htmlFor="admin-role">
               Admin
@@ -78,9 +60,7 @@ export default function UserForm({ user, edit = false }) {
         </div>
         <div>
           {state?.errors && state?.errors?.role && (
-            <span className="text-red-600 text-xs font-semibold">
-              {state.errors.role}
-            </span>
+            <span className="text-red-600 text-xs font-semibold">{state.errors.role}</span>
           )}
         </div>
 
@@ -93,15 +73,11 @@ export default function UserForm({ user, edit = false }) {
             autoComplete="off"
             defaultValue={(user && user.name) || state?.name || ""}
             className={`w-full px-2 py-3 pl-7 placeholder:text-slate-500 focus-visible:outline-0 border rounded-xl bg-white shadow-xs ${
-              state?.errors && state?.errors?.name
-                ? "border-red-500"
-                : "border-slate-300"
+              state?.errors && state?.errors?.name ? "border-red-500" : "border-slate-300"
             }`}
           />
           {state?.errors && state?.errors?.name && (
-            <span className="text-red-600 text-xs font-semibold">
-              {state.errors.name}
-            </span>
+            <span className="text-red-600 text-xs font-semibold">{state.errors.name}</span>
           )}
           <User size="14" className="absolute left-2 top-4 text-slate-500" />
         </div>
@@ -115,15 +91,11 @@ export default function UserForm({ user, edit = false }) {
             autoComplete="off"
             defaultValue={(user && user.email) || state?.email || ""}
             className={`w-full px-2 py-3 pl-7 placeholder:text-slate-500 focus-visible:outline-0 border rounded-xl bg-white shadow-xs ${
-              state?.errors && state?.errors?.email
-                ? "border-red-500"
-                : "border-slate-300"
+              state?.errors && state?.errors?.email ? "border-red-500" : "border-slate-300"
             }`}
           />
           {state?.errors && state?.errors?.email && (
-            <span className="text-red-600 text-xs font-semibold">
-              {state.errors.email}
-            </span>
+            <span className="text-red-600 text-xs font-semibold">{state.errors.email}</span>
           )}
           <Mail size="14" className="absolute left-2 top-4 text-slate-500" />
         </div>
@@ -138,12 +110,7 @@ export default function UserForm({ user, edit = false }) {
           />
           <Key size="14" className="absolute left-2 top-4 text-slate-500" />
           {!user && (
-            <input
-              name="password"
-              type="hidden"
-              readOnly={true}
-              value={generatedPassword}
-            />
+            <input name="password" type="hidden" readOnly={true} value={generatedPassword} />
           )}
         </div>
 
@@ -154,24 +121,15 @@ export default function UserForm({ user, edit = false }) {
             type="text"
             placeholder="Business Name"
             autoComplete="off"
-            defaultValue={
-              (user && user.businessName) || state?.businessName || ""
-            }
+            defaultValue={(user && user.businessName) || state?.businessName || ""}
             className={`w-full px-2 py-3 pl-7 placeholder:text-slate-500 focus-visible:outline-0 border rounded-xl bg-white shadow-xs ${
-              state?.errors && state?.errors?.businessName
-                ? "border-red-500"
-                : "border-slate-300"
+              state?.errors && state?.errors?.businessName ? "border-red-500" : "border-slate-300"
             }`}
           />
           {state?.errors && state?.errors?.businessName && (
-            <span className="text-red-600 text-xs font-semibold">
-              {state.errors.businessName}
-            </span>
+            <span className="text-red-600 text-xs font-semibold">{state.errors.businessName}</span>
           )}
-          <Briefcase
-            size="14"
-            className="absolute left-2 top-4 text-slate-500"
-          />
+          <Briefcase size="14" className="absolute left-2 top-4 text-slate-500" />
         </div>
 
         <div className="mb-3 relative">
@@ -188,20 +146,13 @@ export default function UserForm({ user, edit = false }) {
               ""
             }
             className={`w-full px-2 py-3 pl-7 placeholder:text-slate-500 focus-visible:outline-0 border rounded-xl bg-white shadow-xs ${
-              state?.errors && state?.errors?.businessCode
-                ? "border-red-500"
-                : "border-slate-300"
+              state?.errors && state?.errors?.businessCode ? "border-red-500" : "border-slate-300"
             }`}
           />
           {state?.errors && state?.errors?.businessCode && (
-            <span className="text-red-600 text-xs font-semibold">
-              {state.errors.businessCode}
-            </span>
+            <span className="text-red-600 text-xs font-semibold">{state.errors.businessCode}</span>
           )}
-          <FileDigit
-            size="14"
-            className="absolute left-2 top-4 text-slate-500"
-          />
+          <FileDigit size="14" className="absolute left-2 top-4 text-slate-500" />
         </div>
 
         <div className="mb-3 flex items-center gap-3">
@@ -263,7 +214,7 @@ export default function UserForm({ user, edit = false }) {
           )}
         </div>
 
-        {state.message && state.message.length > 0 && (
+        {state?.message && state?.message?.length > 0 && (
           <div className="mt-3">
             <p className="text-green-600">{state.message}</p>
           </div>

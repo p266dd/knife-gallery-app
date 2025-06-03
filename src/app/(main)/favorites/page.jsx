@@ -15,7 +15,7 @@ export default async function FavoritesPage() {
     <main className="pt-16 pb-40 sm:pt-24 sm:pb-48">
       <div className="px-6 mt-9 mb-7">
         <h1 className="text-4xl mb-2">Favorites</h1>
-        <p className="text-sm text-slate-400 sm:text-lg">
+        <p className="text-slate-400 sm:text-lg">
           You have {data?.favoritesCount}
           {data?.favoritesCount > 1 ? " items " : " item "}
           in your favorites.

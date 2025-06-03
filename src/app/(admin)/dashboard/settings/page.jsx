@@ -48,7 +48,7 @@ export default async function SettingsPage() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6">
           <div>
             <ManageMessagesForm messages={messages} />
           </div>

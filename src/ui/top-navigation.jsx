@@ -45,7 +45,7 @@ export default function TopNavigation() {
       <div className="flex-grow flex justify-end">
         <motion.div
           whileTap={{ scale: 0.95, backgroundColor: "#f1f5f9" }}
-          className="px-3 py-2 text-slate-800 cursor-pointer sm:text-2xl"
+          className="px-3 py-2 text-slate-800 cursor-pointer text-xl sm:text-2xl"
         >
           <LogoutButton logout={fnLogout} />
         </motion.div>

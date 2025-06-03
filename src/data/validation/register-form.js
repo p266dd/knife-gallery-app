@@ -25,7 +25,7 @@ export const registerFormSchema = object({
     )
     .trim(),
 
-  businessCode: string().nullable().trim(),
+  businessCode: string().trim().nullable(),
 
   businessName: string()
     .required("Business name is required.")

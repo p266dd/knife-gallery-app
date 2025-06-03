@@ -59,10 +59,10 @@ export default function ForgotPassword() {
               </div>
 
               <div className="mb-8">
-                <h1 className="text-2xl font-semibold mb-3">
+                <h1 className="text-3xl font-semibold mb-3">
                   Forgot your password?
                 </h1>
-                <h3 className="text-sm text-slate-500">
+                <h3 className="text-slate-500">
                   Please enter your email and we will send you a code to reset
                   your password.
                 </h3>
@@ -71,32 +71,30 @@ export default function ForgotPassword() {
               <div>
                 <form
                   action={action}
-                  className="text-sm text-slate-700 flex flex-col gap-3"
+                  className="text-slate-700 flex flex-col gap-3"
                 >
                   {state && state?.message && (
-                    <div className="px-3 py-2 text-xs font-semibold bg-blue-200 text-blue-900 rounded-xl">
+                    <div className="px-3 py-2 bg-blue-200 text-blue-900 rounded-xl">
                       {state.message}
                     </div>
                   )}
 
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="email" className="text-sm">
-                      Email Address
-                    </label>
+                    <label htmlFor="email">Email Address</label>
                     <input
                       type="email"
                       name="email"
                       id="email"
                       autoComplete="email"
                       defaultValue={state?.data && state.data?.email}
-                      className={`rounded-lg border-1 px-3 py-2 text-sm ${
+                      className={`rounded-lg border-1 px-3 py-2 ${
                         state?.errors && state?.errors?.email
                           ? "border-red-500"
                           : "border-slate-300"
                       }`}
                     />
                     {state?.errors && state?.errors?.email && (
-                      <span className="text-red-600 text-xs font-semibold">
+                      <span className="text-red-600 font-semibold">
                         {state.errors.email}
                       </span>
                     )}
@@ -123,7 +121,7 @@ export default function ForgotPassword() {
 
                     <Button
                       size="lg"
-                      variant="flat"
+                      variant="ghost"
                       onClick={() => router.back()}
                     >
                       Cancel
