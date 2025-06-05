@@ -22,7 +22,7 @@ export const knifeSchema = object({
     .of(
       object({
         name: string().required("Please type a size.").max(26, "Name is too long.").trim(),
-        size: String().required("Please type a size."),
+        size: string().required("Please type a size."),
         price: number().required("Please type a price.").integer("Price must be an integer."),
         stock: number()
           .required("Please type a stock.")
