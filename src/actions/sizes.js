@@ -24,7 +24,7 @@ export async function addToSizes(data) {
   const newSize = await prisma.size.create({
     data: {
       name: data.name,
-      size: Number(data.size),
+      size: String(data.size),
       price: Number(data.price),
       stock: Number(data.stock),
       product: {
@@ -44,7 +44,7 @@ export async function updateSize(data) {
     },
     data: {
       name: data.name,
-      size: Number(data.size),
+      size: String(data.size),
       price: Number(data.price),
       stock: Number(data.stock),
       product: {
