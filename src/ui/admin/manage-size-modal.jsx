@@ -24,17 +24,11 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
   const addSize = (e) => {
     e.preventDefault();
 
-    if (
-      !currentEdit.name ||
-      !currentEdit.size ||
-      !currentEdit.price ||
-      !currentEdit.stock
-    )
-      return;
+    if (!currentEdit.name || !currentEdit.size || !currentEdit.price || !currentEdit.stock) return;
 
     const newSize = {
       name: currentEdit.name,
-      size: Number(currentEdit.size),
+      size: String(currentEdit.size),
       price: Number(currentEdit.price),
       stock: Number(currentEdit.stock),
     };
@@ -57,9 +51,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
     }
 
     setData((prev) =>
-      prev?.sizes
-        ? { ...prev, sizes: [...prev.sizes, newSize] }
-        : { ...prev, sizes: [newSize] }
+      prev?.sizes ? { ...prev, sizes: [...prev.sizes, newSize] } : { ...prev, sizes: [newSize] }
     );
 
     sizeNameRef.current.focus();
@@ -76,7 +68,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
     const updatedSize = {
       id: Number(currentEdit.id),
       name: currentEdit.name,
-      size: Number(currentEdit.size),
+      size: String(currentEdit.size),
       price: Number(currentEdit.price),
       stock: Number(currentEdit.stock),
       productId: data.id,
@@ -167,9 +159,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
               placeholder="Size name"
               autoComplete="off"
               value={currentEdit.name || ""}
-              onChange={(e) =>
-                setCurrentEdit({ ...currentEdit, name: e.target.value })
-              }
+              onChange={(e) => setCurrentEdit({ ...currentEdit, name: e.target.value })}
               className="w-full text-sm px-2 py-2 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white disabled:bg-slate-100"
             />
           </div>
@@ -177,13 +167,11 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
           <div className="relative w-full flex items-center gap-2 mb-2">
             <div className="relative w-1/3">
               <input
-                type="number"
+                type="text"
                 name="size"
                 placeholder="mm"
                 value={currentEdit.size || ""}
-                onChange={(e) =>
-                  setCurrentEdit({ ...currentEdit, size: e.target.value })
-                }
+                onChange={(e) => setCurrentEdit({ ...currentEdit, size: e.target.value })}
                 className="w-full text-sm px-1 py-2 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white disabled:bg-slate-100"
               />
               <span className="absolute top-3 right-3 z-50">
@@ -197,9 +185,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                 name="price"
                 placeholder="Price"
                 value={currentEdit.price || ""}
-                onChange={(e) =>
-                  setCurrentEdit({ ...currentEdit, price: e.target.value })
-                }
+                onChange={(e) => setCurrentEdit({ ...currentEdit, price: e.target.value })}
                 className="w-full text-sm px-1 py-2 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white"
               />
               <span className="absolute top-3 right-3 z-50">
@@ -212,12 +198,8 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                 type="number"
                 placeholder="Stock"
                 name="stock"
-                defaultValue={
-                  editSize ? (currentEdit.stock ? currentEdit.stock : 0) : ""
-                }
-                onChange={(e) =>
-                  setCurrentEdit({ ...currentEdit, stock: e.target.value })
-                }
+                defaultValue={editSize ? (currentEdit.stock ? currentEdit.stock : 0) : ""}
+                onChange={(e) => setCurrentEdit({ ...currentEdit, stock: e.target.value })}
                 className="w-full text-sm px-1 py-2 placeholder:text-slate-500 focus-visible:outline-0 border border-slate-200 rounded-xl bg-white"
               />
               <span className="absolute top-3 right-3 z-50">
@@ -238,8 +220,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                 </span>
               ) : (
                 <span>
-                  <PlusCircle className="inline-block mr-3" size={16} /> Add New
-                  Size
+                  <PlusCircle className="inline-block mr-3" size={16} /> Add New Size
                 </span>
               )}
             </motion.button>
@@ -283,9 +264,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                   <td className="w-4/12 py-2">
                     {size.name}
                     <br />
-                    <span className="text-xs text-slate-500">
-                      {size.size === 0 ? "Not Defined" : `${size.size} mm`}
-                    </span>
+                    <span className="text-xs text-slate-500">{size.size + "mm"}</span>
                   </td>
                   <td className="w-4/12 py-2">
                     {new Intl.NumberFormat("ja-JP", {
@@ -296,8 +275,7 @@ export default function ManageSizeModal({ data, setData, edit = false }) {
                   <td className="w-2/12 py-2">
                     {size.stock === 0 ? (
                       <span className="flex items-center gap-2">
-                        {size.stock}{" "}
-                        <XCircle size={14} className="stroke-red-500" />
+                        {size.stock} <XCircle size={14} className="stroke-red-500" />
                       </span>
                     ) : (
                       size.stock

@@ -10416,14 +10416,12 @@ export namespace Prisma {
 
   export type SizeAvgAggregateOutputType = {
     id: number | null
-    size: number | null
     price: number | null
     stock: number | null
   }
 
   export type SizeSumAggregateOutputType = {
     id: number | null
-    size: number | null
     price: number | null
     stock: number | null
   }
@@ -10431,7 +10429,7 @@ export namespace Prisma {
   export type SizeMinAggregateOutputType = {
     id: number | null
     name: string | null
-    size: number | null
+    size: string | null
     price: number | null
     stock: number | null
     productId: string | null
@@ -10440,7 +10438,7 @@ export namespace Prisma {
   export type SizeMaxAggregateOutputType = {
     id: number | null
     name: string | null
-    size: number | null
+    size: string | null
     price: number | null
     stock: number | null
     productId: string | null
@@ -10459,14 +10457,12 @@ export namespace Prisma {
 
   export type SizeAvgAggregateInputType = {
     id?: true
-    size?: true
     price?: true
     stock?: true
   }
 
   export type SizeSumAggregateInputType = {
     id?: true
-    size?: true
     price?: true
     stock?: true
   }
@@ -10588,7 +10584,7 @@ export namespace Prisma {
   export type SizeGroupByOutputType = {
     id: number
     name: string
-    size: number
+    size: string
     price: number
     stock: number
     productId: string | null
@@ -10671,7 +10667,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string
-      size: number
+      size: string
       price: number
       stock: number
       productId: string | null
@@ -11101,7 +11097,7 @@ export namespace Prisma {
   interface SizeFieldRefs {
     readonly id: FieldRef<"Size", 'Int'>
     readonly name: FieldRef<"Size", 'String'>
-    readonly size: FieldRef<"Size", 'Int'>
+    readonly size: FieldRef<"Size", 'String'>
     readonly price: FieldRef<"Size", 'Int'>
     readonly stock: FieldRef<"Size", 'Int'>
     readonly productId: FieldRef<"Size", 'String'>
@@ -19760,7 +19756,7 @@ export namespace Prisma {
     NOT?: SizeWhereInput | SizeWhereInput[]
     id?: IntFilter<"Size"> | number
     name?: StringFilter<"Size"> | string
-    size?: IntFilter<"Size"> | number
+    size?: StringFilter<"Size"> | string
     price?: IntFilter<"Size"> | number
     stock?: IntFilter<"Size"> | number
     productId?: StringNullableFilter<"Size"> | string | null
@@ -19783,7 +19779,7 @@ export namespace Prisma {
     OR?: SizeWhereInput[]
     NOT?: SizeWhereInput | SizeWhereInput[]
     name?: StringFilter<"Size"> | string
-    size?: IntFilter<"Size"> | number
+    size?: StringFilter<"Size"> | string
     price?: IntFilter<"Size"> | number
     stock?: IntFilter<"Size"> | number
     productId?: StringNullableFilter<"Size"> | string | null
@@ -19810,7 +19806,7 @@ export namespace Prisma {
     NOT?: SizeScalarWhereWithAggregatesInput | SizeScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Size"> | number
     name?: StringWithAggregatesFilter<"Size"> | string
-    size?: IntWithAggregatesFilter<"Size"> | number
+    size?: StringWithAggregatesFilter<"Size"> | string
     price?: IntWithAggregatesFilter<"Size"> | number
     stock?: IntWithAggregatesFilter<"Size"> | number
     productId?: StringNullableWithAggregatesFilter<"Size"> | string | null
@@ -20672,7 +20668,7 @@ export namespace Prisma {
 
   export type SizeCreateInput = {
     name: string
-    size: number
+    size: string
     price: number
     stock: number
     product?: ProductCreateNestedOneWithoutSizesInput
@@ -20681,7 +20677,7 @@ export namespace Prisma {
   export type SizeUncheckedCreateInput = {
     id?: number
     name: string
-    size: number
+    size: string
     price: number
     stock: number
     productId?: string | null
@@ -20689,7 +20685,7 @@ export namespace Prisma {
 
   export type SizeUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
-    size?: IntFieldUpdateOperationsInput | number
+    size?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     product?: ProductUpdateOneWithoutSizesNestedInput
@@ -20698,7 +20694,7 @@ export namespace Prisma {
   export type SizeUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    size?: IntFieldUpdateOperationsInput | number
+    size?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     productId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20707,7 +20703,7 @@ export namespace Prisma {
   export type SizeCreateManyInput = {
     id?: number
     name: string
-    size: number
+    size: string
     price: number
     stock: number
     productId?: string | null
@@ -20715,7 +20711,7 @@ export namespace Prisma {
 
   export type SizeUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
-    size?: IntFieldUpdateOperationsInput | number
+    size?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
   }
@@ -20723,7 +20719,7 @@ export namespace Prisma {
   export type SizeUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    size?: IntFieldUpdateOperationsInput | number
+    size?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     productId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21693,7 +21689,6 @@ export namespace Prisma {
 
   export type SizeAvgOrderByAggregateInput = {
     id?: SortOrder
-    size?: SortOrder
     price?: SortOrder
     stock?: SortOrder
   }
@@ -21718,7 +21713,6 @@ export namespace Prisma {
 
   export type SizeSumOrderByAggregateInput = {
     id?: SortOrder
-    size?: SortOrder
     price?: SortOrder
     stock?: SortOrder
   }
@@ -23415,7 +23409,7 @@ export namespace Prisma {
 
   export type SizeCreateWithoutProductInput = {
     name: string
-    size: number
+    size: string
     price: number
     stock: number
   }
@@ -23423,7 +23417,7 @@ export namespace Prisma {
   export type SizeUncheckedCreateWithoutProductInput = {
     id?: number
     name: string
-    size: number
+    size: string
     price: number
     stock: number
   }
@@ -23596,7 +23590,7 @@ export namespace Prisma {
     NOT?: SizeScalarWhereInput | SizeScalarWhereInput[]
     id?: IntFilter<"Size"> | number
     name?: StringFilter<"Size"> | string
-    size?: IntFilter<"Size"> | number
+    size?: StringFilter<"Size"> | string
     price?: IntFilter<"Size"> | number
     stock?: IntFilter<"Size"> | number
     productId?: StringNullableFilter<"Size"> | string | null
@@ -24633,7 +24627,7 @@ export namespace Prisma {
   export type SizeCreateManyProductInput = {
     id?: number
     name: string
-    size: number
+    size: string
     price: number
     stock: number
   }
@@ -24681,7 +24675,7 @@ export namespace Prisma {
 
   export type SizeUpdateWithoutProductInput = {
     name?: StringFieldUpdateOperationsInput | string
-    size?: IntFieldUpdateOperationsInput | number
+    size?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
   }
@@ -24689,7 +24683,7 @@ export namespace Prisma {
   export type SizeUncheckedUpdateWithoutProductInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    size?: IntFieldUpdateOperationsInput | number
+    size?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
   }
@@ -24697,7 +24691,7 @@ export namespace Prisma {
   export type SizeUncheckedUpdateManyWithoutProductInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    size?: IntFieldUpdateOperationsInput | number
+    size?: StringFieldUpdateOperationsInput | string
     price?: IntFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
   }

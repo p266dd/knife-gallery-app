@@ -2,10 +2,7 @@ import { object, string, number, array, boolean } from "yup";
 
 export const otherProductSchema = object({
   type: string().oneOf(["other"]).required("Please select a type."),
-  name: string()
-    .required("Please write a product title.")
-    .max(90, "Title is too long.")
-    .trim(),
+  name: string().required("Please write a product title.").max(90, "Title is too long.").trim(),
   description: string().max(400, "Description is too long.").trim(),
   brand: string().required("Please select a brand.").max(50).trim(),
   media: array()
@@ -18,13 +15,8 @@ export const otherProductSchema = object({
   sizes: array()
     .of(
       object({
-        name: string()
-          .required("Please type a size.")
-          .max(26, "Size is too long.")
-          .trim(),
-        size: number()
-          .required("Please type a size.")
-          .integer("Size must be an integer."),
+        name: string().required("Please type a size.").max(26, "Size is too long.").trim(),
+        size: string().required("Please type a size."),
         price: number()
           .required("Please type a price.")
           .integer("Price must be an integer.")

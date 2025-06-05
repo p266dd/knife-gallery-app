@@ -90,10 +90,10 @@ export default async function addProduct(formData) {
         name: validatedData.name,
         description: validatedData.description,
         brand: validatedData.brand,
-        handle: validatedData.handle,
+        handle: validatedData.handle || "No Handle",
         canChangeHandle: validatedData.canChangeHandle,
-        style: validatedData.style,
-        material: validatedData.material,
+        style: validatedData.style || "No Style",
+        material: validatedData.material || "No Material",
         media: {
           create: mediaObject,
         },
@@ -106,11 +106,9 @@ export default async function addProduct(formData) {
       },
     });
   } catch (error) {
-    console.log(error.meta);
+    console.log(error);
     return {
-      errors: [
-        `A product with the same ${error.meta.target[0]} already exists.`,
-      ],
+      errors: ["An error accurred"],
     };
   }
 

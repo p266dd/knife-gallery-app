@@ -2,10 +2,7 @@ import { object, string, number, array, boolean, lazy } from "yup";
 
 export const knifeSchema = object({
   type: string().oneOf(["knife"]).required("Please select a type."),
-  name: string()
-    .required("Please write a product title.")
-    .max(90, "Title is too long.")
-    .trim(),
+  name: string().required("Please write a product title.").max(90, "Title is too long.").trim(),
   description: string().max(400, "Description is too long.").trim(),
   brand: string().required("Please select a brand.").max(50).trim(),
   handle: string().required("Please select a handle.").max(50).trim(),
@@ -24,16 +21,9 @@ export const knifeSchema = object({
   sizes: array()
     .of(
       object({
-        name: string()
-          .required("Please type a size.")
-          .max(26, "Name is too long.")
-          .trim(),
-        size: number()
-          .required("Please type a size.")
-          .integer("Size must be an integer."),
-        price: number()
-          .required("Please type a price.")
-          .integer("Price must be an integer."),
+        name: string().required("Please type a size.").max(26, "Name is too long.").trim(),
+        size: String().required("Please type a size."),
+        price: number().required("Please type a price.").integer("Price must be an integer."),
         stock: number()
           .required("Please type a stock.")
           .integer("Stock must be an integer.")
