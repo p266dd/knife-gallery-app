@@ -6,15 +6,13 @@ import { useActionState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Info, Loader, Pencil, Save, Trash2, X, XCircle } from "lucide-react";
 
+import ProductPlaceholder from "@/assets/product-image-placeholder.webp";
+import ProductBlur from "@/assets/image-blur.gif";
+
 import { updateCart } from "@/actions/update-cart";
 import { removeCart } from "@/actions/remove-cart";
 
-export default function CartProduct({
-  cartProduct,
-  preferences,
-  hasError,
-  setHasError,
-}) {
+export default function CartProduct({ cartProduct, preferences, hasError, setHasError }) {
   const [open, setOpen] = useState(false);
 
   const [showUpdateBtn, setShowUpdateBtn] = useState(false);
@@ -39,12 +37,9 @@ export default function CartProduct({
         >
           <div className="relative w-1/4 h-28 sm:h-48 rounded-xl overflow-hidden">
             <Image
-              src={
-                state.product?.thumbnail?.url ||
-                "/img/product-image-placeholder.webp"
-              }
+              src={state.product?.thumbnail?.url || ProductPlaceholder}
               placeholder="blur"
-              blurDataURL="/img/image-blur.gif"
+              blurDataURL={ProductBlur}
               alt={state.product?.name || "Product Image"}
               className="object-cover"
               fill
@@ -59,16 +54,12 @@ export default function CartProduct({
               <ul>
                 <li>
                   Brand:{" "}
-                  <strong>
-                    {state?.cartProduct?.brand || state?.product?.brand}
-                  </strong>
+                  <strong>{state?.cartProduct?.brand || state?.product?.brand}</strong>
                 </li>
                 {state?.product.type === "knife" && (
                   <li>
                     Handle:{" "}
-                    <strong>
-                      {state.cartProduct?.handle || state?.product?.handle}
-                    </strong>
+                    <strong>{state.cartProduct?.handle || state?.product?.handle}</strong>
                   </li>
                 )}
                 <li>
@@ -98,11 +89,7 @@ export default function CartProduct({
                 action={action}
                 onSubmit={() => setShowUpdateBtn(false)}
               >
-                <input
-                  type="hidden"
-                  name="productCartId"
-                  value={state?.cartProduct.id}
-                />
+                <input type="hidden" name="productCartId" value={state?.cartProduct.id} />
 
                 {showUpdateBtn && !pending && (
                   <motion.button
@@ -200,10 +187,7 @@ export default function CartProduct({
                                 >
                                   {orderedSizeAmount > size.stock && (
                                     <span className="absolute top-1 right-1">
-                                      <XCircle
-                                        size={14}
-                                        className="stroke-red-400"
-                                      />
+                                      <XCircle size={14} className="stroke-red-400" />
                                     </span>
                                   )}
                                   <input
@@ -266,8 +250,7 @@ export default function CartProduct({
 
                           {/* This is cart product config. */}
                           {state?.cartProduct &&
-                            state?.cartProduct.brand !==
-                              state?.product.brand && (
+                            state?.cartProduct.brand !== state?.product.brand && (
                               <option value={state?.cartProduct.brand}>
                                 {state?.cartProduct.brand}
                               </option>
@@ -326,8 +309,7 @@ export default function CartProduct({
                               name="handle"
                               id="handle"
                               defaultValue={
-                                (state?.cartProduct &&
-                                  state?.cartProduct.handle) ||
+                                (state?.cartProduct && state?.cartProduct.handle) ||
                                 state?.product.handle
                               }
                               onChange={(e) => {
@@ -341,13 +323,11 @@ export default function CartProduct({
                             >
                               <option
                                 value={
-                                  (state?.cartProduct &&
-                                    state?.cartProduct.handle) ||
+                                  (state?.cartProduct && state?.cartProduct.handle) ||
                                   state?.product.handle
                                 }
                               >
-                                {(state?.cartProduct &&
-                                  state?.cartProduct.handle) ||
+                                {(state?.cartProduct && state?.cartProduct.handle) ||
                                   state?.product.handle}
                               </option>
                               <option value="No Handle">No Handle</option>
@@ -366,8 +346,7 @@ export default function CartProduct({
                         </div>
                         <div className="pt-2 pl-2">
                           <p className="text-xs text-slate-500">
-                            Price will be changed depending on the handles you
-                            choose.
+                            Price will be changed depending on the handles you choose.
                           </p>
                         </div>
                       </div>
@@ -388,8 +367,7 @@ export default function CartProduct({
                         placeholder={"No special requests."}
                         autoComplete="off"
                         defaultValue={
-                          (state?.cartProduct && state?.cartProduct.request) ||
-                          ""
+                          (state?.cartProduct && state?.cartProduct.request) || ""
                         }
                         onChange={() => {
                           setShowUpdateBtn(true);
@@ -471,12 +449,8 @@ export default function CartProduct({
                     className={`flex items-center gap-3 px-4 py-2 sm:py-3 mb-4 transition-colors flex-grow ${showDeleteBtn ? "bg-red-700 text-white" : "bg-red-200 text-red-700"}  text-sm sm:text-base rounded-xl`}
                   >
                     <Trash2 size={16} />
-                    <span>
-                      {showDeleteBtn ? "Are you sure?" : "Remove Product"}
-                    </span>
-                    {showDeleteBtn && (
-                      <span className="text-white/60">Yes!</span>
-                    )}
+                    <span>{showDeleteBtn ? "Are you sure?" : "Remove Product"}</span>
+                    {showDeleteBtn && <span className="text-white/60">Yes!</span>}
                   </motion.button>
                   {showDeleteBtn && (
                     <motion.button

@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from "motion/react";
 
 import { ChevronRight, ChevronLeft } from "lucide-react";
 
+import ProductPlaceholder from "@/assets/product-placeholder.webp";
+
 export default function ProductGallery({ product }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const slideRef = useRef();
@@ -16,8 +18,7 @@ export default function ProductGallery({ product }) {
 
   const prevSlide = () => {
     setCurrentIndex(
-      (prevIndex) =>
-        (prevIndex - 1 + product.media.length) % product.media.length
+      (prevIndex) => (prevIndex - 1 + product.media.length) % product.media.length
     );
   };
 
@@ -26,11 +27,9 @@ export default function ProductGallery({ product }) {
     let touchendX = 0;
 
     function checkDirection() {
-      if (touchendX < touchstartX && touchstartX - touchendX >= 100)
-        prevSlide();
+      if (touchendX < touchstartX && touchstartX - touchendX >= 100) prevSlide();
 
-      if (touchendX > touchstartX && touchendX - touchstartX >= 100)
-        nextSlide();
+      if (touchendX > touchstartX && touchendX - touchstartX >= 100) nextSlide();
     }
 
     slideRef.current.addEventListener("touchstart", (e) => {
@@ -44,10 +43,7 @@ export default function ProductGallery({ product }) {
   }, []);
 
   return (
-    <div
-      ref={slideRef}
-      className="relative h-[65vh] sm:h-[50vh] bg-white rounded-xl overflow-hidden"
-    >
+    <div ref={slideRef} className="relative h-[65vh] sm:h-[50vh] bg-white">
       <AnimatePresence>
         <motion.div
           key={currentIndex}
@@ -57,11 +53,9 @@ export default function ProductGallery({ product }) {
           className="relative w-full h-full"
         >
           <Image
-            className="object-cover"
+            className="object-contain"
             fill
-            src={
-              product.media[currentIndex].url || "/img/product-placeholder.webp"
-            }
+            src={product.media[currentIndex].url || ProductPlaceholder}
             alt="Gallery Image"
             placeholder="blur"
             blurDataURL="/img/image-blur.gif"

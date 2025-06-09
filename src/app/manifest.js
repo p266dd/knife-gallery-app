@@ -15,7 +15,7 @@ export default function manifest() {
     related_applications: [
       {
         platform: "webapp",
-        url: "https://localhost:3000/manifest.webmanifest",
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/manifest.webmanifest`,
       },
     ],
     icons: [

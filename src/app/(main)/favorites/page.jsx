@@ -6,6 +6,9 @@ import ProductModal from "@/ui/product-modal";
 
 import { fetchFavorites } from "@/actions/fetch-favorites";
 
+import ImageBlur from "@/assets/image-blur.gif";
+import ProductImage from "@/assets/product-image-placeholder.webp";
+
 export default async function FavoritesPage() {
   await verifyUserSession();
 
@@ -30,11 +33,9 @@ export default async function FavoritesPage() {
                 <div key={i} className="relative bg-slate-200">
                   <ProductModal product={product.product}>
                     <Image
-                      src={
-                        product.product.thumbnail.url || "/product-image.webp"
-                      }
+                      src={product.product.thumbnail.url || ProductImage}
                       placeholder="blur"
-                      blurDataURL="/img/image-blur.gif"
+                      blurDataURL={ImageBlur}
                       width={1080}
                       height={1080}
                       alt="Knife image Placeholder"

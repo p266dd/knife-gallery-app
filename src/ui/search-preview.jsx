@@ -9,6 +9,8 @@ import { Search, X } from "lucide-react";
 
 import { searchProduct } from "@/actions/search-products";
 
+import ProductPlaceholder from "@/assets/product-image-placeholder.webp";
+
 export default function SearchPreview({ data, setData, currentTerm = null }) {
   const [showPreview, setShowPreview] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -50,9 +52,7 @@ export default function SearchPreview({ data, setData, currentTerm = null }) {
           autoComplete="off"
           placeholder="Search for a product."
           className="w-full pl-10 pr-3 pt-3 pb-2 focus-visible:outline-0"
-          value={
-            (data && data?.searchTerm) || (currentTerm && currentTerm) || ""
-          }
+          value={(data && data?.searchTerm) || (currentTerm && currentTerm) || ""}
           onChange={handleInput}
         />
         <AnimatePresence>
@@ -82,24 +82,16 @@ export default function SearchPreview({ data, setData, currentTerm = null }) {
             className="absolute top-14 left-0 z-50 w-full max-h-80 overflow-y-auto overflow-x-hidden px-2 py-3 flex flex-col gap-3 bg-white border border-slate-300 rounded-xl shadow-2xl"
           >
             {response.isLoading && (
-              <div className="py-6 px-9 text-base text-slate-600">
-                Loading..
-              </div>
+              <div className="py-6 px-9 text-base text-slate-600">Loading..</div>
             )}
 
             {response.data && response.data.length > 0 ? (
               response.data.map((product, i) => (
-                <Link
-                  key={`productPreview-${i}`}
-                  href={`/products/${product.id}`}
-                >
+                <Link key={`productPreview-${i}`} href={`/products/${product.id}`}>
                   <div className="flex items-center gap-2 px-1 border-b border-slate-200 last:border-b-0">
                     <div className="relative w-3/12 h-24">
                       <Image
-                        src={
-                          product.thumbnail.url ||
-                          "/img/product-image-placeholder.webp"
-                        }
+                        src={product.thumbnail.url || ProductPlaceholder}
                         alt={product.name}
                         className="w-full h-full object-cover rounded-lg overflow-hidden"
                         fill
@@ -126,9 +118,7 @@ export default function SearchPreview({ data, setData, currentTerm = null }) {
                 </Link>
               ))
             ) : (
-              <div className="py-6 px-9 text-base text-slate-600">
-                No results found.
-              </div>
+              <div className="py-6 px-9 text-base text-slate-600">No results found.</div>
             )}
           </motion.div>
         )}

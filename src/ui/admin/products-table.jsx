@@ -5,12 +5,7 @@ import Image from "next/image";
 import { useState, useRef } from "react";
 import useSWR from "swr";
 import { AnimatePresence, motion } from "motion/react";
-import {
-  Filter,
-  Search,
-  ChevronLeftCircle,
-  ChevronRightCircle,
-} from "lucide-react";
+import { Filter, Search, ChevronLeftCircle, ChevronRightCircle } from "lucide-react";
 
 import { fetchProducts } from "@/actions/fetch-products";
 import LinkLoading from "../link-loading";
@@ -249,9 +244,9 @@ export default function ProductsTable({ filters }) {
                   className="border-b border-slate-200 last:border-b-transparent"
                 >
                   <td>
-                    <div className="relative w-16 h-28 my-2 rounded-xl overflow-hidden">
+                    <div className="relative w-16 h-28 my-2 rounded-sm overflow-hidden">
                       <Link
-                        className="relative block w-full h-full"
+                        className="relative block w-full h-full object-cover"
                         href={"/dashboard/products/" + product.id}
                       >
                         <Image
@@ -263,6 +258,7 @@ export default function ProductsTable({ filters }) {
                           blurDataURL="/img/image-blur.gif"
                           alt={product.name}
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 40vw, 33vw"
+                          className="object-cover"
                           fill
                         />
                       </Link>
@@ -301,9 +297,7 @@ export default function ProductsTable({ filters }) {
 
       <div className="mt-4 flex items-center justify-between">
         <div>
-          <span className="text-slate-600 text-xs">
-            {data && data?.totalPages} Pages
-          </span>
+          <span className="text-slate-600 text-xs">{data && data?.totalPages} Pages</span>
         </div>
         <div className="flex-grow flex items-center justify-end gap-2 text-sm">
           {page && page > 1 && (

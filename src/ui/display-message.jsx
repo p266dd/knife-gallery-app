@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { fetchActiveMessage } from "@/actions/fetch-messages";
 import Link from "next/link";
 
+import BrandIcon from "@/assets/brand-icon.png";
+
 export default function DisplayMessage() {
   const SESSION_KEY = "hasSessionMessageBeenShown";
 
@@ -48,12 +50,7 @@ export default function DisplayMessage() {
         >
           <div className="flex flex-col gap-3 items-center py-7 px-5 bg-white rounded-xl">
             <div className="w-10">
-              <Image
-                src="/img/brand-icon.png"
-                alt="Ironclad Logo"
-                width={172}
-                height={169}
-              />
+              <Image src={BrandIcon} alt="Ironclad Logo" />
             </div>
             {message && (
               <>

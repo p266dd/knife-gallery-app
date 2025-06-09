@@ -5,6 +5,8 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Share, X } from "lucide-react";
 
+import BrandIcon from "@/assets/brand-icon.png";
+
 export function InstallPrompt() {
   const [isIOS, setIsIOS] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
@@ -57,13 +59,7 @@ export function InstallPrompt() {
                     <X size={22} strokeWidth={2} />
                   </div>
                   <div>
-                    <Image
-                      src="/img/brand-icon.png"
-                      alt="Ironclad Logo"
-                      width={172}
-                      height={169}
-                      className="w-8 h-8"
-                    />
+                    <Image src={BrandIcon} alt="Ironclad Logo" className="w-8 h-8" />
                   </div>
                   <div>
                     <h4 className="text-slate-700 text-xl">Install App</h4>
@@ -100,7 +96,7 @@ export function InstallPrompt() {
                 </div>
               </>
             ) : (
-              <div className="relative flex items-center justify-center gap-8">
+              <div className="relative flex flex-col items-center justify-center gap-3">
                 <div
                   className="absolute -top-7 -right-12 flex justify-center items-center w-10 h-10 bg-slate-800 text-white rounded-full"
                   onClick={() => setShowPrompt(false)}
@@ -108,15 +104,15 @@ export function InstallPrompt() {
                   <X size={22} strokeWidth={2} />
                 </div>
                 <div className="relative shrink flex items-center justify-center gap-3">
-                  <Image
-                    src="/img/brand-icon.png"
-                    alt="Ironclad Logo"
-                    width={172}
-                    height={169}
-                    className="w-12 h-12"
-                  />
+                  <Image src={BrandIcon} alt="Ironclad Logo" className="w-12 h-12" />
+                </div>{" "}
+                <div>
+                  <h4 className="text-slate-700 text-xl">Install App</h4>
                 </div>
-                <div className="flex-grow flex flex-col md:flex-row items-center justify-center">
+                <div className="text-slate-600">
+                  <div className="mb-3 text-center">
+                    To install our app, simply click the button below.
+                  </div>
                   <div className="flex-grow flex">
                     <button
                       ref={installButton}

@@ -77,7 +77,7 @@ export default function ProductsGrid({ filter }) {
               >
                 <ProductModal product={product}>
                   <Image
-                    src={product.thumbnail.url || "/product-image.webp"}
+                    src={product.thumbnail.url || "/product-image-placeholder.webp"}
                     placeholder="blur"
                     blurDataURL="/img/image-blur.gif"
                     width={1080}
@@ -92,10 +92,7 @@ export default function ProductsGrid({ filter }) {
         )}
       </div>
       {isValidating && (
-        <div
-          key="loadingMore"
-          className="flex items-center justify-center mt-6 sm:mt-12"
-        >
+        <div key="loadingMore" className="flex items-center justify-center mt-6 sm:mt-12">
           <div className="flex items-center gap-4 text-slate-400 sm:text-xl">
             Loading <Loader size={18} className="animate-spin" />
           </div>

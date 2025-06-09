@@ -86,7 +86,7 @@ export default function ProductModal({ product, children }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 w-full h-full z-50 overflow-hidden flex items-center justify-center bg-black/70 select-none"
+            className="fixed inset-0 w-full h-full z-50 overflow-hidden flex items-center justify-center bg-black/85 select-none"
           >
             <motion.div
               initial={{ opacity: 0, y: 50 }}
@@ -98,6 +98,8 @@ export default function ProductModal({ product, children }) {
                 <div className="flex justify-end">
                   <motion.div
                     whileTap={{ scale: 0.9 }}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0, transition: { delay: 0.6 } }}
                     className="px-3 py-2 bg-white rounded-xl cursor-pointer"
                     onClick={() => setIsOpen(false)}
                   >
@@ -106,16 +108,21 @@ export default function ProductModal({ product, children }) {
                   </motion.div>
                 </div>
 
-                <div className="relative h-[65vh]">
+                <div className="relative h-[65vh] border-3 border-white rounded-xl overflow-hidden">
                   <AddToFavortite productId={product.id} />
                   <ProductGallery product={product} />
                 </div>
 
-                <Link href={"/products/" + product.id}>
-                  <div className="bg-white rounded-xl p-4 text-lg capitalize">
-                    {product.name}
-                  </div>
-                </Link>
+                <motion.div
+                  initial={{ opacity: 0, y: -50 }}
+                  animate={{ opacity: 1, y: 0, transition: { delay: 0.6 } }}
+                >
+                  <Link href={"/products/" + product.id}>
+                    <div className="bg-white rounded-xl p-4 text-lg capitalize">
+                      {product.name}
+                    </div>
+                  </Link>
+                </motion.div>
               </div>
             </motion.div>
           </motion.div>,

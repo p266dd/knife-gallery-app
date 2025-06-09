@@ -1,6 +1,7 @@
 {
   "name": "ironclad-app",
-  "version": "1.0.2",
+  "description": "Wholesaler portal for companies all around the globe.",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

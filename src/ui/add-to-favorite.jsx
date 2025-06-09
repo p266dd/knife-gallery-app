@@ -56,25 +56,15 @@ export default function AddToFavortite({ productId }) {
 
   const StarIcon = () => {
     return (
-      <motion.div
-        variants={animation}
-        initial="initial"
-        animate="stale"
-        exit="exit"
-      >
-        <Star className="w-6 h-6 sm:w-8 sm:h-8" />
+      <motion.div variants={animation} initial="initial" animate="stale" exit="exit">
+        <Star fill="white" className="w-6 h-6 sm:w-8 sm:h-8 opacity-50" />
       </motion.div>
     );
   };
 
   const StarFilledIcon = () => {
     return (
-      <motion.div
-        variants={animation}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-      >
+      <motion.div variants={animation} initial="initial" animate="animate" exit="exit">
         <Star color="orange" fill="orange" className="w-6 h-6 sm:w-8 sm:h-8" />
       </motion.div>
     );
@@ -85,9 +75,7 @@ export default function AddToFavortite({ productId }) {
       onClick={handleClick}
       className="absolute block right-6 top-6 z-40 cursor-pointer sm:right-9 sm:top-9"
     >
-      <AnimatePresence>
-        {active ? <StarFilledIcon /> : <StarIcon />}
-      </AnimatePresence>
+      <AnimatePresence>{active ? <StarFilledIcon /> : <StarIcon />}</AnimatePresence>
     </button>
   ) : null;
 }

@@ -15,6 +15,8 @@ import SearchForm from "@/ui/search-form";
 import { fetchBrands } from "@/actions/brands";
 import { fetchMaterials } from "@/actions/materials";
 
+import ProductImage from "@/assets/product-image-placeholder.webp";
+
 export default function ResultsPage() {
   // const router = useRouter();
   const searchParams = useSearchParams();
@@ -134,7 +136,7 @@ export default function ResultsPage() {
                   >
                     <ProductModal product={product}>
                       <Image
-                        src={product.thumbnail.url || "/product-image.webp"}
+                        src={product.thumbnail.url || ProductImage}
                         width={1080}
                         height={1080}
                         alt="Placeholder"
@@ -146,19 +148,13 @@ export default function ResultsPage() {
               })}
           </div>
           {isLoading && (
-            <div
-              key="laodMore"
-              className="flex items-center justify-center mt-6"
-            >
+            <div key="laodMore" className="flex items-center justify-center mt-6">
               <Loader size={20} className="stroke-slate-500 animate-spin" />{" "}
               <span className="text-slate-500 ml-4">Loading</span>
             </div>
           )}
           {hasMoreData && !isLoading && (
-            <div
-              key="laodMore"
-              className="flex items-center justify-center mt-6"
-            >
+            <div key="laodMore" className="flex items-center justify-center mt-6">
               <button
                 className="flex items-center gap-4 text-slate-400"
                 onClick={() => setSize(size + 1)}

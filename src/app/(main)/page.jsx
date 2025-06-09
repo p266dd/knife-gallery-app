@@ -9,31 +9,22 @@ import { fetchFilters } from "@/actions/filters";
 import { fnLogout } from "@/actions/logout";
 import { getSession } from "@/utils/session";
 
+import Logo from "@/assets/logo.png";
+
 export default async function HomePage({ searchParams }) {
   const session = await getSession();
 
   let { filter } = await searchParams;
 
   // * Clean filter.
-  const sanitizedFilter = await string()
-    .default("")
-    .lowercase()
-    .trim()
-    .validate(filter);
+  const sanitizedFilter = await string().default("").lowercase().trim().validate(filter);
 
   const filters = await fetchFilters();
 
   return (
     <main className="pb-44 sm:pb-56">
       <div className="px-6 pt-8 mb-8 sm:mb-12">
-        <Image
-          priority
-          src="/img/logo.png"
-          width={897}
-          height={192}
-          alt="Ironclad"
-          className="w-52 sm:w-64"
-        />
+        <Image priority src={Logo} alt="Ironclad" className="w-52 sm:w-64" />
       </div>
 
       <div className="px-6 mb-6 flex flex-row items-center justify-between sm:mb-12">

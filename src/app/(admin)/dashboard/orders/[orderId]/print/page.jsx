@@ -8,13 +8,14 @@ import { fetchSingleOrder } from "@/actions/fetch-orders";
 import { CheckCircle, ChevronLeft, Printer } from "lucide-react";
 
 import { updateOrder } from "@/actions/update-order";
+import Logo from "@/assets/logo.png";
 
 // Placeholder for company details (replace with your actual data source)
 const companyDetails = {
   name: "Ironclad Knives",
   address: "123 Address, Fukuyama City, 000000",
   email: "staff@yknifegallery.com",
-  logoUrl: "/img/logo.png",
+  logoUrl: Logo,
   website: "www.knifegallery.com",
 };
 
@@ -107,8 +108,7 @@ export default function PrintOrderPage() {
               <strong>Order ID:</strong> {data.code.split("-")[1]}
             </p>
             <p>
-              <strong>Date:</strong>{" "}
-              {new Date(data.createdAt).toLocaleDateString()}
+              <strong>Date:</strong> {new Date(data.createdAt).toLocaleDateString()}
             </p>
           </div>
         </header>
@@ -152,16 +152,14 @@ export default function PrintOrderPage() {
                         >
                           <div>
                             {
-                              item.product.sizes.find(
-                                (p) => p.id === Number(detail.id)
-                              ).name
+                              item.product.sizes.find((p) => p.id === Number(detail.id))
+                                .name
                             }
                           </div>
                           <div>
                             {
-                              item.product.sizes.find(
-                                (p) => p.id === Number(detail.id)
-                              ).size
+                              item.product.sizes.find((p) => p.id === Number(detail.id))
+                                .size
                             }{" "}
                             mm
                           </div>
@@ -256,8 +254,8 @@ export default function PrintOrderPage() {
             paddingTop: "10px",
           }}
         >
-          Thank you for your business! If you have any questions, please contact
-          us at {companyDetails.email}.
+          Thank you for your business! If you have any questions, please contact us at{" "}
+          {companyDetails.email}.
         </div>
       </div>
     </div>

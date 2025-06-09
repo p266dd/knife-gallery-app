@@ -19,8 +19,8 @@ export const metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  maximumScale: 3,
+  userScalable: true,
 };
 
 export default async function RootLayout({ children }) {
