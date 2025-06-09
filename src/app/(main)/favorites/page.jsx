@@ -6,7 +6,6 @@ import ProductModal from "@/ui/product-modal";
 
 import { fetchFavorites } from "@/actions/fetch-favorites";
 
-import ImageBlur from "@/assets/image-blur.gif";
 import ProductImage from "@/assets/product-image-placeholder.webp";
 
 export default async function FavoritesPage() {
@@ -35,7 +34,7 @@ export default async function FavoritesPage() {
                     <Image
                       src={product.product.thumbnail.url || ProductImage}
                       placeholder="blur"
-                      blurDataURL={ImageBlur}
+                      blurDataURL="/img/image-blur.gif"
                       width={1080}
                       height={1080}
                       alt="Knife image Placeholder"

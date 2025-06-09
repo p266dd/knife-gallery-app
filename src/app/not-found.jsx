@@ -25,7 +25,7 @@ export default function NotFoundPage() {
             </span>
           </p>
           <p>
-            or{" "}
+            or go to{" "}
             <Link className="underline" href="/">
               Home page
             </Link>

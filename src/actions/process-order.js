@@ -42,7 +42,9 @@ export default async function processOrder() {
     // 2. Loop through products, parse details, validate stock, and prepare order data
     for (const cartProduct of cart.products) {
       if (!cartProduct.product || !cartProduct.product.sizes) {
-        console.log(`Product data or sizes missing for cartProduct ID: ${cartProduct.id}`);
+        console.log(
+          `Product data or sizes missing for cartProduct ID: ${cartProduct.id}`
+        );
       }
 
       // 3. Each product has a details field that needs to be parsed
@@ -118,7 +120,19 @@ export default async function processOrder() {
             create: orderProductCreateInputs,
           },
         },
-        select: { id: true }, // Select only the ID for the redirect URL
+        include: {
+          client: true,
+          orderProduct: {
+            include: {
+              product: {
+                include: {
+                  sizes: true,
+                },
+              },
+            },
+          },
+        },
+        // select: { id: true }, // Select only the ID for the redirect URL
       });
 
       // Update stock for each size
@@ -134,13 +148,12 @@ export default async function processOrder() {
         ClientNewOrderEmail({
           name: session.name,
           email: session.email,
-          orderDetails: orderProductCreateInputs,
+          orderDetails: createdOrder, // Order Details
         });
 
         StaffNewOrderEmail({
           name: session.name,
-          email: session.email,
-          orderDetails: orderProductCreateInputs,
+          orderDetails: createdOrder, // Order Details
         });
       } catch (err) {
         console.log(err);
@@ -164,7 +177,9 @@ export default async function processOrder() {
     revalidatePath("/account/orders", "page"); // Assuming a user-specific orders page
     revalidatePath(`/account/orders/${newOrder.id}`, "page"); // Specific order page
 
-    const uniqueProductIds = [...new Set(stockUpdateOperations.map((op) => op.productId))];
+    const uniqueProductIds = [
+      ...new Set(stockUpdateOperations.map((op) => op.productId)),
+    ];
     for (const productId of uniqueProductIds) {
       revalidatePath(`/products/${productId}`, "page"); // Revalidate product pages due to stock changes
     }
@@ -176,7 +191,8 @@ export default async function processOrder() {
     console.log("Failed to process order:", error);
     // Redirect back to cart with an error message
     // Ensure the error message is URL-encoded to be safe.
-    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred.";
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred.";
     return console.log("/cart?error=" + errorMessage);
   }
 }

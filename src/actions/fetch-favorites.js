@@ -20,6 +20,7 @@ export async function fetchFavorites() {
                 id: true,
                 thumbnail: true,
                 media: true,
+                name: true,
               },
             },
           },

@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from "motion/react";
 import { Info, Loader, Pencil, Save, Trash2, X, XCircle } from "lucide-react";
 
 import ProductPlaceholder from "@/assets/product-image-placeholder.webp";
-import ProductBlur from "@/assets/image-blur.gif";
 
 import { updateCart } from "@/actions/update-cart";
 import { removeCart } from "@/actions/remove-cart";
@@ -39,7 +38,7 @@ export default function CartProduct({ cartProduct, preferences, hasError, setHas
             <Image
               src={state.product?.thumbnail?.url || ProductPlaceholder}
               placeholder="blur"
-              blurDataURL={ProductBlur}
+              blurDataURL="/img/image-blur.gif"
               alt={state.product?.name || "Product Image"}
               className="object-cover"
               fill

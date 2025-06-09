@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import useSWR from "swr";
-import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown, CircleFadingPlus, Loader } from "lucide-react";
 import useSWRInfinite from "swr/infinite";
@@ -18,6 +18,7 @@ import { fetchMaterials } from "@/actions/materials";
 import ProductImage from "@/assets/product-image-placeholder.webp";
 
 export default function ResultsPage() {
+  const observerRef = useRef(null);
   // const router = useRouter();
   const searchParams = useSearchParams();
   const [showFilter, setShowFilter] = useState(false);
@@ -29,11 +30,6 @@ export default function ResultsPage() {
   const materialObject = useSWR("fetchMaterials", fetchMaterials, {
     revalidateOnFocus: false,
   });
-
-  useEffect(() => {
-    // * Closes search popup if user modify search.
-    setShowFilter(false);
-  }, [searchParams]);
 
   // Create an object to hold the structured parameters.
   const searchObject = {};
@@ -54,7 +50,7 @@ export default function ResultsPage() {
     };
   };
 
-  const { data, error, isLoading, size, setSize } = useSWRInfinite(
+  const { data, error, isLoading, size, setSize, isValidating } = useSWRInfinite(
     getKey,
     searchProducts,
     {
@@ -72,8 +68,35 @@ export default function ResultsPage() {
   // * Concatenate data from all pages.
   const allProducts = data ? [].concat(...data) : [];
 
+  // * Callback for IntersectionObserver
+  const handleObserver = useCallback(
+    (entries) => {
+      const target = entries[0];
+      if (target.isIntersecting && hasMoreData && !isLoading) {
+        setSize((prevSize) => prevSize + 1); // Load the next page of results.
+      }
+    },
+    [setSize, hasMoreData, isLoading]
+  );
+
+  useEffect(() => {
+    // * Closes search popup if user modify search.
+    setShowFilter(false);
+
+    const observer = new IntersectionObserver(handleObserver, {
+      root: null, // Viewport.
+      rootMargin: "200px",
+      threshold: 0.1,
+    });
+
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+    return () => observer.disconnect(); // Cleanup observer on component unmount.
+  }, [searchParams, handleObserver]);
+
   return (
-    <main className="pt-16 pb-40">
+    <main className="pt-16 pb-44">
       <AnimatePresence>
         {showFilter && (
           <motion.div
@@ -147,22 +170,20 @@ export default function ResultsPage() {
                 );
               })}
           </div>
-          {isLoading && (
-            <div key="laodMore" className="flex items-center justify-center mt-6">
-              <Loader size={20} className="stroke-slate-500 animate-spin" />{" "}
-              <span className="text-slate-500 ml-4">Loading</span>
+          {isValidating && (
+            <div
+              key="loadingMore"
+              className="flex items-center justify-center mt-6 sm:mt-12"
+            >
+              <div className="flex items-center gap-4 text-slate-400 sm:text-xl">
+                Loading <Loader size={18} className="animate-spin" />
+              </div>
             </div>
           )}
+
+          {/* Element for IntersectionObserver */}
           {hasMoreData && !isLoading && (
-            <div key="laodMore" className="flex items-center justify-center mt-6">
-              <button
-                className="flex items-center gap-4 text-slate-400"
-                onClick={() => setSize(size + 1)}
-                disabled={isLoading}
-              >
-                Load More <CircleFadingPlus size={18} />
-              </button>
-            </div>
+            <div key="observer" ref={observerRef} style={{ height: "1px" }} />
           )}
         </AnimatePresence>
       </div>
